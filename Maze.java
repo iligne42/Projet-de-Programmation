@@ -12,11 +12,13 @@ public class Maze{
 		randomMaze(L,l);
 	}
 
-	public Maze(File fic) throws FileNotFoundException{
+	public Maze(File fic) throws FileNotFoundException, FormatNotSupported{
 		Scanner sc = new Scanner(fic);
 		ArrayList<String> tmp = new ArrayList<String>();
 		while(sc.hasNextLine())
 			tmp.add(sc.nextLine());
+		if(!sameLength(tmp)) 
+			throw new FormatNotSupported("Le labyrinthe n'est pas carré");
 		int max = maxLength(tmp);
 		maze = new int[tmp.size()][max];
 		for(int i=0;i<tmp.size();i++){
@@ -80,7 +82,7 @@ public class Maze{
     		Maze m = new Maze(fic);
     		m.print();
     	}catch(Exception e){
-    		//e.printStackTraceException();
+    		e.printStackTrace();
     	}
     }
 }
