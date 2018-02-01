@@ -6,8 +6,10 @@ public class Maze{
 	public final static int WAY = 1;
 
 	public Maze(int L, int l){
+		maze=new int[L][l];
+		randomMaze(L,l);
 	}
-
+	
 	public Maze(File fic) throw FileNotFoundException{
 		Scanner sc = new Scanner(fic);
 		ArrayList<String> tmp = new ArrayList<String>();
@@ -40,4 +42,7 @@ public class Maze{
 		}
 	}
 
+	private void randomMaze(int L,int l){
+
+    }
 }
