@@ -9,7 +9,7 @@ public class Maze{
 		maze=new int[L][l];
 		randomMaze(L,l);
 	}
-	
+
 	public Maze(File fic) throw FileNotFoundException{
 		Scanner sc = new Scanner(fic);
 		ArrayList<String> tmp = new ArrayList<String>();
@@ -38,7 +38,7 @@ public class Maze{
 			for(int j=0;j<maze[i].length;j++){
 				System.out.print((maze[i][j]==WAY?' ':'0'));
 			}
-			System.out.println();
+			System.out.println( );
 		}
 	}
 
