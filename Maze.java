@@ -25,7 +25,10 @@ public class Maze{
 					case 'S':
 					maze[i][j]=START;break;
 					case ' ':
-					maze[i][j]=WAY;break;
+					if(i==0||j==0||i==maze.length-1||j==maze[i].length-1)
+						maze[i][j]=END;
+					else maze[i][j]=WAY;
+					break;
 					default:
 					maze[i][j]=WALL;break;
 				}
@@ -57,8 +60,8 @@ public class Maze{
 				String tmp="";
 				switch(maze[i][j]){
 					case WAY: tmp=" ";break;
-					case START: tmp=" ";break;
-					case END: tmp=" ";break;
+					case START: tmp="S";break;
+					case END: tmp="E";break;
 					case WALL: tmp="\\";break;
 				}
 				System.out.print(tmp);
