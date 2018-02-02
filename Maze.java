@@ -116,16 +116,16 @@ public class Maze{
 	    maze[i][j]=val;
     }
 
-    private void createInside(){
+    private void createInside(){ // attribut de délimitations, pour vertical et pour horizontal
 	    //Appeler les fonctions de création de murs vertical et horizontal
     }
 
     private void horizontal(int h){ //Commencer avec v=-1;
 	    Random rand=new Random();
 	    int i=rand.nextInt(maze.length-h);
-	    if(onAWall(i)) {
+	    if(onAWall(i,0)) {
             for (int j = 0; j < maze[i].length; j++) {
-                int tmp = rand.nextInt(maze[i].length - h);
+                int tmp = rand.nextInt(maze[i].length - h)+1;//il ne faut pas que tmp soit sur une extrémité du mur si on repasse sur un mur déjà existant
                 if (j != tmp) maze[i][j] = WALL;
                 else maze[i][j] = WAY;
             }
@@ -135,15 +135,18 @@ public class Maze{
     private void vertical(int v){
 	    Random rand=new Random();
 	    int j=rand.nextInt(v);//v?
-        for(int i=0; i<maze.length; i++){
-            int tmp=rand.nextInt(maze.length);
-            if(i!=tmp) maze[i][j]=WALL;
-            else maze[i][j]=WAY;
+        if(onAWall(0,j)) {
+            for (int i = 0; i < maze.length; i++) {
+                int tmp = rand.nextInt(maze.length)+1;
+                if (i != tmp) maze[i][j] = WALL;
+                else maze[i][j] = WAY;
+            }
         }
     }
 
-    private boolean onAWall(int i){//vérifie qu'on créer le nouveau mur sur un mur et pas un "trou"
+    private boolean onAWall(int i, int j){//vérifie qu'on créer le nouveau mur sur un mur et pas un "trou"
 	    if(maze[i][0]==WALL && maze[i][maze[i].length-1]==WALL) return true;
+	    else if(maze[0][j]==WALL && maze[maze.length-1][j]==WALL) return true;
 	    else return false;
     }
 
