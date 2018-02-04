@@ -7,6 +7,7 @@ public class Maze{
 	public final static int WAY = 1;
 	public final static int START = 2;
 	public final static int END = 3;
+	Random rand=new Random();
 
 	public Maze(int L, int l) throws FormatNotSupported{
 		if(L>3 && l>3) {
@@ -116,8 +117,11 @@ public class Maze{
 	    maze[i][j]=val;
     }
 
-    private void createInside(){ // attribut de délimitations, pour vertical et pour horizontal
+    private void createInside(int x1, int x2, int y1, int y2, int width, int height){ // attribut de délimitations, pour vertical et pour horizontal
 	    //Appeler les fonctions de création de murs vertical et horizontal
+        int orientation=orientation(width,height);
+        if(orientation==0) horizontal(1);
+        else vertical(2);
     }
 
     private void horizontal(int h){ //Commencer avec v=-1;
@@ -148,6 +152,12 @@ public class Maze{
 	    if(maze[i][0]==WALL && maze[i][maze[i].length-1]==WALL) return true;
 	    else if(maze[0][j]==WALL && maze[maze.length-1][j]==WALL) return true;
 	    else return false;
+    }
+
+    private int orientation(int width, int height){
+	    if(width<height) return 0; //0 pour horizontal
+        else if(height<width) return 1; //1 pour vertical
+        else return rand.nextInt(2);
     }
 
     public static void main(String[] args){
