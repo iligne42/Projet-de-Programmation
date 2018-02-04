@@ -7,7 +7,7 @@ public class Maze{
 	public final static int WAY = 1;
 	public final static int START = 2;
 	public final static int END = 3;
-	Random rand=new Random();
+	static Random rand=new Random();
 
 	public Maze(int L, int l) throws FormatNotSupported{
 		if(L>3 && l>3) {
@@ -85,6 +85,7 @@ public class Maze{
 
 	private void randomMaze(){
         createBorder();
+        createInside(0,maze.length-1,0,maze[0].length-1);
     }
 
     private void createBorder(){
@@ -101,7 +102,6 @@ public class Maze{
     }
 
     private Point createStartEnd(){
-	    Random rand=new Random();
 	    int VH=rand.nextInt(2);
 	    int i=0; int j=0;
 	    if(VH==0){
@@ -122,40 +122,52 @@ public class Maze{
 	    maze[i][j]=val;
     }
 
-    private void createInside(int x1, int x2, int y1, int y2, int width, int height){ // attribut de délimitations, pour vertical et pour horizontal
+    private void createInside(int x1, int x2, int y1, int y2){ // attribut de délimitations, pour vertical et pour horizontal
 	    //Appeler les fonctions de création de murs vertical et horizontal
+        int width=Math.abs(x2-x1);
+        int height=Math.abs(y2-y1);
+        if (height<maze.length && width<maze[height].length)
+        if(width<2 || height<2) return; // si on a plus de mur à créer on arrêt la fonction
         int orientation=orientation(width,height);
-        if(orientation==0) horizontal(1);
-        else vertical(2);
-    }
-
-    private void horizontal(int h){ //Commencer avec v=-1;
-	    Random rand=new Random();
-	    int i=rand.nextInt(maze.length-h);
-	    if(onAWall(i,0)) {
-            for (int j = 0; j < maze[i].length; j++) {
-                int tmp = rand.nextInt(maze[i].length - h)+1;//il ne faut pas que tmp soit sur une extrémité du mur si on repasse sur un mur déjà existant
-                if (j != tmp) maze[i][j] = WALL;
-                else maze[i][j] = WAY;
-            }
-        }else horizontal(h);
-    }
-
-    private void vertical(int v){
-	    Random rand=new Random();
-	    int j=rand.nextInt(v);//v?
-        if(onAWall(0,j)) {
-            for (int i = 0; i < maze.length; i++) {
-                int tmp = rand.nextInt(maze.length)+1;
-                if (i != tmp) maze[i][j] = WALL;
-                else maze[i][j] = WAY;
-            }
+        if(orientation==0) {
+            int Y=horizontal(1,x1,x2,y1,y2);
+            createInside(x1,x2,y1,Y);
+            createInside(x1,x2,Y,y2);
+        }
+        else {
+            int X=vertical(1,x1,x2,y1,y2);
+            createInside(x1,X,y1,y2);
+            createInside(X,x2,y1,y2);
         }
     }
 
-    private boolean onAWall(int i, int j){//vérifie qu'on créer le nouveau mur sur un mur et pas un "trou"
-	    if(maze[i][0]==WALL && maze[i][maze[i].length-1]==WALL) return true;
-	    else if(maze[0][j]==WALL && maze[maze.length-1][j]==WALL) return true;
+    private int horizontal(int h, int x1, int x2, int y1, int y2){ //Commencer avec v=-1;
+	    int i=rand.nextInt(y2-y1-1)+y1;//y2=bas de la délimitation, y1=haut de la délimitation;
+	    if(onAWall(i,x1,x2)) {
+            for (int j = x1; j < x2; j++) {
+                int tmp = rand.nextInt(x2-x1-1)+x1;//il ne faut pas que tmp soit sur une extrémité du mur si on repasse sur un mur déjà existant
+                if (j != tmp) maze[i][j] = WALL;
+                else maze[i][j] = WAY;
+            }
+        }else horizontal(h,x1,x2,y1,y2);
+	    return i;
+    }
+
+    private int vertical(int v,int x1, int x2, int y1, int y2){
+	    int j=rand.nextInt(x2-x1-1)+x1;//v?
+        if(onAWall(j, y1, y2)) {
+            for (int i = y1; i < y2; i++) {
+                int tmp = rand.nextInt(y2-y1-1)+y1;
+                if (i != tmp) maze[i][j] = WALL;
+                else maze[i][j] = WAY;
+            }
+        }else vertical(v,x1,x2,y1,y2);
+        return j;
+    }
+
+    private boolean onAWall(int a, int b, int c){//vérifie qu'on créer le nouveau mur sur un mur et pas un "trou"
+	    if(maze[a][b]==WALL && maze[a][c]==WALL) return true;
+	    else if(maze[b][a]==WALL && maze[c][a]==WALL) return true;
 	    else return false;
     }
 
@@ -168,7 +180,7 @@ public class Maze{
     public static void main(String[] args){
     	try{
     		File fic = new File("labiTest.txt");
-    		Maze m = new Maze(fic);
+    		Maze m = new Maze(10,10);
     		m.print();
     	}catch(Exception e){
     		e.printStackTrace();
