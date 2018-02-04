@@ -10,7 +10,7 @@ public class Maze{
 	static Random rand=new Random();
 
 	public Maze(int L, int l) throws FormatNotSupported{
-		if(L>3 && l>3) {
+		if(L>5 && l>5) {
             maze = new int[L][l];
             randomMaze();
         }else{
@@ -26,7 +26,7 @@ public class Maze{
 		while(sc.hasNextLine())
 			tmp.add(sc.nextLine());
 		if(!sameLength(tmp)) 
-			throw new FormatNotSupported("Le labyrinthe n'est pas carré");
+			throw new FormatNotSupported("Le labyrinthe n'est pas rectangle");
 		int max = maxLength(tmp);
 		maze = new int[tmp.size()][max];
 		for(int i=0;i<tmp.size();i++){
@@ -81,6 +81,7 @@ public class Maze{
 			}
 			System.out.println( );
 		}
+		System.out.println();
 	}
 
 	private void randomMaze(){
@@ -92,12 +93,13 @@ public class Maze{
 	    for(int i=0; i<maze.length; i++){
 	        for(int j=0; j<maze[i].length; j++){
 	            if(i==0||j==0||i==maze.length-1||j==maze[i].length-1) maze[i][j]=WALL;
+	            else maze[i][j]=WAY;
             }
         }
         Point Start=createStartEnd();
 	    setStartEnd(Start,START);
 	    Point End=createStartEnd();
-	    while(Start.equals(End)) End=createStartEnd();
+	    while(Start.getX()==End.getX()||Start.getY()==End.getY()) End=createStartEnd();
 	    setStartEnd(End,END);
     }
 
@@ -107,9 +109,9 @@ public class Maze{
 	    if(VH==0){
 	        i=rand.nextInt(2);
 	        if(i==1) i=maze.length-1;
-	        j=rand.nextInt(maze[i].length);
+	        j=rand.nextInt(maze[i].length-2)+1;
         }else{
-	        i=rand.nextInt(maze.length);
+	        i=rand.nextInt(maze.length-2)+1;
 	        j=rand.nextInt(2);
 	        if(j==1) j=maze[i].length-1;
         }
@@ -124,50 +126,85 @@ public class Maze{
 
     private void createInside(int x1, int x2, int y1, int y2){ // attribut de délimitations, pour vertical et pour horizontal
 	    //Appeler les fonctions de création de murs vertical et horizontal
+        boolean flag=false;
         int width=Math.abs(x2-x1);
         int height=Math.abs(y2-y1);
-        if (height<maze.length && width<maze[height].length)
-        if(width<2 || height<2) return; // si on a plus de mur à créer on arrêt la fonction
-        int orientation=orientation(width,height);
-        if(orientation==0) {
-            int Y=horizontal(1,x1,x2,y1,y2);
-            createInside(x1,x2,y1,Y);
-            createInside(x1,x2,Y,y2);
-        }
-        else {
-            int X=vertical(1,x1,x2,y1,y2);
-            createInside(x1,X,y1,y2);
-            createInside(X,x2,y1,y2);
-        }
+        int incr=0;
+        do {
+            if (height < maze.length && width < maze[height].length) {
+                if (width < 4 || height < 4) return; // si on a plus de mur à créer on arrêt la fonction
+                int orientation = orientation(width, height);
+                if (orientation == 0) {
+                    int Y = horizontal(x1, x2, y1, y2);
+                    if (Y == -1){
+                        flag = true;
+
+                    }
+                    //return;
+                    else {
+                        //print();
+                        createInside(x1, x2, y1, Y);
+                        createInside(x1, x2, Y, y2);
+                    }
+                } else {
+                    int X = vertical(x1, x2, y1, y2);
+                    if (X == -1){
+                        flag = true;
+
+                    }
+                    //return;
+                    else {
+                        //print();
+                        createInside(x1, X, y1, y2);
+                        createInside(X, x2, y1, y2);
+                    }
+                }
+            }
+            incr++;
+        }while(flag && incr<2);
     }
 
-    private int horizontal(int h, int x1, int x2, int y1, int y2){ //Commencer avec v=-1;
-	    int i=rand.nextInt(y2-y1-1)+y1;//y2=bas de la délimitation, y1=haut de la délimitation;
-	    if(onAWall(i,x1,x2)) {
-            for (int j = x1; j < x2; j++) {
-                int tmp = rand.nextInt(x2-x1-1)+x1;//il ne faut pas que tmp soit sur une extrémité du mur si on repasse sur un mur déjà existant
+    private static int entreDeux(int x, int y){
+	    return rand.nextInt(Math.abs(x-y)-1)+Math.min(x,y)+1;
+    }
+
+    private static int entreDeuxMurs(int x, int y){
+	    return entreDeux(Math.min(x,y)+1, Math.max(x,y)-1);
+    }
+
+    private int horizontal(int x1, int x2, int y1, int y2){
+	    if(Math.abs(x1-x2)<=3) return -1;
+	    int i=entreDeuxMurs(y1,y2);//y2=bas de la délimitation, y1=haut de la délimitation;
+	    if(onAWall(i,x1,x2, true)) {
+	        //System.out.println("mur horizontal en "+i);
+            int tmp = entreDeux(x1,x2);
+            //System.out.println("trou en"+tmp);
+            for (int j = x1+1; j < x2; j++) {
                 if (j != tmp) maze[i][j] = WALL;
                 else maze[i][j] = WAY;
             }
-        }else horizontal(h,x1,x2,y1,y2);
+        }else return -1;
 	    return i;
     }
 
-    private int vertical(int v,int x1, int x2, int y1, int y2){
-	    int j=rand.nextInt(x2-x1-1)+x1;//v?
-        if(onAWall(j, y1, y2)) {
-            for (int i = y1; i < y2; i++) {
-                int tmp = rand.nextInt(y2-y1-1)+y1;
+    private int vertical(int x1, int x2, int y1, int y2){
+	    if(Math.abs(y1-y2)<=3) return -1;
+	    int j=entreDeuxMurs(x1,x2);
+        if(onAWall(j, y1, y2, false)) {
+            //System.out.println("mur vertical en "+j);
+            int tmp = entreDeux(y1,y2);
+            //System.out.println("trou en"+tmp);
+            for (int i = y1+1; i < y2; i++) {
                 if (i != tmp) maze[i][j] = WALL;
                 else maze[i][j] = WAY;
             }
-        }else vertical(v,x1,x2,y1,y2);
+        }else return -1;
         return j;
     }
 
-    private boolean onAWall(int a, int b, int c){//vérifie qu'on créer le nouveau mur sur un mur et pas un "trou"
-	    if(maze[a][b]==WALL && maze[a][c]==WALL) return true;
-	    else if(maze[b][a]==WALL && maze[c][a]==WALL) return true;
+    private boolean onAWall(int a, int b, int c, boolean d){//vérifie qu'on créer le nouveau mur sur un mur et pas un "trou"
+	    if(maze[a][b]==WALL && maze[a][c]==WALL && d) return true;
+	    else if(maze[b][a]==WALL && maze[c][a]==WALL && !d) return true;
 	    else return false;
     }
 
@@ -178,9 +215,13 @@ public class Maze{
     }
 
     public static void main(String[] args){
+	    //System.out.println(entreDeuxMurs(2,6));
+        //System.out.println(entreDeuxMurs(2,6));
+        //System.out.println(entreDeuxMurs(2,6));
+        //System.out.println(entreDeuxMurs(2,5));
     	try{
     		File fic = new File("labiTest.txt");
-    		Maze m = new Maze(10,10);
+    		Maze m = new Maze(20,20);
     		m.print();
     	}catch(Exception e){
     		e.printStackTrace();
