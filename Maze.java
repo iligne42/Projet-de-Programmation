@@ -17,8 +17,10 @@ public class Maze{
 		    throw new FormatNotSupported("Le labyrinthe est trop petit");
         }
 	}
+	
 
 	public Maze(File fic) throws FileNotFoundException, FormatNotSupported{
+		int nbEnter=0;
 		Scanner sc = new Scanner(fic);
 		ArrayList<String> tmp = new ArrayList<String>();
 		while(sc.hasNextLine())
@@ -31,7 +33,7 @@ public class Maze{
 			for(int j=0;j<max;j++){
 				switch (tmp.get(i).charAt(j)){
 					case 'S':
-					maze[i][j]=START;break;
+					maze[i][j]=START;nbEnter++;break;
 					case ' ':
 					if(i==0||j==0||i==maze.length-1||j==maze[i].length-1)
 						maze[i][j]=END;
@@ -42,6 +44,9 @@ public class Maze{
 				}
 			}
 		}
+		if(nbEnter!=1)
+			throw new FormatNotSupported("Le labyrinthe possede "+nbEnter+" entrée et doit en posséder 1.");
+		
 	}
 
 	private static int maxLength(ArrayList<String> t){
@@ -70,7 +75,7 @@ public class Maze{
 					case WAY: tmp=" ";break;
 					case START: tmp="S";break;
 					case END: tmp="E";break;
-					case WALL: tmp="\\";break;
+					case WALL: tmp=""+(char)9608;break;
 				}
 				System.out.print(tmp);
 			}
