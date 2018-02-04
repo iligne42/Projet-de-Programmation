@@ -11,6 +11,7 @@ public class Maze{
 		maze=new int[L][l];
 		randomMaze(L,l);
 	}
+	
 
 	public Maze(File fic) throws FileNotFoundException, FormatNotSupported{
 		int nbEnter=0;
