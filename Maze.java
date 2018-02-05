@@ -49,7 +49,28 @@ public class Maze{
 		
 	}
 
-	private static int maxLength(ArrayList<String> t){
+	public Point beggining(){
+	    Point p=new Point();
+	    for(int i=0; i<maze.length; i++){
+	        for(int j=0; j<maze[i].length; j++){
+	            if(maze[i][j]==START) p.move(i,j);
+            }
+        }
+        return p;
+    }
+
+    public Point ending(){
+        Point p=new Point();
+        for(int i=0; i<maze.length; i++){
+            for(int j=0; j<maze[i].length; j++){
+                if(maze[i][j]==END) p.move(i,j);
+            }
+        }
+        return p;
+    }
+
+
+    private static int maxLength(ArrayList<String> t){
 		int res =0;
 		for(String i:t){
 			if(i.length()>res)
@@ -72,10 +93,10 @@ public class Maze{
 			for(int j=0;j<maze[i].length;j++){
 				String tmp="";
 				switch(maze[i][j]){
-					case WAY: tmp=" ";break;
-					case START: tmp="S";break;
-					case END: tmp="E";break;
-					case WALL: tmp=""+(char)9608;break;
+					case WAY: tmp="  ";break;
+					case START: tmp="SS";break;
+					case END: tmp="EE";break;
+					case WALL: tmp=""+(char)9608+(char)9608;break;
 				}
 				System.out.print(tmp);
 			}
@@ -86,7 +107,7 @@ public class Maze{
 
 	private void randomMaze(){
         createBorder();
-        createInside(0,maze.length-1,0,maze[0].length-1);
+        createInside(0,maze[0].length-1,0,maze.length-1);
     }
 
     private void createBorder(){
@@ -129,6 +150,7 @@ public class Maze{
         boolean flag=false;
         int width=Math.abs(x2-x1);
         int height=Math.abs(y2-y1);
+        System.out.println("width="+width+ " height="+height);
         int incr=0;
         do {
             if (height < maze.length && width < maze[height].length) {
@@ -161,7 +183,7 @@ public class Maze{
                 }
             }
             incr++;
-        }while(flag && incr<2);
+        }while(flag && incr<3);
     }
 
     private static int entreDeux(int x, int y){
@@ -175,6 +197,8 @@ public class Maze{
     private int horizontal(int x1, int x2, int y1, int y2){
 	    if(Math.abs(x1-x2)<=3) return -1;
 	    int i=entreDeuxMurs(y1,y2);//y2=bas de la délimitation, y1=haut de la délimitation;
+        for(int val1=x1+1;val1<x2;val1++)
+            if(maze[i][val1]!=WAY) return -1;
 	    if(onAWall(i,x1,x2, true)) {
 	        //System.out.println("mur horizontal en "+i);
             int tmp = entreDeux(x1,x2);
@@ -190,6 +214,8 @@ public class Maze{
     private int vertical(int x1, int x2, int y1, int y2){
 	    if(Math.abs(y1-y2)<=3) return -1;
 	    int j=entreDeuxMurs(x1,x2);
+	    for(int val1=y1+1;val1<y2;val1++)
+	        if(maze[val1][j]!=WAY) return -1;
         if(onAWall(j, y1, y2, false)) {
             //System.out.println("mur vertical en "+j);
             int tmp = entreDeux(y1,y2);
@@ -203,8 +229,8 @@ public class Maze{
     }
 
     private boolean onAWall(int a, int b, int c, boolean d){//vérifie qu'on créer le nouveau mur sur un mur et pas un "trou"
-	    if(maze[a][b]==WALL && maze[a][c]==WALL && d) return true;
-	    else if(maze[b][a]==WALL && maze[c][a]==WALL && !d) return true;
+	    if(d && maze[a][b]==WALL && maze[a][c]==WALL) return true;
+	    else if(!d && maze[b][a]==WALL && maze[c][a]==WALL) return true;
 	    else return false;
     }
 
@@ -221,8 +247,10 @@ public class Maze{
         //System.out.println(entreDeuxMurs(2,5));
     	try{
     		File fic = new File("labiTest.txt");
-    		Maze m = new Maze(20,20);
+    		Maze m = new Maze(10,20);
     		m.print();
+    		//System.out.println(m.beggining());
+    		//System.out.println(m.ending());
     	}catch(Exception e){
     		e.printStackTrace();
     	}
