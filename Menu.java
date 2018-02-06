@@ -1,3 +1,11 @@
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.application.Application;
@@ -10,8 +18,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class Menu extends Application{
+
+
   @Override
   public void start(Stage stage){
     VBox mode = new VBox();
@@ -89,6 +106,7 @@ public class Menu extends Application{
     stage.setScene(scene);
     stage.show();
   }
+
   public static void changePanel(StackPane stack,VBox panel){
     ObservableList<Node>childs=stack.getChildren();
     int now=childs.indexOf(panel);
@@ -99,7 +117,9 @@ public class Menu extends Application{
     mtn.toFront();//on met au dessus de la pile, le panel qui nous intéresse
     mtn.setVisible(true);//puis on l'affiche
   }
+
   public static void main(String[] args) {
     launch(args);
   }
+
 }
