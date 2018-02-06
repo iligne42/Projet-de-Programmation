@@ -4,7 +4,7 @@ import java.text.Normalizer;
 import java.util.Timer;
 
 public class TimeTrialVersion extends GameVersion {
-	/*protected boolean timeOver;
+	protected boolean timeOver;
 	public final int timeLimit;
 
 	//Timer timer = new Timer(1000, new Chrono());
@@ -19,7 +19,7 @@ public class TimeTrialVersion extends GameVersion {
             	timer.stop();
             	wrong();
             // fill'er up here...
-        }
+        }*/
 
 
 
@@ -37,7 +37,7 @@ public class TimeTrialVersion extends GameVersion {
 			});
 	}
 
-	/*public void modifyTime(){
+	public void modifyTime(){
 		elapsedSeconds --;
 	}
 
@@ -61,6 +61,6 @@ public class TimeTrialVersion extends GameVersion {
 	}
 
 
-*/
+
 
 }
