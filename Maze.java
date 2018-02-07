@@ -59,6 +59,11 @@ public class Maze{
         return p;
     }
 
+    public int getWidth(){return maze[0].length;}
+    public int getHeight(){return maze.length;}
+    public int getCase(Point p){return getCase((int)p.getX(),(int)p.getY());}
+    public int getCase(int i, int j){return maze[i][j];}
+
     public Point ending(){
         Point p=new Point();
         for(int i=0; i<maze.length; i++){
