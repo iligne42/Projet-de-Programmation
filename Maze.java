@@ -94,13 +94,15 @@ public class Maze{
 	}
 
 	private void print(){
+	    String RED="\u001B[31m";
+	    String Normal="\u001B[0m";
 		for(int i=0;i<maze.length;i++){
 			for(int j=0;j<maze[i].length;j++){
 				String tmp="";
 				switch(maze[i][j]){
 					case WAY: tmp="  ";break;
-					case START: tmp="SS";break;
-					case END: tmp="EE";break;
+					case START: tmp=RED+"SS"+Normal;break;
+					case END: tmp=RED+"EE"+Normal;break;
 					case WALL: tmp=""+(char)9608+(char)9608;break;
 				}
 				System.out.print(tmp);
@@ -111,8 +113,10 @@ public class Maze{
 	}
 
 	private void randomMaze(){
-        createBorder();
-        createInside(0,maze[0].length-1,0,maze.length-1);
+        do{
+            createBorder();
+            createInside(0,maze[0].length-1,0,maze.length-1);
+        }while(!possibleMaze());
     }
 
     private void createBorder(){
@@ -155,7 +159,7 @@ public class Maze{
         boolean flag=false;
         int width=Math.abs(x2-x1);
         int height=Math.abs(y2-y1);
-        System.out.println("width="+width+ " height="+height);
+        //System.out.println("width="+width+ " height="+height);
         int incr=0;
         do {
             if (height < maze.length && width < maze[height].length) {
@@ -245,6 +249,62 @@ public class Maze{
         else return rand.nextInt(2);
     }
 
+    private boolean possibleMaze(){
+	    int[][] t=copieMaze();
+	    Point b=beggining();
+	    visiter(b,t);
+	    Point e=ending();
+	    if(t[(int)e.getX()][(int)e.getY()]==-1){ return true;}
+	    else return false;
+    }
+
+    private int[][] copieMaze(){
+	    int[][]res=new int[maze.length][maze[0].length];
+	    for(int i=0; i<maze.length; i++){
+	        for(int j=0; j<maze[i].length; j++){
+	            res[i][j]=maze[i][j];
+            }
+        }
+        return res;
+    }
+
+    /*private boolean possiblePath(Point p){
+	    if(p==ending()) return true;
+	    if(maze[(int)p.getX()-1][(int)p.getY()]==WAY){
+            p.translate(-1,0);
+	        return possiblePath(p);
+        }if(maze[(int)p.getX()+1][(int)p.getY()]==WAY){
+            p.translate(1,0);
+            return possiblePath(p);
+        }if(maze[(int)p.getX()][(int)p.getY()-1]==WAY){
+	        p.translate(0,-1);
+	        return possiblePath(p);
+        }if(maze[(int)p.getX()][(int)p.getY()+1]==WAY){
+	        p.translate(0,1);
+	        return possiblePath(p);
+        }
+        else return false;
+    }*/
+
+    private void visiter(Point b, int[][] test){
+	    int vue=-1;
+	    int X = (int)b.getX();
+	    int Y = (int)b.getY();
+	    //int[][] test=this.maze;
+	    //Point b=beggining();
+	    test[X][Y]=vue;
+        if(X-1>=0 && X-1<test.length && (test[X-1][Y]==WAY||test[X-1][Y]==END)){
+            visiter(new Point(X-1,Y),test);
+        }if(X+1>=0 && X+1<test.length && (test[X+1][Y]==WAY||test[X+1][Y]==END)){
+        	visiter(new Point(X+1,Y),test);
+        }if(Y-1>=0 && Y-1<test[X].length && (test[X][Y-1]==WAY||test[X][Y-1]==END)){
+        	visiter(new Point(X,Y-1),test);
+        }if(Y+1>=0 && Y+1<test[X].length && (test[X][Y+1]==WAY||test[X][Y+1]==END)) {
+			visiter(new Point(X, Y + 1), test);
+		}
+    }
+
+
     public static void main(String[] args){
 	    //System.out.println(entreDeuxMurs(2,6));
         //System.out.println(entreDeuxMurs(2,6));
@@ -252,7 +312,7 @@ public class Maze{
         //System.out.println(entreDeuxMurs(2,5));
     	try{
     		File fic = new File("labiTest.txt");
-    		Maze m = new Maze(10,20);
+    		Maze m = new Maze(80,60);
     		m.print();
     		//System.out.println(m.beggining());
     		//System.out.println(m.ending());
