@@ -10,9 +10,10 @@ public class Scores{
 
         public boolean add(String name,int score){
             int i=0;
+            if(this.size()==0) return super.add(new Pair<>(name,score));
             Pair<String,Integer> pair=this.get(i);
             int val;
-            while(pair!=null){
+            while(i<this.size()){
                 val=pair.getValue();
                 if(score<val){
                     super.add(i,new Pair<>(name,score));
@@ -26,7 +27,7 @@ public class Scores{
 
         public String toString(){
             String scores="";
-            for(Pair<String,Integer> p: this) scores+=p.getKey()+":"+MazeInterface.getTime(p.getValue())+"\n";
+            for(Pair<String,Integer> p: this) scores+=p.getKey()+"-"+MazeInterface.getTime(p.getValue())+"\n";
             return scores;
         }
 
@@ -51,13 +52,18 @@ public class Scores{
         return list;
     }
 
+    public Pair<String,Integer> get(int i){
+        return list.get(i);
+    }
+
+
     public void fillList(){
         try{
             FileReader fr=new FileReader(file);
             BufferedReader br=new BufferedReader(fr);
             String line=null;
             while((line=br.readLine())!=null){
-                String[] tab=line.split(":");
+                String[] tab=line.split("-");
                 list.add(tab[0],MazeInterface.getSeconds(tab[1]));
             }
             fr.close();

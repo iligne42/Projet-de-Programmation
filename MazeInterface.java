@@ -2,6 +2,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 
+import java.io.IOException;
 import java.util.Optional;
 
 public interface MazeInterface{
@@ -11,13 +12,13 @@ public interface MazeInterface{
         int seconds=t%60;
         int hours=minutes/60;
         minutes%=60;
-        return ((hours<10)?"0":"")+hours+" : "+((minutes<10)?"0":"")+minutes+" : "+((seconds<10)?"0":"")+seconds;
+        return ((hours<10)?"0":"")+hours+":"+((minutes<10)?"0":"")+minutes+":"+((seconds<10)?"0":"")+seconds;
     }
 
     static int getSeconds(String s){
         int t=0;
         String[] tab=s.split(":");
-        for(int i=1;i<=s.length();i++) t+=Integer.parseInt(tab[tab.length-i])*Math.pow(60,i);
+        for(int i=1;i<=tab.length;i++) t+=Integer.parseInt(tab[tab.length-i])*Math.pow(60,i);
         return t;
     }
 
@@ -92,18 +93,30 @@ public interface MazeInterface{
         return res;
     }
 
-   /* static View getView(int L, int l, String ty){
-        //int size=getSize(lev);
+    static View getView(Maze m,String ty) throws FormatNotSupported, IOException{
         int time=0;
         int type=0;
+        if(ty.equals("Solo"))
+           return new SingleView(new SoloVersion(m, readInput("What's your name ?")));
+
+        else if(ty.equals("Against the clock"))
+            return new SingleView(new TimeTrialVersion(m,readInput("What's your name ?"),time));
+
+        else return new MultiView(new MultiPlayerVersion(setMulti(),m));
+    }
+
+
+   static View getView(int L, int l, String ty) throws FormatNotSupported, IOException{
+        //int size=getSize(lev);
+        int time=0;
             if(ty.equals("Solo")) {
                 if (l == -1)
                     return new SingleView(new SoloVersion(readInt("Choose the length"), readInt("Choose the width"), readInput("What's your name")));
                 else return new SingleView(new SoloVersion(L, l, readInput("What's your name ?")));
             }
             else if(ty.equals("Against the clock")){
-                if(l==-1) return new SingleView(new TimeTrialVersion(readInt("Choose the length"), readInt("Choose the width"),readInput("What's your name")), time);
-                    else return new SingleView(new TimeTrialVersion(L,l,readInput("What's your name ?"),time))
+                if(l==-1) return new SingleView(new TimeTrialVersion(readInt("Choose the length"), readInt("Choose the width"),readInput("What's your name"), time));
+                    else return new SingleView(new TimeTrialVersion(L,l,readInput("What's your name ?"),time));
                 }
             else{
                 if(l==-1) return new MultiView(new MultiPlayerVersion(setMulti(),new Maze(readInt("Choose the length"), readInt("Choose the width"))));
@@ -130,14 +143,11 @@ public interface MazeInterface{
         return size;
     }
 
-    static String getInput(String s){
-
-    }
 
     static int rand(int a, int b) {
         double x = Math.random() * (b - a) + a;
         return (int) x;
     }
 
-    */
+
 }

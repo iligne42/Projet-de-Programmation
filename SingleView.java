@@ -3,7 +3,7 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 
 public class SingleView extends View{
-   /protected GameControl control=new SoloControl();
+   protected GameControl control=new SoloControl();
 
     public SingleView(GameVersion game) throws IOException{
         super(game);
@@ -14,6 +14,8 @@ public class SingleView extends View{
 
         public SoloControl() throws IOException{
             scores=new Scores(game.scoresFile());
+            game.start();
+            timePane.start();
             if (game.gameOver()) {
                 timePane.stop();
                 scores.addToScoresFile(game.player().getName(),timePane.getElapsedSeconds());

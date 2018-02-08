@@ -56,7 +56,10 @@ public abstract class View extends BorderPane{
             //timeSeconds=new TimeProperty(time);
             timeLabel = new Label();
             timeLabel.textProperty().bind(timeSeconds.asString());
+            timeLabel.setStyle("-fx-alignment:center; -fx-background-color:grey");
             timeLine = new Timeline();
+            this.getChildren().add(timeLabel);
+            this.setStyle("-fx-border-color:red; -fx-alignment:center");
         }
 
         public abstract String getElapsedTime();
@@ -171,15 +174,6 @@ public abstract class View extends BorderPane{
     }
 
 
-    public Timeline countdownToStart(IntegerProperty starter){
-        Timeline countdown = new Timeline();
-        countdown.getKeyFrames().add(new KeyFrame(
-                Duration.seconds(5),
-                new KeyValue(starter,0))
-        );
-        return countdown;
-    }
-
    /* public void beatTheRecord(java.time.Duration rec){
         if(rec.compareTo(record)>0){
             record=rec;
@@ -199,6 +193,24 @@ public abstract class View extends BorderPane{
             String display = scores.getScores();
             String[] splits = display.split("\n");
             for (String s : splits) root.getChildren().add(new Label(s));
+        }
+
+        public void countDownToStart(){
+            Label label=new Label();
+            label.setStyle("-fx-background-color:transparent");
+            IntegerProperty count=new SimpleIntegerProperty(5);
+            label.textProperty().bind(count.asString());
+
+            Timeline countdown = new Timeline();
+            countdown.getKeyFrames().add(new KeyFrame(
+                    Duration.seconds(5),
+                    new KeyValue(count,0))
+            );
+            if(count.get()==0){
+                //remove
+                game.start();
+                timePane.start();
+            }
         }
     }
 

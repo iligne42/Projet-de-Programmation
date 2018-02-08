@@ -2,7 +2,6 @@
 import javafx.beans.property.IntegerProperty;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-import java.util.ArrayList;
 
 import java.util.Stack;
 
@@ -28,10 +27,11 @@ public class MultiView extends View {
             label.textProperty().bind(timeToBeat.asString());
             label.setVisible(false);
             timePane.getChildren().add(label);
+            game.start();
             if (game.gameOver()) {
                 timePane.stop();
-                scores.addToScoresList(timePane.getElapsedSeconds(), game.player.getName());
-                timeToBeat.set(scores.getList().get(0).getValue());
+                scores.addToScoresList(game.player.getName(),timePane.getElapsedSeconds());
+                timeToBeat.set(scores.get(0).getValue());
                 //Get time to beat, it is the top of the list
                 //Get to the next player and labyrinth
                 multi.next();
