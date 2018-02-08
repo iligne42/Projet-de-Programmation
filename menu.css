@@ -11,6 +11,7 @@
 
 .hbox{
 -fx-padding:37,20,37,20;
+-fx-alignment:center;
 -fx-spacing:147;
 }
 
@@ -20,7 +21,7 @@
 }
 
 #v2{
--fx-alignment:top-right;
+-fx-alignment:top-left;
 }
 
 

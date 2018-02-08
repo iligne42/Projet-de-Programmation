@@ -21,7 +21,8 @@ public class Menu extends Application{
   @Override
   public void start(Stage stage){
    VBox mode = new VBox();
-    mode.setPrefSize(500.0,500.0);
+    mode.setPrefSize(600.0,500.0);
+
       mode.getStyleClass().add("vbox");
 
       HBox level = new HBox();
@@ -197,8 +198,8 @@ public class Menu extends Application{
     Button cred = new Button("CREDITS");
     cred.setOnMouseClicked(e->{
       Alert dev = new Alert(Alert.AlertType.INFORMATION);
-      dev.setTitle("Developpers of 3DMaze");
-      dev.setContentText("Game made by Pierre Méjane,Iman Lignel"+"\r\n"+"Faridah Akinotcho,Frédéric Francine");
+      dev.setTitle("Developpers of Maz3D");
+      dev.setContentText("Game made by Faridah Akinotcho,Frédéric Francine"+"\r\n"+" Iman Lignel, Pierre Méjane");
       dev.show();
     });
 
@@ -207,7 +208,7 @@ public class Menu extends Application{
 
     });
 
-    stage.setTitle("Menu of 3DMaze");
+    stage.setTitle("Menu of Maz3D");
     menu.getChildren().addAll(play,rank,cred,quit);
     //level.setVisible(false);
     mode.setVisible(false);
