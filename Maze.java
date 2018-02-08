@@ -1,5 +1,3 @@
-import javafx.geometry.Point2D;
-
 import java.io.*;
 import java.util.*;
 import java.awt.*;
@@ -277,15 +275,4 @@ public class Maze{
     		e.printStackTrace();
     	}
     }
-
-    public int get(int i, int j){
-		return maze[i][j];
-	}
-	public Point2D beginning(){
-		return new Point2D(0,0);
-	}
-
-	public Point2D ending(){
-		return new Point2D(0,0);
-	}
 }
