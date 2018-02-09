@@ -1,4 +1,3 @@
-import javax.swing.*;
 import javafx.geometry.Point2D;
 import java.io.*;
 import java.util.ArrayList;
@@ -6,51 +5,55 @@ import java.util.ArrayList;
 public abstract class GameVersion implements Serializable{
   protected Player player;
   protected Maze maze;
-  protected Timer timer;
-  protected int elapsedSeconds;
+
 
 
   public GameVersion(int length, int width, String name) throws FormatNotSupported{
       player=new Player(name);
       maze=new Maze(length,width);
-      elapsedSeconds=0;
   }
 
+  public GameVersion(Maze maze, String name){
+      this.maze=maze;
+      player=new Player(name);
+  }
 
-  //Serialisation
-    public void save() throws IOException {
-        FileOutputStream fos = new FileOutputStream("Save.ser");
+  public GameVersion(Maze maze, Player player){
+      this.maze=maze;
+      this.player=player;
+  }
+
+  /*public GameVersion(int length, int width, String name) throws FormatNotSupported{
+      this(new Maze(length,width),name);
+  }*/
+
+  public Maze maze(){
+      return maze;
+  }
+
+    public Player player() {
+        return player;
+    }
+
+    //Serialisation
+    public void save(String file) throws IOException {
+        FileOutputStream fos = new FileOutputStream(file+".ser");
         ObjectOutputStream oos=new ObjectOutputStream(fos);
         oos.writeObject(this);
         oos.close();
     }
 
-    public abstract void start();
+    public void start(){
+        player.setPosition(maze.beginning(),90);
+    }
 
-  public boolean gameOver(){
+
+    public boolean gameOver(){
       Point2D pos=player.getPosition();
       Point2D end=maze.ending();
-      if(pos.getX()==end.getX() && pos.getY()==end.getY()){
-        timer.stop();
-  	    //ending must return a Point that design the last corner of the lastCell, like(4,4) for a 4x4 matrix
-       // GUI.print("Well done, you have reached the end of this maze !!");
-        //ajouter au classement des 10 meilleurs score
-          this.addToScores();
-  	    return true;
-      }
-      //return timeOver();
-      return false;
+      return (pos.getX()==end.getX() && pos.getY()==end.getY());
   }
 
-
-    public boolean timeOver(){
-      return false;
-    }
-
-    public void modifyTime(){
-      elapsedSeconds ++;
-    }
- 
 
   public boolean validMove(){
       Point2D point = player.getPosition();
@@ -76,7 +79,7 @@ public abstract class GameVersion implements Serializable{
       return new Point2D(2*x-act.getX(),2*y-act.getY());
   }
 
-  public void move(int direction){
+  /*public void move(int direction){
       Point2D p=player.getPosition();
       switch(direction){
           case 1: player.moveForward();;
@@ -90,12 +93,16 @@ public abstract class GameVersion implements Serializable{
               break;
       }
       if(!validMove()) this.retreat(p);
-  }
+  }*/
 
-  public void addToScores(String score){
+    public abstract String scoresFile();
+
+   /* public abstract void addToScores(String score);
+
+  public void addToScores(String score,String fic){
       try{
           FileWriter fw;
-          File file=new File("bestScores.txt");
+          File file=new File(fic);
           if(!file.exists()) file.createNewFile();
           FileReader fr=new FileReader(file);
           BufferedReader br=new BufferedReader(fr);
@@ -104,8 +111,8 @@ public abstract class GameVersion implements Serializable{
           while((line=br.readLine())!=null){
               best.add(line);
           }
-          best.add(score);
-          fw=new FileWriter("bestScores.txt");
+          best.add(player.name+":"+score);
+          fw=new FileWriter(fic);
           String scores="";
           for (String s:best) scores+=s+"\n";
           fw.write(scores);
@@ -119,46 +126,21 @@ public abstract class GameVersion implements Serializable{
 
   }
 
-  public void addToScores(){
-      //On parcourt le fichier dès qu'on trouve un plus petit on saute une ligne et on rajoute et on efface la dernière ligne!
-    try{
-        FileWriter fw;
-        File file=new File("bestScores.txt");
-        if(!file.exists()) file.createNewFile();
-        FileReader fr=new FileReader(file);
-        BufferedReader br=new BufferedReader(fr);
-        String line=null;
-        ArrayList<String> best=tenBestScores();
-        while((line=br.readLine())!=null){
-           best.add(line);
-        }
-        best.add(getTime(elapsedSeconds));
-        fw=new FileWriter("bestScores.txt");
-        String scores="";
-        for (String s:best) scores+=s+"\n";
-        fw.write(scores);
-        fw.close();
-        fr.close();
-        br.close();
-    }
-    catch(IOException ex){
-        ex.printStackTrace();
-    }
 
-  }
+
 
   public ArrayList<String> tenBestScores(){
       return new ArrayList<String>(){
 
           public boolean add(String s){
               int i=0;
-              String line=this.get(i);
+              String line=this.get(i).split(":")[1];
               while(line!=null){
-                  if(getSeconds(s)<getSeconds(line)){
+                  if(getSeconds(s.split(":")[1])<getSeconds(line)){
                       super.add(i,s);
                       break;
                   }
-                  line=this.get(++i);
+                  line=this.get(++i).split(":")[1];
               }
               if(this.size()>10) this.remove(this.size()-1);
               return true;
@@ -166,16 +148,13 @@ public abstract class GameVersion implements Serializable{
       };
   }
 
-    public String getTime(){
-      return getTime(elapsedSeconds);
-    }
 
     public String getTime(int t){
         int minutes=t/60;
         int seconds=t%60;
         int hours=minutes/60;
         minutes%=60;
-        return ((hours<10)?"0":"")+hours+" : "+(minutes<10)?"0":"")+minutes+" : "+(seconds<10)?"0":"")+seconds;
+        return ((hours<10)?"0":"")+hours+" : "+((minutes<10)?"0":"")+minutes+" : "+((seconds<10)?"0":"")+seconds;
     }
 
     public int getSeconds(String s){
@@ -183,65 +162,7 @@ public abstract class GameVersion implements Serializable{
         String[] tab=s.split(":");
         for(int i=1;i<=s.length();i++) t+=Integer.parseInt(tab[tab.length-i])*Math.pow(60,i);
         return t;
-    }
-
-    public int getSeconds(){
-      return elapsedSeconds;
-    }
-
-
-
-
-
-
-
-  /*public void play() {
-      if (!gameOver()) {
-          Point point=player.move();
-          if (validMove(point)) player.setPosition(point);
-      }
-      else{
-          //ajouter au classement des 10 meilleurs scores
-      }
-  }*/
-
-   /* public static class GUI {
-
-        public GUI() {
-        }
-
-        public String readInput(String input) {
-            String s = JOptionPane.showInputDialog(((ViewGUI) view).getFrame(), input);
-            while (onlySpaces(s)) {
-                print("This is not a valid answer. Try again ! ");
-                s = readInput(input);
-            }
-            return s;
-        }
-
-        public boolean onlySpaces(String line) {
-            if (line == null || line.equals("")) return true;
-            for (int i = 0; i < line.length(); i++) {
-                char c = line.charAt(i);
-                if (c != ' ') return false;
-            }
-            return true;
-        }
-
-        public int readInt(String s) {
-            int res = 0;
-            try {
-                res = Integer.parseInt(readInput(s));
-            } catch (Exception e) {
-                print("This is not a valid number.Try again !");
-                res = readInt(s);
-            }
-            return res;
-        }
-
-        public void print(String s) {
-            JOptionPane.showMessageDialog(((ViewGUI) view).getFrame(), s, "Information ", JOptionPane.INFORMATION_MESSAGE);
-        }*/
+    }*/
 
     }
 

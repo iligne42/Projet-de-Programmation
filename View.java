@@ -6,22 +6,36 @@ import javafx.beans.binding.StringBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-public class View extends Node {
+
+public abstract class View extends BorderPane{
     protected GameVersion game;
     protected TimePane timePane;
     protected MazePane mazePane;
-
-    private abstract class TimePane extends Pane {//not sure though, it is a layout
+    protected GameControl control;
+//add Menu bar to save game or start a new game, and view the help and shir
+    //timeLine.pause();
+    protected abstract class TimePane extends Pane {//not sure though, it is a layout
         protected Timeline timeLine;
         protected Label timeLabel;
         protected IntegerProperty timeSeconds;
+
+
 
         public TimePane(int time) {
             timeSeconds = new SimpleIntegerProperty(time) {
@@ -31,25 +45,52 @@ public class View extends Node {
                         {
                             super.bind(timeSeconds);
                         }
+
                         @Override
                         protected String computeValue() {
-                           return game.getTime(timeSeconds.getValue());
+                            return MazeInterface.getTime(timeSeconds.getValue());
                         }
                     };
                 }
             };
+            //timeSeconds=new TimeProperty(time);
             timeLabel = new Label();
             timeLabel.textProperty().bind(timeSeconds.asString());
-            //when there are only a few seconds left timeLabel.setTextFill(Color.RED);
-            //timeLabel.setStyle("");
+            timeLabel.setStyle("-fx-alignment:center; -fx-background-color:grey");
             timeLine = new Timeline();
-
-
-
-            //to laucnh timeLine.playFromStart();
+            this.getChildren().add(timeLabel);
+            this.setStyle("-fx-border-color:red; -fx-alignment:center");
         }
 
-        private class TimeTrialPane extends TimePane{
+        public abstract String getElapsedTime();
+
+
+        public abstract int getElapsedSeconds();
+
+        public boolean timeOver() {
+            return false;
+        }
+
+        public void setTimeSeconds(int time){
+            timeSeconds.set(time);
+        }
+
+
+        public void stop(){
+            timeLine.stop();
+            this.setVisible(false);
+        }
+
+        public void pause(){
+            timeLine.pause();
+        }
+
+        public void start(){
+            timeLine.playFromStart();
+        }
+    }
+
+        protected class TimeTrialPane extends TimePane{
             protected int timeLimit;
 
             public TimeTrialPane(int timeLimit){
@@ -59,93 +100,138 @@ public class View extends Node {
                         new KeyFrame(Duration.seconds(timeLimit + 1),
                                 new KeyValue(timeSeconds, 0)));
             }
+
+            public boolean timeOver(){
+                return timeSeconds.get()==0;
+            }
+
+            public String getElapsedTime() {
+                return MazeInterface.getTime(timeLimit-timeSeconds.get());
+            }
+
+            public int getElapsedSeconds() {
+                return timeLimit-timeSeconds.get();
+            }
         }
 
-        private class SoloTimePane extends TimePane{
+        protected class SoloTimePane extends TimePane{
 
             public SoloTimePane(){
-                timeSeconds=new SimpleIntegerProperty(0);
-
+                super(0);
                 timeLine.setCycleCount(Timeline.INDEFINITE);
                 timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1),(event)->{
                     timeSeconds.set(timeSeconds.get()+1);
                 }));
             }
 
-        public boolean timeOver(){
-            return timeSeconds.get()==0;
-        }
+            public String getElapsedTime() {
+                return MazeInterface.getTime(timeSeconds.get());
+            }
 
-        public String getElapsedTime() {
-            return game.getTime(timeLimit-timeSeconds.get());
-        }
+
+            public int getElapsedSeconds() {
+                return timeSeconds.get();
+            }
 
     }
 
-    /*private class TimePane extends Pane{//not sure though, it is a layout
-        protected Timeline timeLine;
-        protected Label timeLabel;
-        protected StringProperty timeToPrint;
-        protected IntegerProperty timeSeconds;
 
-        public TimePane(){
-            timeToPrint=new SimpleStringProperty(game.getTime());
-            timeLabel=new Label();
-            timeLabel.textProperty().bind(timeToPrint);
-            timeLabel.setText(game.getTime());
-            //when there are only a few seconds left timeLabel.setTextFill(Color.RED);
-            //timeLabel.setStyle("");
-            timeLine=new Timeline();
-            timeLine.setCycleCount(Timeline.INDEFINITE);
-            timeLine.getKeyFrames().add(
-                    new KeyFrame(Duration.seconds(1),(event)-> {
-                        game.modifyTime();
-                        timeLabel.setText(game.getTime());
-                        if(game.timeOver()) timeLine.stop();
-                    }
-                )
-            );
-            timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds()), new KeyValue(timeSeconds,0))
+    protected class MazePane extends Pane {
+        protected Maze maze;
 
-
-           //to laucnh timeLine.playFromStart();
+        public MazePane() {
+            maze = game.maze();
         }
 
+        public void initMaze(){
+
+        }
+
+        public void printMaze() {
+        }
+    }
+
+    public class TimeProperty extends SimpleIntegerProperty{
+        public TimeProperty(int time){
+            super(time);
+        }
+
+        @Override
+        public StringBinding asString() {
+            return new StringBinding() {
+                {
+                    super.bind(TimeProperty.this);
+                }
+                @Override
+                protected String computeValue() {
+                    return MazeInterface.getTime(TimeProperty.this.getValue());
+                }
+            };
+
+
+
+        }
+    }
+
+
+   /* public void beatTheRecord(java.time.Duration rec){
+        if(rec.compareTo(record)>0){
+            record=rec;
+            Alert newRecord= new Alert(Alert.AlertType.INFORMATION);
+            newRecord.setTitle("");
+            newRecord.setHeaderText("CONGRATULATION ! ");
+            newRecord.setContentText("You have made a new record ! ");
+            newRecord.show();
+        }
     }*/
 
-    private class MazePane extends Pane {
+    protected class GameControl {
+        protected Scores scores;
 
+        public void displayScore(Pane root) {
+            root.getChildren().clear();
+            String display = scores.getScores();
+            String[] splits = display.split("\n");
+            for (String s : splits) root.getChildren().add(new Label(s));
+        }
+
+        public void countDownToStart(){
+            Label label=new Label();
+            label.setStyle("-fx-background-color:transparent");
+            IntegerProperty count=new SimpleIntegerProperty(5);
+            label.textProperty().bind(count.asString());
+
+            Timeline countdown = new Timeline();
+            countdown.getKeyFrames().add(new KeyFrame(
+                    Duration.seconds(5),
+                    new KeyValue(count,0))
+            );
+            if(count.get()==0){
+                //remove
+                game.start();
+                timePane.start();
+            }
+        }
     }
 
     public View(GameVersion game){
         this.game=game;
-        this.timePane=new TimePane();
+        this.mazePane=new MazePane();
+        if(game instanceof SoloVersion) timePane=new SoloTimePane();
+        else if(game instanceof TimeTrialVersion) timePane=new TimeTrialPane(((TimeTrialVersion) game).timeLimit);
+        //this.timePane=new TimePane(time);
+        //this.getChildren().addAll(timePane,mazePane);
+        this.setLeft(timePane);
+        this.setCenter(mazePane);
     }
+
 
     //Put a countdown shade, like a transparent one and then start the timer
 
     //Somewhere here, handle keyboard events
     //Put a vertical panel at the right, to contain the timer and other stuff
-    public void action(){
-       int i;
-       if(game.gameOver()){
-           //remove le temps
-           //afficher sur un joptionpane
-           //Switch to print of 10 bestScores with name;
-           game.addToScores(timePane.getElapsedTime());
-       }
-       else if(game.timeOver()){
-            //remove timePanel
-           //print you loose, dumb ass
 
-       }
-       else{
-           //game.move(i);
-       }
-        //remove the panels with the maze and time and switch to score viewing
-        //if(game.timeOver()) remove the panel with time and print tome over, only in time trial mode though
-    }
+   // public abstract void action();
 
-    //Use a path transition to slide the player
-}*/
+
 }
