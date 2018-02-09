@@ -1,4 +1,5 @@
-import javafx.geometry.Point2D;
+import java.awt.geom.Point2D.Double;
+import java.awt.geom.Point2D;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -57,7 +58,7 @@ public abstract class GameVersion implements Serializable{
 
   public boolean validMove(){
       Point2D point = player.getPosition();
-      return maze.get((int)point.getY(),(int)point.getX())!=Maze.WALL;
+      return maze.getCase((int)point.getY(),(int)point.getX())!=Maze.WALL;
   }
 
   public void retreat(Point2D prev){
@@ -76,7 +77,7 @@ public abstract class GameVersion implements Serializable{
       if(x>=Math.min(prev.getX(),act.getX()) && y<Math.min(prev.getY(),act.getY())) y=a*x+b;
       if(y>=Math.min(prev.getY(),act.getY()) && x<Math.min(prev.getX(), act.getX())) x=(b-y)/a;
       //On le fait reculer de combien il a traversé le mur
-      return new Point2D(2*x-act.getX(),2*y-act.getY());
+      return new Point2D.Double(2*x-act.getX(),2*y-act.getY());
   }
 
   /*public void move(int direction){

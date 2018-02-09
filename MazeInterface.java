@@ -51,6 +51,7 @@ public interface MazeInterface{
         dialog.setTitle("Settings");
         //dialog.setHeaderText("Confirm the number of players");
         dialog.setContentText(input);
+        Menu.addCss(dialog);
         Optional<String> result = dialog.showAndWait();
         String s = String.valueOf(result);
         while (MazeInterface.notValid(s)) {
@@ -68,6 +69,7 @@ public interface MazeInterface{
             error.setTitle("Not a number");
             error.setContentText("Your input is not a number, try again");
             Optional<ButtonType> button = error.showAndWait();
+            Menu.addCss(error);
             if(button.get() == ButtonType.OK) res = readInt(s);
         }
         return res;
@@ -79,6 +81,7 @@ public interface MazeInterface{
         dialog.setTitle("MultiPlayer initialisation");
         dialog.setHeaderText("Confirm the number of players");
         dialog.setContentText("Please enter the number of players :");
+        Menu.addCss(dialog);
         Optional<String> result = dialog.showAndWait();
         try {
             res = Integer.parseInt(result.get());
@@ -87,6 +90,7 @@ public interface MazeInterface{
             Alert error = new Alert(Alert.AlertType.ERROR);
             error.setTitle("Not a number");
             error.setContentText("Your input is not a number, try again");
+            Menu.addCss(error);
             Optional<ButtonType> button = error.showAndWait();
             if(button.get() == ButtonType.OK) return nbPlayer();
         }

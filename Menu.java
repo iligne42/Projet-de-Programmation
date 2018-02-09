@@ -304,6 +304,7 @@ public class Menu extends Application{
       dev.setTitle("Developpers of Maz3D");
       dev.setContentText("Game made by Faridah Akinotcho, Frédéric Francine"+"\r\n"+"Iman Lignel, Pierre Méjane");
       dev.show();
+      addCss(dev);
     });
 
     Button rank = new Button("RANKING");
@@ -333,6 +334,13 @@ public class Menu extends Application{
     past.setVisible(false);
     mtn.toFront();//on met au dessus de la pile, le panel qui nous intéresse
     mtn.setVisible(true);//puis on l'affiche
+  }
+
+  public static void addCss(Dialog a){
+      DialogPane dialogPane=a.getDialogPane();
+      dialogPane.getStylesheets().add("alert.css");
+      a.setHeaderText(null);
+      a.setGraphic(null);
   }
 
 

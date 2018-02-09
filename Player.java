@@ -1,6 +1,7 @@
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 import java.util.*;
-public class Player{
+public class Player implements Serializable{
 	private String name;
 	private Point2D position;
 	private int orientation;
