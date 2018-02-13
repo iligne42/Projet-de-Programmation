@@ -22,9 +22,6 @@ import java.util.Optional;
 
 
 public class Menu extends Application{
-    String type;
-    String dif;
-    File fic;
 
   @Override
   public void start(Stage stage) throws FormatNotSupported,IOException{
@@ -179,10 +176,11 @@ public class Menu extends Application{
               Scene sc=new Scene(view);
               //sc.getStylesheets().add("");
               st.setScene(sc);
+              view.setScene(sc);
               st.setFullScreen(true);
               st.show();
           } catch (FormatNotSupported formatNotSupported) {
-              formatNotSupported.printStackTrace();
+
           } catch (IOException e1) {
               e1.printStackTrace();
           }
@@ -269,6 +267,7 @@ public class Menu extends Application{
                   Scene sc=new Scene(view);
                   //sc.getStylesheets().add("");
                   st.setScene(sc);
+                  view.setScene(sc);
                   st.setFullScreen(true);
                   st.show();
               } catch (FormatNotSupported formatNotSupported) {
@@ -304,6 +303,7 @@ public class Menu extends Application{
       dev.setTitle("Developpers of Maz3D");
       dev.setContentText("Game made by Faridah Akinotcho, Frédéric Francine"+"\r\n"+"Iman Lignel, Pierre Méjane");
       dev.show();
+      addCss(dev);
     });
 
     Button rank = new Button("RANKING");
@@ -334,6 +334,14 @@ public class Menu extends Application{
     mtn.toFront();//on met au dessus de la pile, le panel qui nous intéresse
     mtn.setVisible(true);//puis on l'affiche
   }
+
+    public static void addCss(Dialog a){
+    DialogPane dialogPane=a.getDialogPane();
+        dialogPane.getStylesheets().add("alert.css");
+        a.setHeaderText(null);
+        a.setGraphic(null);
+
+    }
 
 
 

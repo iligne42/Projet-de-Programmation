@@ -24,7 +24,15 @@ public class SingleView extends View{
                 timePane.setVisible(false);
                 //Print you loose dumbass
             } else {
-
+                SingleView.this.setOnKeyPressed(e->{
+                    switch (e.getCode()){
+                            case UP:    game.move(1); break;
+                            case RIGHT: game.move(4); break;
+                            case DOWN:  game.move(2); break;
+                            case LEFT:  game.move(3); break;
+                        }
+                });
+                //SingleView.this.mazePane.printMaze();
             }
         }
 

@@ -10,11 +10,12 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Stack;
 
-public class MultiPlayerVersion{
+public class MultiPlayerVersion implements Serializable{
     protected GameVersion game;
     protected Stack<Player> players;
 
@@ -30,6 +31,7 @@ public class MultiPlayerVersion{
 
     public void save(String file) throws IOException{
       game.save(file);
+      //save the players too
   }
 
   public boolean gameOver(){
@@ -40,14 +42,6 @@ public class MultiPlayerVersion{
       game=new SoloVersion(game.maze(),players.pop());
   }
 
-
-
-    public void displayScore(String[]durations, VBox root){
-        root.getChildren().clear();
-        for (String a : durations){
-            root.getChildren().add(new Label(a));
-        }
-    }
 
 
 

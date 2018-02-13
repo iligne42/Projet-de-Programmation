@@ -9,8 +9,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import java.util.LinkedList;
 
-public class Maze2D extends Application{
-    static int delta = 60;
+public abstract class Maze2D extends Application{
+   /* static int delta = 60;
     static LinkedList<Box> cas= new LinkedList<Box>();
     public static void randArray(){
         int a=0,b=0,taille=60;
@@ -64,5 +64,5 @@ public class Maze2D extends Application{
     }
     public static void main(String[ ] args) {
         launch(args);
-    }
+    }*/
 }

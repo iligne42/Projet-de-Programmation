@@ -14,7 +14,7 @@ public class Maze{
             maze = new int[L][l];
             randomMaze();
         }else{
-		    throw new FormatNotSupported("Le labyrinthe est trop petit");
+		    throw new FormatNotSupported("The maze is too small");
         }
 	}
 	
@@ -26,7 +26,7 @@ public class Maze{
 		while(sc.hasNextLine())
 			tmp.add(sc.nextLine());
 		if(!sameLength(tmp)) 
-			throw new FormatNotSupported("Le labyrinthe n'est pas rectangle");
+			throw new FormatNotSupported("The maze is not rectangular");
 		int max = tmp.get(0).length();
 		maze = new int[tmp.size()][max];
 		for(int i=0;i<tmp.size();i++){
@@ -45,7 +45,7 @@ public class Maze{
 			}
 		}
 		if(nbEnter!=1)
-			throw new FormatNotSupported("Le labyrinthe possede "+nbEnter+" entrée et doit en posséder 1.");
+			throw new FormatNotSupported("The maze has "+nbEnter+" entry ways instead of 1!");
 		
 	}
 
