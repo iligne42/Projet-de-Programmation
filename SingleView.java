@@ -1,12 +1,16 @@
+
+import javafx.scene.Camera;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
+import java.awt.geom.Point2D;
 import java.io.IOException;
 
 public class SingleView extends View{
-   protected GameControl control=new SoloControl();
 
     public SingleView(GameVersion game) throws IOException{
-        super(game);
+        super(new BorderPane(),game);
         control=new SoloControl();
     }
 
@@ -16,17 +20,37 @@ public class SingleView extends View{
             scores=new Scores(game.scoresFile());
             game.start();
             timePane.start();
-            if (game.gameOver()) {
-                timePane.stop();
-                scores.addToScoresFile(game.player().getName(),timePane.getElapsedSeconds());
-                displayScore(SingleView.this);
-            } else if (timePane.timeOver()) {
-                timePane.setVisible(false);
-                //Print you loose dumbass
-            } else {
+            mazePane.initMaze();
+            SingleView.this.setOnKeyPressed(e->{
+                System.out.println(e.getCode());
+                    switch (e.getCode()){
+                            case UP:    game.move(1); break;
+                            case RIGHT: game.move(4); break;
+                            case DOWN:  game.move(2); break;
+                            case LEFT:  game.move(3); break;
+                        }
+                        Point2D pos=game.player().getPosition();
+                        SingleView.this.mazePane.x.set(pos.getX()*SingleView.this.mazePane.SIZE_BOX);
+                        SingleView.this.mazePane.z.set(pos.getY()*SingleView.this.mazePane.SIZE_BOX);
+                        SingleView.this.mazePane.angle.set(game.player().orientation());
+                System.out.println(SingleView.this.getCamera().getTranslateX()+"     "+SingleView.this.getCamera().getTranslateZ()+"   "+SingleView.this.getCamera().getRotate());
+
+                       // System.out.println(game.player().getPosition().getX()+"    "+game.player.getPosition().getY());
+
+                //SingleView.this.mazePane.printMaze();
+                    if (game.gameOver()) {
+                        timePane.stop();
+                        scores.addToScoresFile(game.player().getName(),timePane.getElapsedSeconds());
+                        //displayScore(SingleView.this);
+                    } else if (timePane.timeOver()) {
+                        timePane.setVisible(false);
+                        //Print you loose dumbass
+                    }
+
+
+                });
 
             }
-        }
 
         public void displayScore(VBox root) {
 
