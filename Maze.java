@@ -1,13 +1,13 @@
 import java.io.*;
 import java.util.*;
 import java.awt.*;
-public class Maze{
+public class Maze implements Serializable{
 	private int[][] maze;
 	public final static int WALL = 0;
 	public final static int WAY = 1;
 	public final static int START = 2;
 	public final static int END = 3;
-	static Random rand=new Random();
+	private static Random rand=new Random();
 
 	public Maze(int L, int l) throws FormatNotSupported{ //constructeur pour un labyrinthe aléatoire
 		if(L>5 && l>5) {
@@ -26,7 +26,7 @@ public class Maze{
 		while(sc.hasNextLine())
 			tmp.add(sc.nextLine());
 		if(!sameLength(tmp)) 
-			throw new FormatNotSupported("The maze is not rectangular");
+			throw new FormatNotSupported("The maze isn't rectangular");
 		int max = tmp.get(0).length();
 		maze = new int[tmp.size()][max];
 		for(int i=0;i<tmp.size();i++){
@@ -45,7 +45,7 @@ public class Maze{
 			}
 		}
 		if(nbEnter!=1)
-			throw new FormatNotSupported("The maze has "+nbEnter+" entry ways instead of 1!");
+			throw new FormatNotSupported("The maze has "+nbEnter+" starts and must only have 1.");
 		
 	}
 
@@ -230,15 +230,15 @@ public class Maze{
     }
 
     private boolean possibleMaze(){ //vérifie que le labyrinthe peut se réaliser
-	    int[][] t=copieMaze();
+	    int[][] t=copyMaze();
 	    Point b=beginning();
-	    visiter(b,t);
+	    visite(b,t);
 	    Point e=ending();
 	    if(t[(int)e.getX()][(int)e.getY()]==-1){ return true;}
 	    else return false;
     }
 
-    private int[][] copieMaze(){ //copie le tableau du labyrinthe dans un autre tableau
+    private int[][] copyMaze(){ //copie le tableau du labyrinthe dans un autre tableau
 	    int[][]res=new int[maze.length][maze[0].length];
 	    for(int i=0; i<maze.length; i++){
 	        for(int j=0; j<maze[i].length; j++){
@@ -248,19 +248,19 @@ public class Maze{
         return res;
     }
 
-    private void visiter(Point b, int[][] test){ //change toutes les cases accessibles par la valeur de vue
+    private void visite(Point b, int[][] test){ //change toutes les cases accessibles par la valeur de vue
 	    int vue=-1;
 	    int X = (int)b.getX();
 	    int Y = (int)b.getY();
 	    test[X][Y]=vue;
         if(X-1>=0 && X-1<test.length && (test[X-1][Y]==WAY||test[X-1][Y]==END)){
-            visiter(new Point(X-1,Y),test);
+            visite(new Point(X-1,Y),test);
         }if(X+1>=0 && X+1<test.length && (test[X+1][Y]==WAY||test[X+1][Y]==END)){
-        	visiter(new Point(X+1,Y),test);
+        	visite(new Point(X+1,Y),test);
         }if(Y-1>=0 && Y-1<test[X].length && (test[X][Y-1]==WAY||test[X][Y-1]==END)){
-        	visiter(new Point(X,Y-1),test);
+        	visite(new Point(X,Y-1),test);
         }if(Y+1>=0 && Y+1<test[X].length && (test[X][Y+1]==WAY||test[X][Y+1]==END)) {
-			visiter(new Point(X, Y + 1), test);
+			visite(new Point(X, Y + 1), test);
 		}
     }
 
@@ -269,7 +269,7 @@ public class Maze{
     public static void main(String[] args){
     	try{
     		File fic = new File("labiTest.txt");
-    		Maze m = new Maze(80,60);
+    		Maze m = new Maze(80,80);
     		m.print();
     	}catch(Exception e){
     		e.printStackTrace();
