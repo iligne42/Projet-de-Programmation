@@ -53,10 +53,15 @@ public class Menu extends Application{
     settings2.setPrefSize(500,500);
     settings2.getStyleClass().add("vbox");
 
+    HBox hoteClient=new HBox();
+    hoteClient.setPrefSize(500,500);
+    hoteClient.getStyleClass().add("hbox");
+
+    final hostMenu hostmenu = new hostMenu();
 
 
     StackPane stack = new StackPane();
-    stack.getChildren().addAll(settings2,mode,maze,game,menu);
+    stack.getChildren().addAll(settings2,mode,maze,game,hoteClient,hostmenu,menu);
 
 
     /*Panneau pour les level*/
@@ -114,6 +119,7 @@ public class Menu extends Application{
       changePanel(stack,view);
     });*/
       multi.setToggleGroup(gameType);
+
       VBox type=new VBox();
       type.getChildren().addAll(new Label("Game Type"),solo,chro,multi);
       type.getStyleClass().add("vbox");
@@ -281,7 +287,21 @@ public class Menu extends Application{
       });
 
       settings2.getChildren().addAll(type2,choose,backToMaze2);
+      /*Panneau multijoueur*/
+      Button hote = new Button("hote");
+      hote.setOnMouseClicked(e->{
+      String name = MazeInterface.readInput("What's your name ?");
+        hostmenu.initHost(name);
+        changePanel(stack,hostmenu);
+      });
+      Button client = new Button("Client");
+      client.setOnMouseClicked(e->{
+      String name = MazeInterface.readInput("What's your name ?");
+        hostmenu.initClient(name,"localHost");
+        changePanel(stack,hostmenu);
+      });
 
+      hoteClient.getChildren().addAll(hote,client);
     /*Panneau pour le menu principal*/
       Label label=new Label("Maz3D");
       label.setStyle("-fx-font-size: 58; -fx-text-fill:#bdbbb6; -fx-alignment:top-center;");
@@ -312,13 +332,21 @@ public class Menu extends Application{
 
     });
 
+    Button network = new Button("RESEAU");
+    network.setOnMouseClicked(e->{
+      changePanel(stack,hoteClient);
+      //changePanel(stack,level);
+    });
+
     stage.setTitle("Menu of Maz3D");
-    menu.getChildren().addAll(label,play,rank,cred,quit);
+    menu.getChildren().addAll(label,play,network,rank,cred,quit);
     //level.setVisible(false);
+    hoteClient.setVisible(false);
     mode.setVisible(false);
     game.setVisible(false);
     maze.setVisible(false);
     settings2.setVisible(false);
+    hostmenu.setVisible(false);
     Scene scene = new Scene(stack);
     scene.getStylesheets().add("menu.css");
     stage.setScene(scene);
