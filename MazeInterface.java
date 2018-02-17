@@ -1,3 +1,4 @@
+import javafx.scene.Camera;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -99,7 +100,7 @@ public interface MazeInterface{
         return res;
     }
 
-    static View getView(Maze m,String ty) throws FormatNotSupported, IOException{
+    static View getView(Maze m, String ty) throws FormatNotSupported, IOException{
         int time=0;
         int type=0;
         if(ty.equals("Solo"))

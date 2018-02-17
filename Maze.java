@@ -1,3 +1,4 @@
+import java.awt.geom.Point2D;
 import java.io.*;
 import java.util.*;
 import java.awt.*;
@@ -53,7 +54,7 @@ public class Maze implements Serializable{
 	    Point p=new Point();
 	    for(int i=0; i<maze.length; i++){
 	        for(int j=0; j<maze[i].length; j++){
-	            if(maze[i][j]==START) p.move(i,j);
+	            if(maze[i][j]==START) p.move(j,i);
             }
         }
         return p;
@@ -61,14 +62,14 @@ public class Maze implements Serializable{
 
     public int getWidth(){return maze[0].length;}
     public int getHeight(){return maze.length;}
-    public int getCase(Point p){return getCase((int)p.getX(),(int)p.getY());}
+    public int getCase(Point2D p){return getCase((int)p.getY(),(int)p.getX());}
     public int getCase(int i, int j){return maze[i][j];}
 
     public Point ending(){ //renvoie les coordonnées de la case d'arrivée
         Point p=new Point();
         for(int i=0; i<maze.length; i++){
             for(int j=0; j<maze[i].length; j++){
-                if(maze[i][j]==END) p.move(i,j);
+                if(maze[i][j]==END) p.move(j,i);
             }
         }
         return p;
@@ -144,7 +145,7 @@ public class Maze implements Serializable{
 	    maze[i][j]=val;
     }
 
-    private void createInside(int x1, int x2, int y1, int y2){ //crée les murs du labyrinthe(intérieur)
+    private void createInside(int x1, int x2, int y1, int y2){ //crée les Murs du labyrinthe(intérieur)
         boolean flag=false;
         int width=Math.abs(x2-x1);
         int height=Math.abs(y2-y1);
@@ -231,11 +232,12 @@ public class Maze implements Serializable{
 
     private boolean possibleMaze(){ //vérifie que le labyrinthe peut se réaliser
 	    int[][] t=copyMaze();
-	    Point b=beginning();
-	    visite(b,t);
-	    Point e=ending();
-	    if(t[(int)e.getX()][(int)e.getY()]==-1){ return true;}
-	    else return false;
+	    Point begin=beginning();
+	    Point b=new Point((int)begin.getY(),(int)begin.getX());
+	    visit(b,t);
+	    Point end=ending();
+	    Point e=new Point((int)end.getY(),(int)end.getX());
+	    return (t[(int)e.getX()][(int)e.getY()]==-1);
     }
 
     private int[][] copyMaze(){ //copie le tableau du labyrinthe dans un autre tableau
@@ -248,19 +250,19 @@ public class Maze implements Serializable{
         return res;
     }
 
-    private void visite(Point b, int[][] test){ //change toutes les cases accessibles par la valeur de vue
+    private void visit(Point b, int[][] test){ //change toutes les cases accessibles par la valeur de vue
 	    int vue=-1;
 	    int X = (int)b.getX();
 	    int Y = (int)b.getY();
 	    test[X][Y]=vue;
         if(X-1>=0 && X-1<test.length && (test[X-1][Y]==WAY||test[X-1][Y]==END)){
-            visite(new Point(X-1,Y),test);
+            visit(new Point(X-1,Y),test);
         }if(X+1>=0 && X+1<test.length && (test[X+1][Y]==WAY||test[X+1][Y]==END)){
-        	visite(new Point(X+1,Y),test);
+        	visit(new Point(X+1,Y),test);
         }if(Y-1>=0 && Y-1<test[X].length && (test[X][Y-1]==WAY||test[X][Y-1]==END)){
-        	visite(new Point(X,Y-1),test);
+        	visit(new Point(X,Y-1),test);
         }if(Y+1>=0 && Y+1<test[X].length && (test[X][Y+1]==WAY||test[X][Y+1]==END)) {
-			visite(new Point(X, Y + 1), test);
+			visit(new Point(X, Y + 1), test);
 		}
     }
 

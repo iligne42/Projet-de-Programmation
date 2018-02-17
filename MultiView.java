@@ -1,6 +1,8 @@
 
 import javafx.beans.property.IntegerProperty;
+import javafx.scene.Camera;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
 import java.util.Stack;
@@ -10,7 +12,7 @@ public class MultiView extends View {
     // protected Stack<Player> players;
 
     public MultiView(MultiPlayerVersion multi) {
-        super(multi.getGame());
+        super(new BorderPane(),multi.getGame());
         this.multi = multi;
         control = new MultiControl();
 
@@ -40,7 +42,7 @@ public class MultiView extends View {
                     timePane = new SoloTimePane();
                     timePane.setVisible(true);
                 } else {
-                    displayScore(MultiView.this);
+                    //displayScore(MultiView.this);
                 }
             } else {
                 //read events

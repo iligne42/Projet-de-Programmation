@@ -12,7 +12,7 @@ public class Player implements Serializable{
 		this.name=name;
 		position=null;
 		orientation=0;
-		speed=(float)0.5;
+		speed=(float)0.3;
 		orientationSpeed=45;
 	}
 
@@ -31,6 +31,9 @@ public class Player implements Serializable{
 
 	public void moveForward(){
 		position.setLocation(position.getX()+Math.cos(Math.toRadians(orientation))*speed, position.getY()+Math.sin(Math.toRadians(orientation))*speed);
+		//System.out.println(Math.cos(Math.PI/2)*speed);
+		System.out.println(position.getX()+"   "+position.getY());
+		//System.out.println(position);
 	}
 
 	public void moveBackward(){

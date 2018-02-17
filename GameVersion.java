@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public abstract class GameVersion implements Serializable{
   protected Player player;
   protected Maze maze;
+  protected int elapsed=0;
 
 
 
@@ -46,56 +47,97 @@ public abstract class GameVersion implements Serializable{
     }
 
     public void start(){
-        player.setPosition(maze.beginning(),90);
+        Point b=maze.beginning();
+        Point2D begin=new Point2D.Double(b.getX(),b.getY());
+        int orientation=90;
+        int x=(int)begin.getX();
+        int y=(int)begin.getY();
+        //Take care of this tomorrow
+        if(y==0) orientation=270;
+        else if(x==0)orientation=0;
+        else if(x==maze.getWidth()-1) orientation=180;
+        else if(y==maze.getHeight()-1) orientation=90;
+
+      player.setPosition(begin,orientation);
     }
 
 
     public boolean gameOver(){
         Point2D pos=player.getPosition();
       Point end=maze.ending();
-      return (pos.getX()==end.getX() && pos.getY()==end.getY());
+      return ((int)pos.getX()==end.getX() && (int)pos.getY()==end.getY());
   }
 
 
   public boolean validMove(){
       Point2D point;
       point = player.getPosition();
-      return maze.getCase((int)point.getY(),(int)point.getX())!=Maze.WALL;
+      return point.getX()>0 && point.getY()>0 && point.getX()<maze.getWidth() && point.getY()<maze.getHeight() && maze.getCase(point)!=Maze.WALL;
   }
 
   public void retreat(Point2D prev){
-      Point2D fin=this.WallOnTheSameLine(prev, player.getPosition());
+      Point2D fin=this.BorderOnTheSameLine(prev, player.getPosition());
       player.setPosition(fin, player.orientation());
   }
 
 
-  public Point2D.Double WallOnTheSameLine(Point2D prev, Point2D act){
-      double a=(act.getY()-prev.getY())/(act.getX()-prev.getX());// coefficient directeur
-      double b=prev.getY()-(a*prev.getX());//ordonnée à l'origine
-      //On cherche quel point du mur est sur la droite entre les deux points
+  public Point2D.Double BorderOnTheSameLine(Point2D prev, Point2D act){
       double x=((int)Math.max(prev.getX(),act.getX()));
+      System.out.println(Math.max(prev.getX(),act.getX()));
       double y=((int)Math.max(prev.getY(),act.getY()));
-
-      if(x>=Math.min(prev.getX(),act.getX()) && y<Math.min(prev.getY(),act.getY())) y=a*x+b;
-      if(y>=Math.min(prev.getY(),act.getY()) && x<Math.min(prev.getX(), act.getX())) x=(b-y)/a;
+      System.out.println("x="+x+"   y="+y);
+      if(prev.getX()==act.getX()){
+          System.out.println("oupssi");
+          x=prev.getX();
+      }
+      else {
+          double a =(act.getY() - prev.getY()) / (act.getX() - prev.getX());// coefficient directeur
+          double b = prev.getY() - (a * prev.getX());//ordonnée à l'origine
+          //On cherche quel point du mur est sur la droite entre les deux points
+          if (x >= Math.min(prev.getX(), act.getX()) && y < Math.min(prev.getY(), act.getY())) y = a * x + b;
+          if (y >= Math.min(prev.getY(), act.getY()) && x < Math.min(prev.getX(), act.getX())){
+              x = (y-b) / a;
+              System.out.println("oups");
+          }
+      }
       //On le fait reculer de combien il a traversé le mur
-      return new Point2D.Double(2*x-act.getX(),2*y-act.getY());
+      System.out.println("x="+x+"   y="+y);
+     return new Point2D.Double(2*x-act.getX(),2*y-act.getY());
   }
 
-  public void move(int direction){
-      Point2D p=player.getPosition();
-      switch(direction){
-          case 1: player.moveForward();;
-          break;
-          case 2: player.moveBackward();
-              break;
-          case 3: player.moveLeft();
-              break;
+  public void move(int direction) {
+      Point2D p = (Point2D)player.getPosition().clone();
+      System.out.println(p);
+          switch (direction) {
+              case 1:
+                  player.moveForward();
+                  break;
+              case 2:
+                  player.moveBackward();
+                  break;
+              case 3:
+                  player.moveLeft();
+                  break;
 
-          case 4: player.moveRight();
-              break;
-      }
+              case 4:
+                  player.moveRight();
+                  break;
+          }
+          System.out.println(p);
       if(!validMove()) this.retreat(p);
+      //while(!validMove()) this.retreat(p);
+  }
+
+  public void setElapsed(int x){
+      elapsed=x;
+  }
+
+  public int getElapsed(){
+      return elapsed;
+  }
+
+  public void elapse(int added){
+      elapsed+=added;
   }
 
     public abstract String scoresFile();
