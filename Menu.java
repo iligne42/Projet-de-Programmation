@@ -289,13 +289,14 @@ public class Menu extends Application{
       /*Panneau multijoueur*/
       Button hote = new Button("hote");
       hote.setOnMouseClicked(e->{
-      String name = MazeInterface.readInput("What's your name ?");
+
+      String name = MazeInterface.askName();
         hostmenu.initHost(name);
         changePanel(stack,hostmenu);
       });
       Button client = new Button("Client");
       client.setOnMouseClicked(e->{
-      String name = MazeInterface.readInput("What's your name ?");
+      String name = MazeInterface.askName();
         hostmenu.initClient(name,"localHost");
         changePanel(stack,hostmenu);
       });

@@ -60,7 +60,17 @@ public interface MazeInterface{
             return s;
         }
        throw new FormatNotSupported("No value ");
+    }
+
+    static String askName(){
+        while(true){
+            try{
+                return readInput("What's your name ?");
+            }catch(FormatNotSupported e){
+                System.out.println("Entrée incorecte.");
+            }
         }
+    }
 
 
     static int readInt(String s) {
