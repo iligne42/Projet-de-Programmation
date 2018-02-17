@@ -1,5 +1,7 @@
+import javafx.scene.Camera;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.TextInputDialog;
 
 import java.io.IOException;
@@ -38,27 +40,28 @@ public interface MazeInterface{
     }
 
 
-    static String[] setMulti(){
+    static String[] setMulti() throws FormatNotSupported{
         String[] res=new String[nbPlayer()];
         for(int i=0;i<res.length;i++){
             res[i]=readInput("Name of the player "+(i+1)+": ");
         }
         return res;
     }
-
-    static  String readInput(String input) {
+    static  String readInput(String input) throws FormatNotSupported{
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Settings");
         //dialog.setHeaderText("Confirm the number of players");
         dialog.setContentText(input);
         Menu.addCss(dialog);
         Optional<String> result = dialog.showAndWait();
-        String s = String.valueOf(result);
-        while (MazeInterface.notValid(s)) {
-            s=readInput(input);
+        if(result.isPresent()){
+            String s=result.get();
+            if(notValid(s)) return readInput(input);
+            return s;
         }
-        return s;
-    }
+       throw new FormatNotSupported("No value ");
+        }
+
 
     static int readInt(String s) {
         int res = 0;
@@ -97,7 +100,7 @@ public interface MazeInterface{
         return res;
     }
 
-    static View getView(Maze m,String ty) throws FormatNotSupported, IOException{
+    static View getView(Maze m, String ty) throws FormatNotSupported, IOException{
         int time=0;
         int type=0;
         if(ty.equals("Solo"))
@@ -152,6 +155,10 @@ public interface MazeInterface{
         double x = Math.random() * (b - a) + a;
         return (int) x;
     }
+
+   /* static String[] readInput(String[] s){
+
+    }*/
 
 
 }

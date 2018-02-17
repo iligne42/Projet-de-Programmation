@@ -1,6 +1,7 @@
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.PerspectiveCamera;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
@@ -22,9 +23,6 @@ import java.util.Optional;
 
 
 public class Menu extends Application{
-    String type;
-    String dif;
-    File fic;
 
   @Override
   public void start(Stage stage) throws FormatNotSupported,IOException{
@@ -182,13 +180,13 @@ public class Menu extends Application{
           try {
              view=MazeInterface.getView(MazeInterface.getSize(dif),MazeInterface.getSize(dif),gType);
               Stage st=new Stage();
-              Scene sc=new Scene(view);
               //sc.getStylesheets().add("");
-              st.setScene(sc);
+              st.setScene(view);
+              //view.setScene(sc);
               st.setFullScreen(true);
               st.show();
           } catch (FormatNotSupported formatNotSupported) {
-              formatNotSupported.printStackTrace();
+
           } catch (IOException e1) {
               e1.printStackTrace();
           }
@@ -270,13 +268,14 @@ public class Menu extends Application{
           if (file != null) {
               View view;
               try {
-                     view=MazeInterface.getView(new Maze(file), gType);
-                  Stage st=new Stage();
-                  Scene sc=new Scene(view);
+                  view=MazeInterface.getView(new Maze(file), gType);
                   //sc.getStylesheets().add("");
-                  st.setScene(sc);
+                  Stage st=new Stage();
+                  st.setScene(view);
+                  //view.setScene(sc);
                   st.setFullScreen(true);
                   st.show();
+                  //sc.getStylesheets().add("");
               } catch (FormatNotSupported formatNotSupported) {
                   formatNotSupported.printStackTrace();
               } catch (IOException e1) {
@@ -364,12 +363,13 @@ public class Menu extends Application{
     mtn.setVisible(true);//puis on l'affiche
   }
 
-  public static void addCss(Dialog a){
-      DialogPane dialogPane=a.getDialogPane();
-      dialogPane.getStylesheets().add("alert.css");
-      a.setHeaderText(null);
-      a.setGraphic(null);
-  }
+    public static void addCss(Dialog a){
+    DialogPane dialogPane=a.getDialogPane();
+        dialogPane.getStylesheets().add("alert.css");
+        a.setHeaderText(null);
+        a.setGraphic(null);
+
+    }
 
 
 
