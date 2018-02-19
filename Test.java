@@ -25,7 +25,7 @@ import javafx.collections.ObservableList;
 public class Test extends Application{
   public Maze maze;
   PerspectiveCamera cam = new PerspectiveCamera(true);
-  public int SIZE_MAZE = 20;
+  public int SIZE_MAZE = 15;
   public int SIZE_BOX = 400;
   public PhongMaterial COLOR_WALL= new PhongMaterial(Color.DARKGREY);
   public PhongMaterial COLOR_WAY= new PhongMaterial(Color.BLACK);
@@ -40,7 +40,7 @@ public class Test extends Application{
   @Override
   public void start(Stage stage) throws FormatNotSupported{
       Group root = new Group();
-      maze = new Maze(SIZE_MAZE,SIZE_MAZE);
+      maze = new Maze(SIZE_MAZE+10,SIZE_MAZE);
       createMaze(root,maze);
       Scene scene = new Scene(root,500,500,true);
       //setCamToStart(cam);
@@ -113,22 +113,22 @@ public class Test extends Application{
     cam.setTranslateZ(posz);
     cam.setRotationAxis(Rotate.Y_AXIS);
     if(posz==0.0)cam.setTranslateZ(-1000);
-    if(posz==7600.0){
+    if(posz==(double) SIZE_BOX*(maze.getHeight()-1)){
       cam.setTranslateZ(1000+posz);
       cam.setRotate(180.0);
     }
-    if(posx==8000.0){
+    if(posx==(double) SIZE_BOX*maze.getWidth()){
       cam.setTranslateX(1000+posx);
       cam.setRotate(270.0);
     }
-    if(posx==400.0){
+    if(posx == (double) SIZE_BOX ){
       cam.setTranslateX(-600.0);
       cam.setRotate(90.0);
     }
-    Box begin2 = cases[y][x];
-    /*System.out.println("x "+begin.getTranslateX()+"/ z "+begin.getTranslateZ()+" box 1");
-    System.out.println("x "+begin2.getTranslateX()+"/ z "+begin2.getTranslateZ()+" box 2");
-    System.out.println("x "+cam.getTranslateX()+" / z "+cam.getTranslateZ());*/
+    //Box begin2 = cases[y][x];
+    System.out.println("x "+begin.getTranslateX()+"/ z "+begin.getTranslateZ()+" / "+cam.getRotate()+" box");
+    //System.out.println("x "+begin2.getTranslateX()+"/ z "+begin2.getTranslateZ()+" box 2");
+    System.out.println("x "+cam.getTranslateX()+" / z "+cam.getTranslateZ());
   }
   public void spinLeft(PerspectiveCamera cam){
     cam.setRotate(cam.getRotate()+angle);
@@ -220,4 +220,3 @@ public class Test extends Application{
     launch(args);
   }
 }
-
