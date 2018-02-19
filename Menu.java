@@ -1,6 +1,7 @@
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.PerspectiveCamera;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
@@ -22,9 +23,6 @@ import java.util.Optional;
 
 
 public class Menu extends Application{
-    String type;
-    String dif;
-    File fic;
 
   @Override
   public void start(Stage stage) throws FormatNotSupported,IOException{
@@ -53,10 +51,15 @@ public class Menu extends Application{
     settings2.setPrefSize(500,500);
     settings2.getStyleClass().add("vbox");
 
+    HBox hoteClient=new HBox();
+    hoteClient.setPrefSize(500,500);
+    hoteClient.getStyleClass().add("hbox");
+
+    final hostMenu hostmenu = new hostMenu();
 
 
     StackPane stack = new StackPane();
-    stack.getChildren().addAll(settings2,mode,maze,game,menu);
+    stack.getChildren().addAll(settings2,mode,maze,game,hoteClient,hostmenu,menu);
 
 
     /*Panneau pour les level*/
@@ -114,6 +117,7 @@ public class Menu extends Application{
       changePanel(stack,view);
     });*/
       multi.setToggleGroup(gameType);
+
       VBox type=new VBox();
       type.getChildren().addAll(new Label("Game Type"),solo,chro,multi);
       type.getStyleClass().add("vbox");
@@ -176,13 +180,13 @@ public class Menu extends Application{
           try {
              view=MazeInterface.getView(MazeInterface.getSize(dif),MazeInterface.getSize(dif),gType);
               Stage st=new Stage();
-              Scene sc=new Scene(view);
               //sc.getStylesheets().add("");
-              st.setScene(sc);
+              st.setScene(view);
+              //view.setScene(sc);
               st.setFullScreen(true);
               st.show();
           } catch (FormatNotSupported formatNotSupported) {
-              formatNotSupported.printStackTrace();
+
           } catch (IOException e1) {
               e1.printStackTrace();
           }
@@ -264,13 +268,14 @@ public class Menu extends Application{
           if (file != null) {
               View view;
               try {
-                     view=MazeInterface.getView(new Maze(file), gType);
-                  Stage st=new Stage();
-                  Scene sc=new Scene(view);
+                  view=MazeInterface.getView(new Maze(file), gType);
                   //sc.getStylesheets().add("");
-                  st.setScene(sc);
+                  Stage st=new Stage();
+                  st.setScene(view);
+                  //view.setScene(sc);
                   st.setFullScreen(true);
                   st.show();
+                  //sc.getStylesheets().add("");
               } catch (FormatNotSupported formatNotSupported) {
                   formatNotSupported.printStackTrace();
               } catch (IOException e1) {
@@ -281,7 +286,22 @@ public class Menu extends Application{
       });
 
       settings2.getChildren().addAll(type2,choose,backToMaze2);
+      /*Panneau multijoueur*/
+      Button hote = new Button("hote");
+      hote.setOnMouseClicked(e->{
 
+      String name = MazeInterface.askName();
+        hostmenu.initHost(name);
+        changePanel(stack,hostmenu);
+      });
+      Button client = new Button("Client");
+      client.setOnMouseClicked(e->{
+      String name = MazeInterface.askName();
+        hostmenu.initClient(name,"localHost");
+        changePanel(stack,hostmenu);
+      });
+
+      hoteClient.getChildren().addAll(hote,client);
     /*Panneau pour le menu principal*/
       Label label=new Label("Maz3D");
       label.setStyle("-fx-font-size: 58; -fx-text-fill:#bdbbb6; -fx-alignment:top-center;");
@@ -312,13 +332,21 @@ public class Menu extends Application{
 
     });
 
+    Button network = new Button("RESEAU");
+    network.setOnMouseClicked(e->{
+      changePanel(stack,hoteClient);
+      //changePanel(stack,level);
+    });
+
     stage.setTitle("Menu of Maz3D");
-    menu.getChildren().addAll(label,play,rank,cred,quit);
+    menu.getChildren().addAll(label,play,network,rank,cred,quit);
     //level.setVisible(false);
+    hoteClient.setVisible(false);
     mode.setVisible(false);
     game.setVisible(false);
     maze.setVisible(false);
     settings2.setVisible(false);
+    hostmenu.setVisible(false);
     Scene scene = new Scene(stack);
     scene.getStylesheets().add("menu.css");
     stage.setScene(scene);
@@ -336,12 +364,13 @@ public class Menu extends Application{
     mtn.setVisible(true);//puis on l'affiche
   }
 
-  public static void addCss(Dialog a){
-      DialogPane dialogPane=a.getDialogPane();
-      dialogPane.getStylesheets().add("alert.css");
-      a.setHeaderText(null);
-      a.setGraphic(null);
-  }
+    public static void addCss(Dialog a){
+    DialogPane dialogPane=a.getDialogPane();
+        dialogPane.getStylesheets().add("alert.css");
+        a.setHeaderText(null);
+        a.setGraphic(null);
+
+    }
 
 
 

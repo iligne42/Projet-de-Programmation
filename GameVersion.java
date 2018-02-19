@@ -1,5 +1,6 @@
-import java.awt.geom.Point2D.Double;
+import java.awt.*;
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -45,56 +46,76 @@ public abstract class GameVersion implements Serializable{
     }
 
     public void start(){
-        player.setPosition(maze.beginning(),90);
+        Point b=maze.beginning();
+        Point2D begin=new Point2D.Double(b.getX(),b.getY());
+      player.setPosition(begin,90);
     }
 
 
     public boolean gameOver(){
-      Point2D pos=player.getPosition();
-      Point2D end=maze.ending();
-      return (pos.getX()==end.getX() && pos.getY()==end.getY());
+        Point2D pos=player.getPosition();
+      Point end=maze.ending();
+      return ((int)pos.getX()==end.getX() && (int)pos.getY()==end.getY());
   }
 
 
   public boolean validMove(){
-      Point2D point = player.getPosition();
-      return maze.getCase((int)point.getY(),(int)point.getX())!=Maze.WALL;
+      Point2D point;
+      point = player.getPosition();
+      return point.getX()>0 && point.getY()>0 && point.getX()<maze.getWidth() && point.getY()<maze.getHeight() && maze.getCase((int)point.getY(),(int)point.getX())!=Maze.WALL;
   }
 
   public void retreat(Point2D prev){
-      Point2D fin=this.WallOnTheSameLine(prev, player.getPosition());
+      Point2D fin=this.BorderOnTheSameLine(prev, player.getPosition());
       player.setPosition(fin, player.orientation());
   }
 
 
-  public Point2D WallOnTheSameLine(Point2D prev, Point2D act){
-      double a=(act.getY()-prev.getY())/(act.getX()-prev.getX());// coefficient directeur
-      double b=prev.getY()-(a*prev.getX());//ordonnée à l'origine
-      //On cherche quel point du mur est sur la droite entre les deux points
+  public Point2D.Double BorderOnTheSameLine(Point2D prev, Point2D act){
       double x=((int)Math.max(prev.getX(),act.getX()));
+      System.out.println(Math.max(prev.getX(),act.getX()));
       double y=((int)Math.max(prev.getY(),act.getY()));
-
-      if(x>=Math.min(prev.getX(),act.getX()) && y<Math.min(prev.getY(),act.getY())) y=a*x+b;
-      if(y>=Math.min(prev.getY(),act.getY()) && x<Math.min(prev.getX(), act.getX())) x=(b-y)/a;
+      System.out.println("x="+x+"   y="+y);
+      if(prev.getX()==act.getX()){
+          System.out.println("oupssi");
+          x=prev.getX();
+      }
+      else {
+          double a =(act.getY() - prev.getY()) / (act.getX() - prev.getX());// coefficient directeur
+          double b = prev.getY() - (a * prev.getX());//ordonnée à l'origine
+          //On cherche quel point du mur est sur la droite entre les deux points
+          if (x >= Math.min(prev.getX(), act.getX()) && y < Math.min(prev.getY(), act.getY())) y = a * x + b;
+          if (y >= Math.min(prev.getY(), act.getY()) && x < Math.min(prev.getX(), act.getX())){
+              x = (y-b) / a;
+              System.out.println("oups");
+          }
+      }
       //On le fait reculer de combien il a traversé le mur
+      System.out.println("x="+x+"   y="+y);
       return new Point2D.Double(2*x-act.getX(),2*y-act.getY());
   }
 
-  /*public void move(int direction){
-      Point2D p=player.getPosition();
-      switch(direction){
-          case 1: player.moveForward();;
-          break;
-          case 2: player.moveBackward();
-              break;
-          case 3: player.moveLeft();
-              break;
+  public void move(int direction) {
+      Point2D p = (Point2D)player.getPosition().clone();
+      System.out.println(p);
+          switch (direction) {
+              case 1:
+                  player.moveForward();
+                  break;
+              case 2:
+                  player.moveBackward();
+                  break;
+              case 3:
+                  player.moveLeft();
+                  break;
 
-          case 4: player.moveRight();
-              break;
-      }
+              case 4:
+                  player.moveRight();
+                  break;
+          }
+          System.out.println(p);
       if(!validMove()) this.retreat(p);
-  }*/
+  }
 
     public abstract String scoresFile();
 
