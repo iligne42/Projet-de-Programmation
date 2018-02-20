@@ -297,7 +297,7 @@ public class Menu extends Application{
       Button client = new Button("Client");
       client.setOnMouseClicked(e->{
       String name = MazeInterface.askName();
-        hostmenu.initClient(name,"localHost");
+        hostmenu.initClient(name);
         changePanel(stack,hostmenu);
       });
 

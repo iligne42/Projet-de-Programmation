@@ -16,13 +16,13 @@ import java.util.Optional;
 
 
 public class hostMenu extends VBox{
-	boolean hote;
-	ArrayList<Socket> sockets;
-	ArrayList<String> names;
-	ServerSocket socServ;
-	waitClients waitCli;
-	Socket me;
-	TilePane Players;
+	private boolean hote;
+	private ArrayList<Socket> sockets;
+	private ArrayList<String> names;
+	private ServerSocket socServ;
+	private waitClients waitCli;
+	private Socket me;
+	private TilePane Players;
 
 	public hostMenu(){
 		super();
@@ -36,18 +36,33 @@ public class hostMenu extends VBox{
 		try{
 		socServ = new ServerSocket(netFunc.PORT);
 		sockets = new ArrayList<Socket>();
-		initClient(name,"localHost");
+		initMe(name,"localHost");
 		getClient();
 		}catch(Exception e){e.printStackTrace();}
 	}
 
-	public void initClient(String name, String addr){
+	public void initClient(String name){
+		VBox waitIP= new VBox();
+		Label lab= new Label("Entrer l'addresse IP de l'hôte.");
+		TextField text= new TextField();
+		Button but = new Button("Valider");
+		waitIP.getChildren().addAll(lab,text,but);
+		waitIP.getStyleClass().add("vbox");
+		but.setOnMouseClicked(e->{
+			getChildren().clear();
+			initMe(name,text.getText());
+		});
+		this.getChildren().add(waitIP);
+	}
+
+	public void initMe(String name, String addr){
+		System.out.println("J'ai l'addr "+addr);
 		try{
-		me=new Socket(addr,netFunc.PORT);
-		netFunc.sendString(me,name);
-		printPlayer();
-		waitInfo();
-		}catch(Exception e){}
+			me=new Socket(addr,netFunc.PORT);
+			netFunc.sendString(me,name);
+			printPlayer();
+			waitInfo();
+		}catch(Exception e){e.printStackTrace();}
 	}
 
 	public void getClient(){
