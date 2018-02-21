@@ -5,7 +5,7 @@ public class Monstres extends Divers{
     //public Maze maze;
     //public Point2D position;
     private int orientation;
-    
+
 
     public Monstres(Maze m){
         super(m);
@@ -50,8 +50,8 @@ public class Monstres extends Divers{
             }
         }
         int o=rand.nextInt(4);
-        if(o==1) orientation=90;
-        else if(o==2) orientation=180;
-        else if(o==3) orientation=270;
+        if(o==1) orientation+=90;
+        else if(o==2) orientation+=180;
+        else if(o==3) orientation+=270;
     }
 }

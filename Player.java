@@ -7,6 +7,8 @@ public class Player implements Serializable{
 	private int orientation;
 	private float speed;
 	private int orientationSpeed;
+	private LinkedList<Bonus> bonus;
+	private LinkedList<Key> keys;
 
 	public Player(String name){
 		this.name=name;
@@ -14,6 +16,8 @@ public class Player implements Serializable{
 		orientation=0;
 		speed=(float)0.5;
 		orientationSpeed=45;
+		bonus=new LinkedList<>();
+		keys=new LinkedList<>();
 	}
 
 	public void setPosition(Point2D position, int ori){
