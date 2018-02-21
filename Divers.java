@@ -2,8 +2,8 @@ import java.awt.geom.Point2D;
 import java.util.Random;
 
 public abstract class Divers {
-    public Maze maze;
-    public Point2D p;
+    protected Maze maze;
+    protected Point2D p;
 
     public Divers(Maze m){
         maze=m;
@@ -15,7 +15,7 @@ public abstract class Divers {
         this.p=p;
     }
 
-    public double centrer(int i){
+    protected double centrer(int i){
         return (double) i+0.5;
     }
 
@@ -25,7 +25,7 @@ public abstract class Divers {
     }
 
 
-    public void put(){ //en faire un boolean au cas où il n'y a plus de possibilité?
+    protected void put(){ //en faire un boolean au cas où il n'y a plus de possibilité?
         Random rand=new Random();
         int i=0; int j=0;
         while(maze.getCase(i,j)!=Maze.WAY) {

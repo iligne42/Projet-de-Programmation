@@ -11,6 +11,7 @@ public class Maze implements Serializable{
     private LinkedList<Monstres> monstres;
     private LinkedList<Pair<Teleporteur,Teleporteur>> teleport;
     private LinkedList<Door> doors;
+    private LinkedList<Bonus> bonus;
     public final static int WALL = 0;
     public final static int WAY = 1;
     public final static int START = 2;
@@ -22,13 +23,11 @@ public class Maze implements Serializable{
     public final static int TELEPORT=8;
     public final static int DOOR=9;
     public final static int KEY=10;
+    public final static int BONUS=11;
     private static Random rand=new Random();
 
     public Maze(int L, int l)throws FormatNotSupported{ //constructeur pour un labyrinthe aléatoire
         if(L>5 && l>5) {
-            //nbObstacles=0;
-            obstacles=null;
-            monstres=null;
             maze = new int[L][l];
             randomMaze();
         }else{
@@ -36,10 +35,11 @@ public class Maze implements Serializable{
         }
     }
 
-    public Maze(int L, int l, int nbObstacles, int nbMonstres, int nbTeleport , int nbDoors) throws FormatNotSupported{
+    public Maze(int L, int l, int nbObstacles, int nbMonstres, int nbTeleport , int nbDoors, int nbBonus ,int typeBonus) throws FormatNotSupported{
         if(L<5 || l<5) throw new FormatNotSupported("The maze is too small");
         //this.nbObstacles=nbObstacles;
         //appeler fonction "spéciale" pour création de labyrinthe avec obstacles
+        maze = new int[L][l];
         if(nbObstacles==0){
             obstacles=null;
             randomMaze();
@@ -62,6 +62,12 @@ public class Maze implements Serializable{
             doors=new LinkedList<>();
             //System.out.println("on va ajouter les portes");
             addDoor(nbDoors); //attention à la place
+        }if(nbBonus==0 || (typeBonus!=0 && typeBonus!=1)){
+            bonus=null;
+        }
+        else{
+            bonus=new LinkedList<>();
+            addBonus(nbBonus,typeBonus);
         }
     }
 
@@ -157,6 +163,7 @@ public class Maze implements Serializable{
                     case TELEPORT: tmp=RED+"TT"+Normal;break;
                     case DOOR: tmp=RED+"DD"+Normal;break;
                     case KEY: tmp=RED+"KK"+Normal;break;
+                    case BONUS :tmp=RED+"BB"+Normal;break;
                 }
                 System.out.print(tmp);
             }
@@ -447,12 +454,27 @@ public class Maze implements Serializable{
         return false;
     }
 
+    private void addBonus(int nb, int type){
+        while(nb!=0){
+            if(type==0){
+                TimeBonus tb=new TimeBonus(this);
+                bonus.add(tb);
+                fill(BONUS, tb.getPosition());
+            }else{
+                Piece p=new Piece(this);
+                bonus.add(p);
+                fill(BONUS, p.getPosition());
+            }
+            nb--;
+        }
+    }
+
     public static void main(String[] args){
         try{
             File fic = new File("labiTest.txt");
             Maze m = new Maze(fic);
             m.print();
-            /*Maze m = new Maze(30,30,0,1,0,0);
+            /*Maze m = new Maze(30,30,0,1,0,0,0,0);
             m.print();
             LinkedList<Monstres> monstres=m.getMonstres();
             System.out.println(monstres.getFirst().getPosition());

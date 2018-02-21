@@ -6,14 +6,14 @@ public class MazeFloors{
     private int nbFloors;
 
     public MazeFloors(int L, int l, int nb)throws FormatNotSupported{
-        this(L,l,nb,0,0,0,0);
+        this(L,l,nb,0,0,0,0,0,0);
     }
 
-    public MazeFloors(int L, int l, int nb, int nbObstacles, int nbMonstres,int nbTeleport,int nbDoors) throws FormatNotSupported{
+    public MazeFloors(int L, int l, int nb, int nbObstacles, int nbMonstres,int nbTeleport,int nbDoors,int nbBonus, int typeBonus) throws FormatNotSupported{
         mazes=new LinkedList<Maze>();
         nbFloors=nb;
         while(nb!=0){
-            mazes.add(new Maze(L,l,nbObstacles,nbMonstres,nbTeleport,nbDoors)); //problèmes dans getcase pour teleporteur et porte
+            mazes.add(new Maze(L,l,nbObstacles,nbMonstres,nbTeleport,nbDoors,nbBonus,typeBonus)); //problèmes dans getcase pour teleporteur et porte
             nb--;
         }
         for(int i=0; i<mazes.size(); i++){
@@ -35,7 +35,7 @@ public class MazeFloors{
     }
 
     public static void main(String []args) throws FormatNotSupported{
-        MazeFloors mf=new MazeFloors(20,10,5,0,0,0,1);
+        MazeFloors mf=new MazeFloors(20,10,5,0,0,0,0,3,0);
         mf.print();
     }
 }
