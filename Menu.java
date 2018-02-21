@@ -158,12 +158,13 @@ public class Menu extends Application {
 
         //Les options
         VBox option=new VBox();
-        supp=new boolean[4];
-        CheckBox[] opt=new CheckBox[4];
+        supp=new boolean[5];
+        CheckBox[] opt=new CheckBox[5];
         opt[0]=new CheckBox("Obstacles");
-        opt[1]=new CheckBox("Monsters");
-        opt[2]=new CheckBox("Teleporters");
-        opt[3]=new CheckBox("Bonuses");
+        opt[1]=new CheckBox("Doors");
+        opt[2]=new CheckBox("Monsters");
+        opt[3]=new CheckBox("Teleporters");
+        opt[4]=new CheckBox("Bonuses");
 
         class OptionAction implements EventHandler<MouseEvent>{
             private int pos;
@@ -209,7 +210,7 @@ public class Menu extends Application {
             option.getChildren().add(c);
         }
 
-        option.getStyleClass().add("v1");
+        option.getStyleClass().add("v2");
         option.setVisible(false);
 
         //Les difficultés
@@ -287,8 +288,7 @@ public class Menu extends Application {
 
         VBox level = new VBox();
         level.getChildren().addAll(new Label("Level"), easy, normal, hard, superhard, personalized);
-        level.getStyleClass().add("vbox");
-        level.setId("v2");
+        level.getStyleClass().add("v2");
         settings.getChildren().addAll(type,option,level);
         mode.getChildren().addAll(settings, playGame, backToMaze);
 
