@@ -4,17 +4,19 @@ import java.util.*;
 public class Monstres extends Divers{
     //public Maze maze;
     //public Point2D position;
-
-    //ajouter l'orientation du monstre qui change à chaque appel de move() (+vitesse?)
+    private int orientation;
+    
 
     public Monstres(Maze m){
         super(m);
         put();
+        orientation=0;
     }
 
     public Monstres(Maze m, Point2D position){
         super(m,position);
         //this.position=position;
+        orientation=0;
     }
 
     /*private int getX(){
@@ -47,5 +49,9 @@ public class Monstres extends Divers{
                 maze.fill(Maze.MONSTRE,p);
             }
         }
+        int o=rand.nextInt(4);
+        if(o==1) orientation=90;
+        else if(o==2) orientation=180;
+        else if(o==3) orientation=270;
     }
 }
