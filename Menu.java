@@ -236,7 +236,7 @@ public class Menu extends Application {
                 client.setOnMouseClicked(evt -> {
                     try {
                         String name = MazeInterface.readInput("What's your name ?");
-                        hostmenu.initClient(name, "localHost");
+                        hostmenu.initClient(name);
                         changePanel(stack, hostmenu);
                         //gType="";
                     } catch (FormatNotSupported exception) {
