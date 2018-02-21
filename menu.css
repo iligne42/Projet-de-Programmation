@@ -12,16 +12,16 @@
 .hbox{
 -fx-alignment:center;
 -fx-padding:37,20,37,20;
--fx-spacing:147;
+-fx-spacing:50;
 }
 
 .v1{
 -fx-alignment:top-left;
--fx-spacing:47;
+-fx-spacing:30;
 }
 
 .v3{
--fx-alignment:top-center;
+-fx-alignment:top-left;
 -fx-spacing:12;
 }
 
@@ -32,7 +32,7 @@
 
 
 
-.button, .radio-button, .label,.combo-box .list-cell, .combo-box-base, .combo-box-popup .list-view{
+.button, .check-box, .radio-button, .label,.combo-box .list-cell, .combo-box-base, .combo-box-popup .list-view{
 -fx-text-fill: white;
 -fx-font-family:"Palatino Linotype", "Book Antiqua", Palatino,serif;
 -fx-font-size:20;
@@ -48,7 +48,7 @@
 -fx-background-color:#bdbbb6;
 }
 
-.radio-button{
+.radio-button, .check-box{
 -fx-font-size:15;
 }
 
