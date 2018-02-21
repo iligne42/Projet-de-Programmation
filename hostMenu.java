@@ -23,6 +23,7 @@ public class hostMenu extends VBox{
 	private waitClients waitCli;
 	private Socket me;
 	private TilePane Players;
+	private Maze maze;
 
 	public hostMenu(){
 		super();
@@ -31,6 +32,9 @@ public class hostMenu extends VBox{
 	}
 
 	public void initHost(String name){
+		try{
+			maze=new Maze(10,10);
+		}catch(Exception e){}
 		clear();
 		hote=true;
 		getChildren().addAll(new Label("Vous êtes l'hôte."),Players);
@@ -66,7 +70,8 @@ public class hostMenu extends VBox{
 			Button play = new Button("Play");
 			play.setDisable(!hote);
 			play.setOnMouseClicked(e->{
-
+				waitCli.stop();
+				sendMaze();
 			});
 			getChildren().add(play);
 			printPlayer();
@@ -99,6 +104,17 @@ public class hostMenu extends VBox{
 
 	public void clear(){
 		getChildren().clear();
+	}
+
+	public void sendMaze(){
+		for (Socket tmp : sockets) {
+			try{
+				netFunc.sendObject(tmp,maze);
+			}catch(IOException e){
+				names.remove(sockets.indexOf(tmp));
+				System.out.println("erreur de connexion avec une socket.");
+			}
+		}
 	}
 
 	class waitClients extends Thread{
@@ -142,8 +158,12 @@ public class hostMenu extends VBox{
 				if(tmp instanceof ArrayList){
 					names=(ArrayList<String>)tmp;
 					Platform.runLater(() -> printPlayer());
-				}else
+				}else if(tmp instanceof Maze){
+					((Maze)tmp).print();
 					break;
+				}else{
+					break;
+				}
 			}catch(Exception e){}
 			}
 		}
