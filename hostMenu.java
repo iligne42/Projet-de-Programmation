@@ -32,10 +32,8 @@ public class hostMenu extends VBox{
 		names = new ArrayList<String>();
 	}
 
-	public void initHost(String name){
-		try{
-			maze=new Maze(10,10);
-		}catch(Exception e){}
+	public void initHost(String name,Maze m){
+		maze=m;
 		clear();
 		hote=true;
 		getChildren().addAll(new Label("Vous êtes l'hôte."),Players);
