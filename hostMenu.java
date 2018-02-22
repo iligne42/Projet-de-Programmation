@@ -24,6 +24,7 @@ public class hostMenu extends VBox{
 	private Socket me;
 	private TilePane Players;
 	private Maze maze;
+	private String myName;
 
 	public hostMenu(){
 		super();
@@ -65,6 +66,7 @@ public class hostMenu extends VBox{
 		System.out.println("J'ai l'addr "+addr);
 		try{
 			me=new Socket(addr,netFunc.PORT);
+			myName=name;
 			netFunc.sendString(me,name);
 			waitInfo();
 			Button play = new Button("Play");
@@ -159,7 +161,8 @@ public class hostMenu extends VBox{
 					names=(ArrayList<String>)tmp;
 					Platform.runLater(() -> printPlayer());
 				}else if(tmp instanceof Maze){
-					((Maze)tmp).print();
+					SoloVersion sv=new SoloVersion((Maze)tmp,myName);
+					SingleView SV=new SingleView(sv);
 					break;
 				}else{
 					break;
