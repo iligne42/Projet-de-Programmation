@@ -17,7 +17,6 @@ public class SingleView extends View{
     protected class SoloControl extends GameControl{
 
         public SoloControl() throws IOException{
-            scores=new Scores(game.scoresFile());
             game.start();
             timePane.start();
             mazePane.initMaze();
@@ -32,7 +31,7 @@ public class SingleView extends View{
                         Point2D pos=game.player().getPosition();
                         SingleView.this.mazePane.x.set(pos.getX()*SingleView.this.mazePane.SIZE_BOX);
                         SingleView.this.mazePane.z.set(pos.getY()*SingleView.this.mazePane.SIZE_BOX);
-                        SingleView.this.mazePane.angle.set(game.player().orientation());
+                        SingleView.this.mazePane.angle.set(90-game.player().orientation());
                 System.out.println(SingleView.this.getCamera().getTranslateX()+"     "+SingleView.this.getCamera().getTranslateZ()+"   "+SingleView.this.getCamera().getRotate());
 
                        // System.out.println(game.player().getPosition().getX()+"    "+game.player.getPosition().getY());
@@ -40,7 +39,8 @@ public class SingleView extends View{
                 //SingleView.this.mazePane.printMaze();
                     if (game.gameOver()) {
                         timePane.stop();
-                        scores.addToScoresFile(game.player().getName(),timePane.getElapsedSeconds());
+                       // game.addToScores();
+                        //game.addToScoresFile(game.player().getName(),timePane.getElapsedSeconds());
                         //displayScore(SingleView.this);
                     } else if (timePane.timeOver()) {
                         timePane.setVisible(false);

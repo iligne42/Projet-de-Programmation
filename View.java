@@ -1,3 +1,4 @@
+import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -14,6 +15,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 
 import java.awt.geom.Point2D;
@@ -31,7 +34,7 @@ public class View extends Scene{
         PerspectiveCamera cam=new PerspectiveCamera(true);
         this.setCamera(cam);
         content=root;
-        content.getChildren().add(cam);
+       // content.getChildren().add(cam);
         this.game=game;
         //this.camera=camera;
         this.mazePane=new MazePane();
@@ -46,6 +49,8 @@ public class View extends Scene{
 
         //add Menu bar to save game or start a new game, and view the help and shir
         //timeLine.pause();
+
+
         protected abstract class TimePane extends Pane {//not sure though, it is a layout
             protected Timeline timeLine;
             protected Label timeLabel;
@@ -115,6 +120,16 @@ public class View extends Scene{
                 timeLine.getKeyFrames().add(
                         new KeyFrame(Duration.seconds(timeLimit + 1),
                                 new KeyValue(timeSeconds, 0)));
+                timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(timeLimit+1),(event)->{
+                    game.elapse(1);
+                    timeSeconds.set(timeLimit-game.getElapsed());
+                }));
+               // timeLine.setCycleCount(timeLimit);
+                timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1),(event)->{
+                    game.elapse(1);
+                    timeSeconds.set(timeLimit-game.getElapsed());
+                    if(timeSeconds.get()==0) timeLine.stop();
+                }));
             }
 
             public boolean timeOver(){
@@ -129,6 +144,7 @@ public class View extends Scene{
                 return timeLimit-timeSeconds.get();
             }
         }
+        //Study interpolator
 
         protected class SoloTimePane extends TimePane {
 
@@ -137,6 +153,10 @@ public class View extends Scene{
                 timeLine.setCycleCount(Timeline.INDEFINITE);
                 timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1),(event)->{
                     timeSeconds.set(timeSeconds.get()+1);
+                }));
+                timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1),(event)->{
+                    game.elapse(1);
+                    timeSeconds.set(game.getElapsed());
                 }));
             }
 
@@ -161,15 +181,18 @@ public class View extends Scene{
             protected final int SIZE_BOX = 400;
             protected PhongMaterial COLOR_WALL = new PhongMaterial(Color.DARKGREY);
             protected PhongMaterial COLOR_WAY = new PhongMaterial(Color.BLACK);
+            protected PhongMaterial COLOR_ENTRY = new PhongMaterial(Color.RED);
 
             // camera.setTranslateY(SIZE_BOX);
             protected DoubleProperty x,z,angle;
+            protected Translate translateX,translateY,translateZ;
+            protected Rotate rotateY;
 
             public MazePane() {
                 // maze = game.maze();
                 camera=View.this.getCamera();
                 camera.setNearClip(0.1);
-                camera.setFarClip(1000.0);
+                camera.setFarClip(10000.0);
                 //scene.setCamera(camera);
             }
 
@@ -187,7 +210,8 @@ public class View extends Scene{
                             cell.setTranslateY(0);
                         } else {
                             cell = new Box(SIZE_BOX, 0, SIZE_BOX);
-                            cell.setMaterial(COLOR_WAY);
+                            if(maze.getCase(i,j)==Maze.START) cell.setMaterial(COLOR_ENTRY);
+                            else cell.setMaterial(COLOR_WAY);
                             cell.setTranslateY(SIZE_BOX / 2);
                         }
                         cell.setTranslateX(j*SIZE_BOX);
@@ -196,23 +220,32 @@ public class View extends Scene{
                     }
                 }
                 this.getChildren().add(rotate);
-                buildCamera();
+                buildCamera(rotate);
 
             }
 
             public void printMaze() {
             }
 
-            public void buildCamera(){
-                camera.setTranslateY(SIZE_BOX/2);
+           /* public void buildCamera(){
+             translateX=new Translate(0,0,0);
+             translateZ=new Translate().bind
+            }*/
+
+            public void buildCamera(Group root){
+                //Ici vérifier dans quel sens la début est pour modifier x et z
+                camera.setTranslateY(0);
                 Point2D position=game.player().getPosition();
                 x=new SimpleDoubleProperty(position.getX()*SIZE_BOX);
                 z=new SimpleDoubleProperty(position.getY()*SIZE_BOX);
-                angle=new SimpleDoubleProperty(game.player().orientation());
+                angle=new SimpleDoubleProperty(90-game.player().orientation());
                 camera.translateXProperty().bind(x);
                 camera.translateZProperty().bind(z);
                 camera.rotateProperty().bind(angle);
-                //camera.setRotationAxis();
+                camera.setRotationAxis(Rotate.Y_AXIS);
+                root.getChildren().add(camera);
+
+                //utliser les objets transform plutot car la c'est les propriétés par défaut
                System.out.println(camera.getTranslateX()+"   "+camera.getTranslateY()+"    "+camera.getTranslateZ());
             }
         }
@@ -247,18 +280,17 @@ public class View extends Scene{
             record=rec;
             Alert newRecord= new Alert(Alert.AlertType.INFORMATION);
             newRecord.setTitle("");
-            newRecord.setHeaderText("CONGRATULATION ! ");
+            newRecord.setHeaderText("CONGRATULATIONS ! ");
             newRecord.setContentText("You have made a new record ! ");
             newRecord.show();
         }
     }*/
 
-        protected class GameControl {
-            protected Scores scores;
+        protected abstract class GameControl {
 
             public void displayScore(Pane root) {
                 root.getChildren().clear();
-                String display = scores.getScores();
+                String display = game.scores().getScores();
                 String[] splits = display.split("\n");
                 for (String s : splits) root.getChildren().add(new Label(s));
             }

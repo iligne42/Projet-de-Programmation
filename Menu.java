@@ -259,7 +259,8 @@ public class Menu extends Application {
             if(gType.equals("Multiplayer In Network")){
                         try {
                         name = MazeInterface.readInput("What's your name ?");
-                        hostmenu.initHost(name);
+                        mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif));
+                        //hostmenu.initHost(name,mazeM);
                         //hostmenu.getChildren().add(go);
                        changePanel(stack, hostmenu);
                         //gType=;
@@ -363,34 +364,32 @@ public class Menu extends Application {
             File file = fileChooser.showOpenDialog(stage);
             String gType = ((RadioButton) typeG.getSelectedToggle()).getText();
             if (file != null) {
-                if(gType.equals("MultiPlayer In Network")){
-                    try {
-                        name = MazeInterface.readInput("What's your name ?");
-                        hostmenu.initHost(name);
+                try {
+                    mazeM = new Maze(file);
+                    if (gType.equals("MultiPlayer In Network")) {
+                            name = MazeInterface.readInput("What's your name ?");
+                            hostmenu.initHost(name, mazeM);
+                        }
+                     else {
+                            view = MazeInterface.getView(mazeM, gType);
+                            //sc.getStylesheets().add("");
+                            Stage st = new Stage();
+                            st.setScene(view);
+                            //view.setScene(sc);
+                            st.setFullScreen(true);
+                            st.show();
+                            //sc.getStylesheets().add("");
+                        }
                     }
-                    catch(Exception ex){
-
-                    }
-                }
-                else{
-                    try {
-                        mazeM=new Maze(file);
-                        view = MazeInterface.getView(mazeM, gType);
-                        //sc.getStylesheets().add("");
-                        Stage st = new Stage();
-                        st.setScene(view);
-                        //view.setScene(sc);
-                        st.setFullScreen(true);
-                        st.show();
-                        //sc.getStylesheets().add("");
-                    } catch (FormatNotSupported formatNotSupported) {
-                        formatNotSupported.printStackTrace();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-
+                    catch (FormatNotSupported formatNotSupported) {
+                            formatNotSupported.printStackTrace();
+                        }
+                        catch (IOException e1) {
+                e1.printStackTrace();
             }
+
+
+                }
         });
 
         settings2.getChildren().addAll(type2, choose, backToMaze2);

@@ -5,13 +5,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
+import java.io.IOException;
 import java.util.Stack;
 
 public class MultiView extends View {
     protected MultiPlayerVersion multi;
     // protected Stack<Player> players;
 
-    public MultiView(MultiPlayerVersion multi) {
+    public MultiView(MultiPlayerVersion multi) throws IOException,FormatNotSupported{
         super(new BorderPane(),multi.getGame());
         this.multi = multi;
         control = new MultiControl();
@@ -22,8 +23,7 @@ public class MultiView extends View {
         //protected Scores scores;
         protected IntegerProperty timeToBeat;
 
-        public MultiControl() {
-            scores = new Scores();
+        public MultiControl() throws IOException,FormatNotSupported{
             Label label = new Label();
             timeToBeat = new TimeProperty(0);
             label.textProperty().bind(timeToBeat.asString());
@@ -32,8 +32,9 @@ public class MultiView extends View {
             game.start();
             if (game.gameOver()) {
                 timePane.stop();
-                scores.addToScoresList(game.player.getName(),timePane.getElapsedSeconds());
-                timeToBeat.set(scores.get(0).getValue());
+                game.addToScoresList();
+                //scores.addToScoresList(game.player.getName(),timePane.getElapsedSeconds());
+                timeToBeat.set(game.scores().get(0).getValue());
                 //Get time to beat, it is the top of the list
                 //Get to the next player and labyrinth
                 multi.next();
@@ -52,7 +53,7 @@ public class MultiView extends View {
 
         public void displayScore(Pane root) {
             root.getChildren().clear();
-            String display = scores.getScores();
+            String display = game.scores().getScores();
             String[] splits = display.split("\n");
             for (String s : splits) root.getChildren().add(new Label(s));
         }
