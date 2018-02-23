@@ -27,6 +27,7 @@ public class SingleView extends View{
                             case RIGHT: game.move(4); break;
                             case DOWN:  game.move(2); break;
                             case LEFT:  game.move(3); break;
+                           // case S: mazePane.rotateY.setAngle(mazePane.rotateY.getAngle()+5);
                         }
                         Point2D pos=game.player().getPosition();
                         SingleView.this.mazePane.x.set(pos.getX()*SingleView.this.mazePane.SIZE_BOX);
@@ -39,8 +40,8 @@ public class SingleView extends View{
                 //SingleView.this.mazePane.printMaze();
                     if (game.gameOver()) {
                         timePane.stop();
-                       // game.addToScores();
-                        //game.addToScoresFile(game.player().getName(),timePane.getElapsedSeconds());
+                        //game.addToScores();
+                        game.addToScoresFile();
                         //displayScore(SingleView.this);
                     } else if (timePane.timeOver()) {
                         timePane.setVisible(false);
