@@ -117,6 +117,17 @@ public class hostMenu extends VBox{
 		}
 	}
 
+	public void lancerLabi(Maze tmp){
+		try{
+		Stage stage=new Stage();
+		SoloVersion sv=new SoloVersion(tmp,myName);
+		SingleView SV=new SingleView(sv);
+		stage.setScene(SV);
+		stage.setFullScreen(true);
+		stage.show();
+	}catch(Exception e){}
+	}
+
 	class waitClients extends Thread{
 		private volatile boolean exit = false;
 
@@ -159,8 +170,8 @@ public class hostMenu extends VBox{
 					names=(ArrayList<String>)tmp;
 					Platform.runLater(() -> printPlayer());
 				}else if(tmp instanceof Maze){
-					SoloVersion sv=new SoloVersion((Maze)tmp,myName);
-					SingleView SV=new SingleView(sv);
+					((Maze)tmp).print();
+					Platform.runLater(()-> lancerLabi((Maze)tmp));
 					break;
 				}else{
 					break;
