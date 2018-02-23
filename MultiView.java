@@ -1,4 +1,4 @@
-
+import java.io.*;
 import javafx.beans.property.IntegerProperty;
 import javafx.scene.Camera;
 import javafx.scene.control.Label;
@@ -7,11 +7,11 @@ import javafx.scene.layout.Pane;
 
 import java.util.Stack;
 
-public class MultiView extends View {
+public class MultiView extends View{
     protected MultiPlayerVersion multi;
     // protected Stack<Player> players;
 
-    public MultiView(MultiPlayerVersion multi) {
+    public MultiView(MultiPlayerVersion multi) throws IOException, FormatNotSupported{
         super(new BorderPane(),multi.getGame());
         this.multi = multi;
         control = new MultiControl();
@@ -22,7 +22,7 @@ public class MultiView extends View {
         //protected Scores scores;
         protected IntegerProperty timeToBeat;
 
-        public MultiControl() {
+        public MultiControl() throws IOException, FormatNotSupported{
             scores = new Scores();
             Label label = new Label();
             timeToBeat = new TimeProperty(0);

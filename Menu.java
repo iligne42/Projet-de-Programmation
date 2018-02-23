@@ -257,9 +257,10 @@ public class Menu extends Application {
 
 
             if(gType.equals("Multiplayer In Network")){
-                        try {
+                    try {
                         name = MazeInterface.readInput("What's your name ?");
-                        hostmenu.initHost(name);
+                        mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif));
+                        hostmenu.initHost(name,mazeM);
                         //hostmenu.getChildren().add(go);
                        changePanel(stack, hostmenu);
                         //gType=;
@@ -366,7 +367,8 @@ public class Menu extends Application {
                 if(gType.equals("MultiPlayer In Network")){
                     try {
                         name = MazeInterface.readInput("What's your name ?");
-                        hostmenu.initHost(name);
+                        mazeM=new Maze(file);
+                        hostmenu.initHost(name,mazeM);
                     }
                     catch(Exception ex){
 

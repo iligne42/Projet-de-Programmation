@@ -17,7 +17,7 @@ public class SingleView extends View{
     protected class SoloControl extends GameControl{
 
         public SoloControl() throws IOException{
-            scores=new Scores(game.scoresFile());
+            //scores=new Scores(game.scoresFile());
             game.start();
             timePane.start();
             mazePane.initMaze();
@@ -40,7 +40,7 @@ public class SingleView extends View{
                 //SingleView.this.mazePane.printMaze();
                     if (game.gameOver()) {
                         timePane.stop();
-                        scores.addToScoresFile(game.player().getName(),timePane.getElapsedSeconds());
+                        //scores.addToScoresFile(game.player().getName(),timePane.getElapsedSeconds());
                         //displayScore(SingleView.this);
                     } else if (timePane.timeOver()) {
                         timePane.setVisible(false);
