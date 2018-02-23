@@ -160,7 +160,6 @@ public abstract class GameVersion implements Serializable{
         scores.addToScoresList(player.getName(),elapsed);
     }
 
-
     /* public abstract void addToScores(String score);
 
   public void addToScores(String score,String fic){
