@@ -18,6 +18,9 @@ import javafx.scene.shape.Box;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.util.Duration;
+import javafx.scene.image.Image;
+import javafx.scene.shape.Sphere;
+import javafx.animation.TranslateTransition;
 
 import java.awt.geom.Point2D;
 
@@ -195,9 +198,15 @@ public class View extends Scene{
                 //scene.setCamera(camera);
             }
 
-            public void initMaze() {
-                Group rotate = new Group();
-                ObservableList<Node> childs = rotate.getChildren();
+            /*public void doFloor(Group root, MazeFloors maze){
+              LinkedList<Maze> floors = maze.getFloor();
+              int i=0;
+              for (Maze a : floors) {
+                initMaze(root,a,i);
+              }
+            }*/
+            public void initMaze(int floor) {
+                Group board = new Group();
                 Box cell;
                 Box roof=new Box(maze.getWidth()*SIZE_BOX,0,maze.getHeight()*SIZE_BOX);
                 roof.setMaterial(COLOR_WAY);
@@ -205,29 +214,117 @@ public class View extends Scene{
                 roof.setTranslateX(maze.getWidth()*SIZE_BOX/2);
                 roof.setTranslateZ(maze.getHeight()*SIZE_BOX/2);
                 //scene.setCamera(camera);
-
-                for (int i = 0; i < MAZE_LENGTH; i++) {
-                    for (int j = 0; j < MAZE_WIDTH; j++) {
-                        if (maze.getCase(i, j) == Maze.WALL) {
-                            cell = new Box(SIZE_BOX, SIZE_BOX, SIZE_BOX);
-                            cell.setMaterial(COLOR_WALL);
-                            cell.setTranslateY(0);
-                        } else {
-                            cell = new Box(SIZE_BOX, 0, SIZE_BOX);
-                            if(maze.getCase(i,j)==Maze.START) cell.setMaterial(COLOR_ENTRY);
-                            else if(maze.getCase(i,j)==Maze.END) cell.setMaterial(COLOR_END);
-                            else cell.setMaterial(COLOR_WAY);
-                            cell.setTranslateY(SIZE_BOX / 2);
-                        }
-                        cell.setTranslateX(j*SIZE_BOX);
-                        cell.setTranslateZ(i*SIZE_BOX);
-                        childs.add(cell);
+                int CASE;
+                for (int i = 0;i<maze.getHeight() ;i++ ){
+                  for (int j = 0; j <maze.getWidth() ;j++ ) {
+                    CASE = maze.getCase(i,j);
+                    switch(CASE){
+                      case Maze.START:
+                      cell=makeFloor(COLOR_ENTRY);
+                      setBox(cell,i,j,board,floor);
+                      break;
+                      case Maze.END:
+                      cell = makeFloor(COLOR_END);
+                      setBox(cell,i,j,board,floor);
+                      break;
+                      case Maze.WAY:
+                      cell = makeFloor(COLOR_WAY);
+                      setBox(cell,i,j,board,floor);
+                      break;
+                      case Maze.DOOR:
+                      cell = new Box(SIZE_BOX,SIZE_BOX,SIZE_BOX);
+                      PhongMaterial door= new PhongMaterial();
+                      door.setDiffuseMap(new Image("/lock.jpg"));
+                      cell.setMaterial(door);
+                      setBox(cell,i,j,board,floor);
+                      break;
+                      case Maze.KEY:
+                      cell = makeFloor(COLOR_WAY);
+                      drawKey(board);
+                      setBox(cell,i,j,board,floor);
+                      break;
+                      case Maze.TELEPORT:
+                      cell = makeFloor(COLOR_WAY);
+                      setBox(cell,i,j,board,floor);
+                      break;
+                      case Maze.MONSTRE:
+                      cell = makeFloor(COLOR_WAY);
+                      drawMonster(board,i,j,floor);
+                      setBox(cell,i,j,board,floor);
+                      break;
+                      case Maze.BONUS:
+                      cell = makeFloor(COLOR_WAY);
+                      setBox(cell,i,j,board,floor);
+                      break;
+                      case Maze.OBSTACLE:
+                      break;
+                      case Maze.STAIRSUP:
+                      drawStair(4,1,board,i,j,floor);
+                      break;
+                      case Maze.STAIRSDOWN:
+                      drawStair(4,0,board,i,j,floor);
+                      break;
+                      default://fais les murs
+                      cell=new Box(SIZE_BOX,SIZE_BOX,SIZE_BOX);
+                      cell.setMaterial(COLOR_WALL);
+                      setBox(cell,i,j,board,floor);
+                      break;
                     }
+                  }
                 }
-                rotate.getChildren().add(roof);
-                this.getChildren().add(rotate);
-                buildCamera(rotate);
+                board.getChildren().add(roof);
+                this.getChildren().add(board);
+                buildCamera(board);
 
+            }
+
+            public Box makeFloor(PhongMaterial color){
+              Box cell = new Box(SIZE_BOX,0,SIZE_BOX);
+              cell.setMaterial(color);
+              cell.setTranslateY(SIZE_BOX/2);
+              return cell;
+            }
+
+            public void setBox(Box cell,int i, int j, Group root,int floor){
+              cell.setTranslateX((j+floor)*SIZE_BOX);
+              cell.setTranslateZ((i+floor)*SIZE_BOX);
+              root.getChildren().add(cell);
+            }
+
+            public void drawMonster(Group root,int i, int j,int floor){
+              Sphere monster = new Sphere(SIZE_BOX/2);
+              PhongMaterial face = new PhongMaterial();
+              face.setDiffuseMap(new Image("/face.jpg"));
+              monster.setMaterial(face);
+              monster.setTranslateZ((i+floor)*SIZE_BOX);
+              monster.setTranslateX((j+floor)*SIZE_BOX);
+              TranslateTransition move = new TranslateTransition(Duration.millis(2000),monster);
+              move.setByZ(SIZE_BOX);
+              move.setAutoReverse(true);
+              move.setCycleCount(TranslateTransition.INDEFINITE);
+              move.play();
+              root.getChildren().add(monster);
+            }
+            public void drawKey(Group root){
+              Box key = new Box();
+              root.getChildren().add(key);
+            }
+
+            public void drawStair(int nbStep,int dir,Group root,int i,int j,int floor){
+              Box step;
+              int size=SIZE_BOX/nbStep,a=0;
+              while(nbStep!=i){
+                step=new Box(size,size*(a+1),size);
+                step.setMaterial(COLOR_WAY);
+                step.setTranslateX((j+floor)*SIZE_BOX);
+                step.setTranslateZ((i+floor)*SIZE_BOX+size*a);
+                if(dir==0)
+                  step.setTranslateY(size*(-1)*a);
+                else
+                  step.setTranslateY(size*a);
+                i++;
+                root.getChildren().add(step);
+              }
             }
 
             public void printMaze() {
