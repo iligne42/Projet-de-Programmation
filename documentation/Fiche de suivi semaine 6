@@ -1,0 +1,15 @@
+Fiche de suivi semaine 6
+
+Objectifs atteints:
+- réseau fini
+- traitement des collisions (résolution des bugs)
+- début de la customisation du labyrinthe
+- ajouts des options
+
+Objectifs à atteindre:
+- customisation des options
+- faire des tests pour les "vraies" parties (objectif reporté car inachevé cette semaine)
+
+Difficultés rencontrées:
+- collisions
+- utiliser des modèles 3D en java
