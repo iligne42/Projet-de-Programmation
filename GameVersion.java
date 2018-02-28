@@ -7,22 +7,29 @@ import java.util.ArrayList;
 public abstract class GameVersion implements Serializable{
   protected Player player;
   protected Maze maze;
+  protected Scores scores;
+  protected int elapsed=0;
 
 
 
-  public GameVersion(int length, int width, String name) throws FormatNotSupported{
+
+  public GameVersion(int length, int width, String name,Scores score) throws FormatNotSupported{
       player=new Player(name);
       maze=new Maze(length,width);
+      scores=score;
   }
 
-  public GameVersion(Maze maze, String name){
-      this.maze=maze;
-      player=new Player(name);
-  }
 
-  public GameVersion(Maze maze, Player player){
+  public GameVersion(Maze maze, Player player,Scores score){
       this.maze=maze;
       this.player=player;
+      scores=score;
+  }
+
+  public GameVersion(Maze maze,String name, Scores score){
+      this.maze=maze;
+      player=new Player(name);
+      scores=score;
   }
 
   /*public GameVersion(int length, int width, String name) throws FormatNotSupported{
@@ -48,7 +55,16 @@ public abstract class GameVersion implements Serializable{
     public void start(){
         Point b=maze.beginning();
         Point2D begin=new Point2D.Double(b.getX(),b.getY());
-      player.setPosition(begin,90);
+        int orientation=90;
+        int x=(int)begin.getX();
+        int y=(int)begin.getY();
+        //Take care of this tomorrow
+        if(y==0) orientation=270;
+        else if(x==0)orientation=0;
+        else if(x==maze.getWidth()-1) orientation=180;
+        else if(y==maze.getHeight()-1) orientation=90;
+
+      player.setPosition(begin,orientation);
     }
 
 
@@ -62,7 +78,7 @@ public abstract class GameVersion implements Serializable{
   public boolean validMove(){
       Point2D point;
       point = player.getPosition();
-      return point.getX()>0 && point.getY()>0 && point.getX()<maze.getWidth() && point.getY()<maze.getHeight() && maze.getCase((int)point.getY(),(int)point.getX())!=Maze.WALL;
+      return point.getX()>0 && point.getY()>0 && point.getX()<maze.getWidth() && point.getY()<maze.getHeight() && maze.getCase(point)!=Maze.WALL;
   }
 
   public void retreat(Point2D prev){
@@ -92,7 +108,7 @@ public abstract class GameVersion implements Serializable{
       }
       //On le fait reculer de combien il a traversé le mur
       System.out.println("x="+x+"   y="+y);
-      return new Point2D.Double(2*x-act.getX(),2*y-act.getY());
+     return new Point2D.Double(2*x-act.getX(),2*y-act.getY());
   }
 
   public void move(int direction) {
@@ -115,11 +131,36 @@ public abstract class GameVersion implements Serializable{
           }
           System.out.println(p);
       if(!validMove()) this.retreat(p);
+      //while(!validMove()) this.retreat(p);
+  }
+
+  public void setElapsed(int x){
+      elapsed=x;
+  }
+
+  public int getElapsed(){
+      return elapsed;
+  }
+
+  public void elapse(int added){
+      elapsed+=added;
   }
 
     public abstract String scoresFile();
 
-   /* public abstract void addToScores(String score);
+    public Scores scores() {
+        return scores;
+    }
+
+    public void addToScoresFile(){
+        scores.addToScoresFile(player.getName(),elapsed);
+    }
+
+    public void addToScoresList(){
+        scores.addToScoresList(player.getName(),elapsed);
+    }
+
+    /* public abstract void addToScores(String score);
 
   public void addToScores(String score,String fic){
       try{

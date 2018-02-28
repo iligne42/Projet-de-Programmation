@@ -23,6 +23,8 @@ public class hostMenu extends VBox{
 	private waitClients waitCli;
 	private Socket me;
 	private TilePane Players;
+	private Maze maze;
+	private String myName;
 
 	public hostMenu(){
 		super();
@@ -30,7 +32,9 @@ public class hostMenu extends VBox{
 		names = new ArrayList<String>();
 	}
 
-	public void initHost(String name){
+	public void initHost(String name,Maze m){
+		maze=m;
+		clear();
 		hote=true;
 		getChildren().addAll(new Label("Vous êtes l'hôte."),Players);
 		try{
@@ -42,6 +46,7 @@ public class hostMenu extends VBox{
 	}
 
 	public void initClient(String name){
+		clear();
 		VBox waitIP= new VBox();
 		Label lab= new Label("Entrer l'addresse IP de l'hôte.");
 		TextField text= new TextField();
@@ -49,7 +54,7 @@ public class hostMenu extends VBox{
 		waitIP.getChildren().addAll(lab,text,but);
 		waitIP.getStyleClass().add("vbox");
 		but.setOnMouseClicked(e->{
-			getChildren().clear();
+			clear();
 			initMe(name,text.getText());
 		});
 		this.getChildren().add(waitIP);
@@ -59,9 +64,17 @@ public class hostMenu extends VBox{
 		System.out.println("J'ai l'addr "+addr);
 		try{
 			me=new Socket(addr,netFunc.PORT);
+			myName=name;
 			netFunc.sendString(me,name);
-			printPlayer();
 			waitInfo();
+			Button play = new Button("Play");
+			play.setDisable(!hote);
+			play.setOnMouseClicked(e->{
+				waitCli.stop();
+				sendMaze();
+			});
+			getChildren().add(play);
+			printPlayer();
 		}catch(Exception e){e.printStackTrace();}
 	}
 
@@ -73,10 +86,11 @@ public class hostMenu extends VBox{
 	private void printPlayer(){
 		this.getChildren().remove(Players);
 		Players =new TilePane();
+		//Players.setSpacing(30);
 		for(String str:names)
 			Players.getChildren().add(new Label(str));
 		Players.getStyleClass().add("hbox");
-		this.getChildren().add(Players);
+		this.getChildren().add(getChildren().size()-1,Players);
 	}
 
 	private void waitInfo(){
@@ -86,6 +100,32 @@ public class hostMenu extends VBox{
 
 	public void stopGetClient(){
 		waitCli.Stop();
+	}
+
+	public void clear(){
+		getChildren().clear();
+	}
+
+	public void sendMaze(){
+		for (Socket tmp : sockets) {
+			try{
+				netFunc.sendObject(tmp,maze);
+			}catch(IOException e){
+				names.remove(sockets.indexOf(tmp));
+				System.out.println("erreur de connexion avec une socket.");
+			}
+		}
+	}
+
+	public void lancerLabi(Maze tmp){
+		try{
+		Stage stage=new Stage();
+		SoloVersion sv=new SoloVersion(tmp,myName);
+		SingleView SV=new SingleView(sv);
+		stage.setScene(SV);
+		stage.setFullScreen(true);
+		stage.show();
+	}catch(Exception e){}
 	}
 
 	class waitClients extends Thread{
@@ -129,8 +169,13 @@ public class hostMenu extends VBox{
 				if(tmp instanceof ArrayList){
 					names=(ArrayList<String>)tmp;
 					Platform.runLater(() -> printPlayer());
-				}else
+				}else if(tmp instanceof Maze){
+					((Maze)tmp).print();
+					Platform.runLater(()-> lancerLabi((Maze)tmp));
 					break;
+				}else{
+					break;
+				}
 			}catch(Exception e){}
 			}
 		}

@@ -1,7 +1,5 @@
 import javafx.collections.FXCollections;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.PerspectiveCamera;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
@@ -14,30 +12,38 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.css.*;
 import javafx.util.Callback;
-
+import javafx.event.EventHandler;
 import java.io.File;
 import java.io.IOException;
-import java.text.Normalizer;
-import java.util.Optional;
+import javafx.scene.input.MouseEvent;
 
 //ICI RAJOUTER /MODIFIER DU CODE QUAND LE RESEAU SERA FINI POUR LE METTRE A JOUR ET TOUT RELIER
 
 
 public class Menu extends Application {
+    String gType;
+    String dif;
+    String name;
+    Maze mazeM;
+    View view;
+    boolean[] supp;
+    //Parent previous;
+
 
     @Override
     public void start(Stage stage) throws FormatNotSupported, IOException {
+
+        VBox menu = new VBox();
+        menu.setPrefSize(500.0, 500.0);
+        menu.getStyleClass().add("vbox");
+
+
         VBox mode = new VBox();
         mode.setPrefSize(600.0, 500.0);
         mode.getStyleClass().add("vbox");
 
         HBox settings = new HBox();
         settings.getStyleClass().add("hbox");
-
-        VBox menu = new VBox();
-        menu.setPrefSize(500.0, 500.0);
-        menu.getStyleClass().add("vbox");
-
 
         VBox game = new VBox();
         game.setPrefSize(500.0, 500.0);
@@ -51,24 +57,47 @@ public class Menu extends Application {
         settings2.setPrefSize(500, 500);
         settings2.getStyleClass().add("vbox");
 
-        VBox multiP=new VBox();
-        multiP.setPrefSize(500,500);
-        multiP.getStyleClass().add("vbox");
-
-
         final hostMenu hostmenu = new hostMenu();
 
 
         StackPane stack = new StackPane();
-        stack.getChildren().addAll(settings2, mode, maze, game, multiP, hostmenu, menu);
+        stack.getChildren().addAll(settings2, mode, maze, game, hostmenu, menu);
+
+       /* Button back=new Button("Back");
+        back.setOnMouseClicked(e->{
+            changePanel(stack,previous);
+        });*/
 
 
-        /*Panneau pour les level*/
+        /*Panneau pour le réseau*/
+        Button go=new Button("Go !");
+        go.setOnMouseClicked(e->{
+            try {
+                view = MazeInterface.getView(mazeM,gType,name);
+                Stage st = new Stage();
+                //sc.getStylesheets().add("");
+                st.setScene(view);
+                //view.setScene(sc);
+                st.setFullScreen(true);
+                st.show();
+            }
+            catch(Exception ex){
+
+            }
+        });
+
+        Button backToSet=new Button("Back");
+        backToSet.setOnMouseClicked(e->{
+            changePanel(stack,settings);
+        });
+        hostmenu.getStyleClass().add("vbox");
+
 
 
         /*Panneau pour charger le jeu*/
         Button newG = new Button("New Game");
         newG.setOnMouseClicked(e -> {
+            //previous=newG.getParent();
             changePanel(stack, maze);
         });
 
@@ -92,161 +121,157 @@ public class Menu extends Application {
         });
         //backToMenu.getStyleClass().add("back");
 
-        Button backToSet=new Button("Back");
-        backToSet.setOnMouseClicked(e->{
-            changePanel(stack,settings);
-        });
-
 
         game.getChildren().addAll(newG, cont, backToMenu);
-
-        /*PAnneau pour le mode multijoueur*/
-        HBox netw=new HBox();
-
-        Button loc=new Button("Local");
-        Button net=new Button("Network");
-        Button go=new Button("Go !");
-
-        ToggleGroup mult=new ToggleGroup();
-        RadioButton hote = new RadioButton("Host");
-        RadioButton client = new RadioButton("Client");
-        hote.setToggleGroup(mult);
-        client.setToggleGroup(mult);
-
-        netw.getChildren().addAll(net,hote,client);
-        netw.getStyleClass().add("hbox");
-
-        loc.setOnMouseClicked(evt->{
-            hote.setDisable(true);
-            client.setDisable(true);
-        });
-
-        net.setOnMouseClicked(evt->{
-            hote.setDisable(false);
-            client.setDisable(false);
-        });
-
-        multiP.getChildren().addAll(loc,netw,go,backToSet);
-
-        /*Panneau multijoueur*/
-
-
-
-        //hoteClient.getChildren().addAll(hote, client);
 
 
         /*Panneaux pour les modes*/
         ToggleGroup gameType = new ToggleGroup();
         ToggleGroup difficulty = new ToggleGroup();
 
-
+        //Types de jeu
         RadioButton solo = new RadioButton("Solo");
         solo.setSelected(true);
         solo.setToggleGroup(gameType);
 
         RadioButton chro = new RadioButton("Against the clock");
-    /*chro.setOnMouseClicked(e->{
-     view=new View(new TimeTrialVersion());
-      changePanel(stack,view);
-    });*/
         chro.setToggleGroup(gameType);
 
-        RadioButton multi = new RadioButton("Multiplayer");
-    /*multi.setOnMouseClicked(e->{
-      view=new View(new MultiPlayerVersion());
-      changePanel(stack,view);
-    });*/
+        RadioButton multi = new RadioButton("Multiplayer Local");
+        RadioButton net = new RadioButton("Multiplayer In Network");
+
+        net.setToggleGroup(gameType);
+
         multi.setToggleGroup(gameType);
 
+        for(Toggle t:gameType.getToggles()){
+            RadioButton r=(RadioButton)t;
+            r.setOnMouseClicked(evt->{
+                gType=r.getText();
+            });
+        }
+
         VBox type = new VBox();
-        type.getChildren().addAll(new Label("Game Type"), solo, chro, multi);
+        type.getChildren().addAll(new Label("Game Type"), solo, chro, multi,net);
         type.getStyleClass().add("vbox");
         type.getStyleClass().add("v1");
 
+        //Les options
+        VBox option=new VBox();
+        supp=new boolean[5];
+        CheckBox[] opt=new CheckBox[5];
+        opt[0]=new CheckBox("Obstacles");
+        opt[1]=new CheckBox("Doors");
+        opt[2]=new CheckBox("Monsters");
+        opt[3]=new CheckBox("Teleporters");
+        opt[4]=new CheckBox("Bonuses");
 
+        class OptionAction implements EventHandler<MouseEvent>{
+            private int pos;
+
+            public OptionAction(int a){
+                super();
+                pos=a;
+            }
+            @Override
+            public void handle(MouseEvent event){
+                int selected=numberSelected(opt);
+                CheckBox ch=(CheckBox)event.getSource();
+                if(ch.isSelected()){
+                    supp[pos]=true;
+                    switch (dif){
+                        case "Easy":
+                            if(selected==1)for(CheckBox c:opt) if(!c.isSelected()) c.setDisable(true);
+                            break;
+                        case "Normal":
+                            if(selected==2)
+                                for(CheckBox c:opt) if(!c.isSelected()) c.setDisable(true);
+                            break;
+                        case "Hard":
+                            if(selected==3)
+                                for(CheckBox c:opt) if(!c.isSelected()) c.setDisable(true);
+                            break;
+
+                    }
+                }
+                else{
+                    supp[pos]=false;
+                    for(CheckBox c:opt) c.setDisable(false);
+                }
+
+
+            }
+        }
+
+        option.getChildren().add(new Label("Options"));
+        for(int i=0;i<opt.length;i++){
+            CheckBox c=opt[i];
+            c.setOnMouseClicked(new OptionAction(i));
+            option.getChildren().add(c);
+        }
+
+        option.getStyleClass().add("v2");
+        option.setVisible(false);
+
+        //Les difficultés
         RadioButton easy = new RadioButton("Easy");
-    /*easy.setOnMouseClicked(e->{
-      changePanel(stack,mode);
-    });*/
         easy.setToggleGroup(difficulty);
 
         RadioButton normal = new RadioButton("Normal");
         normal.setSelected(true);
-    /*normal.setOnMouseClicked(e->{
-      changePanel(stack,mode);
-    });*/
         normal.setToggleGroup(difficulty);
 
         RadioButton hard = new RadioButton("Hard");
-    /*hard.setOnMouseClicked(e->{
-      changePanel(stack,mode);
-    });*/
-        hard.setToggleGroup(difficulty);
+         hard.setToggleGroup(difficulty);
 
         RadioButton superhard = new RadioButton("Super Hard");
-    /*hard.setOnMouseClicked(e->{
-      changePanel(stack,mode);
-    });*/
         superhard.setToggleGroup(difficulty);
 
         RadioButton personalized = new RadioButton("Personalized");
-    /*hard.setOnMouseClicked(e->{
-      changePanel(stack,mode);
-    });*/
         personalized.setToggleGroup(difficulty);
 
+        for(Toggle t:difficulty.getToggles()){
+            RadioButton r=(RadioButton)t;
+            r.setOnMouseClicked(evt->{
+                dif=r.getText();
+                deSelectAll(opt);
+                option.setVisible(true);
 
-        settings.getChildren().add(type);
-        Button backToLevel = new Button("Back");
-      /*backToLevel.setOnMouseClicked(e->{
-          changePanel(stack,level);
-      });*/
+            });
+        }
 
-        //mode.getChildren().addAll(solo,chro,multi,backToLevel);
-        /*Panneau pour les level*/
 
 
         Button backToMaze = new Button("Back");
         backToMaze.setOnMouseClicked(e -> {
             changePanel(stack, maze);
+            option.setVisible(false);
+            deSelectAll(opt);
         });
 
         Button playGame = new Button("Go !");
         playGame.setOnMouseClicked(e -> {
-            String dif = ((RadioButton) difficulty.getSelectedToggle()).getText();
-            String gType = ((RadioButton) gameType.getSelectedToggle()).getText();
-            View view;
-            if(gType.equals("Multiplayer")){
-                changePanel(stack,multiP);
+           // previous=mode;
+            if(dif==null)dif = ((RadioButton) difficulty.getSelectedToggle()).getText();
+            if(gType==null)gType = ((RadioButton) gameType.getSelectedToggle()).getText();
 
-                hote.setOnMouseClicked(evt -> {
 
-                    try {
-                        String name = MazeInterface.readInput("What's your name ?");
-                        hostmenu.initHost(name);
-                        changePanel(stack, hostmenu);
+            if(gType.equals("Multiplayer In Network")){
+                        try {
+                        name = MazeInterface.readInput("What's your name ?");
+                        mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif));
+                        //hostmenu.initHost(name,mazeM);
+                        //hostmenu.getChildren().add(go);
+                       changePanel(stack, hostmenu);
                         //gType=;
                     } catch (FormatNotSupported exception) {
 
                     }
-                });
-
-
-
-                client.setOnMouseClicked(evt -> {
-                    try {
-                        String name = MazeInterface.readInput("What's your name ?");
-                        hostmenu.initClient(name);
-                        changePanel(stack, hostmenu);
-                        //gType="";
-                    } catch (FormatNotSupported exception) {
-
-                    }
-                });
             }
             else {
                 try {
-                    view = MazeInterface.getView(MazeInterface.getSize(dif), MazeInterface.getSize(dif), gType);
+                    mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif));
+                    view = MazeInterface.getView(mazeM, gType);
                     Stage st = new Stage();
                     //sc.getStylesheets().add("");
                     st.setScene(view);
@@ -260,27 +285,26 @@ public class Menu extends Application {
                 }
             }
 
-            // view=MazeInterface.getView(MazeInterface.getSize(dif),MazeInterface.getSize(dif),gType);
         });
 
         VBox level = new VBox();
         level.getChildren().addAll(new Label("Level"), easy, normal, hard, superhard, personalized);
-        level.getStyleClass().add("vbox");
-        level.setId("v2");
-        settings.getChildren().add(level);
+        level.getStyleClass().add("v2");
+        settings.getChildren().addAll(type,option,level);
         mode.getChildren().addAll(settings, playGame, backToMaze);
-
 
 
 
         /* Panneau pour générer le labyrinthe*/
         Button random = new Button("Random maze");
         random.setOnMouseClicked(e -> {
+           // previous=random.getParent();
             changePanel(stack, mode);
         });
 
         Button load = new Button("Load maze file");
         load.setOnMouseClicked(e -> {
+           // previous=load.getParent();
             changePanel(stack, settings2);
 
         /*if(file!=null){
@@ -298,12 +322,12 @@ public class Menu extends Application {
         backToGame.setOnMouseClicked(e -> {
             changePanel(stack, game);
         });
-        //backToMenu.getStyleClass().add("back");
 
         maze.getChildren().addAll(random, load, backToGame);
 
         FileChooser fileChooser = new FileChooser();
 
+       /*Panneau pour les choix avec un chargement de fichier*/
         ToggleGroup typeG = new ToggleGroup();
         RadioButton solo2 = new RadioButton("Solo");
         solo2.setSelected(true);
@@ -312,15 +336,18 @@ public class Menu extends Application {
         RadioButton chro2 = new RadioButton("Against the clock");
         chro2.setToggleGroup(typeG);
 
-        RadioButton multi2 = new RadioButton("Multiplayer");
+        RadioButton multi2 = new RadioButton("Multiplayer Local");
         multi2.setToggleGroup(typeG);
 
-        VBox opt = new VBox();
-        opt.getChildren().addAll(solo2, chro2, multi2);
-        opt.getStyleClass().add("v3");
+        RadioButton net2=new RadioButton("Multiplayer In Network");
+        net2.setToggleGroup(typeG);
+
+        VBox op = new VBox();
+        op.getChildren().addAll(solo2, chro2, multi2,net2);
+        op.getStyleClass().add("v3");
 
         VBox type2 = new VBox();
-        type2.getChildren().addAll(new Label("Choose a game type"), opt);
+        type2.getChildren().addAll(new Label("Choose a game type"), op);
         type2.getStyleClass().add("vbox");
         //type2.setStyle("-fx-alignment:top-center;");
         //type2.getStyleClass().add("v1");
@@ -337,23 +364,32 @@ public class Menu extends Application {
             File file = fileChooser.showOpenDialog(stage);
             String gType = ((RadioButton) typeG.getSelectedToggle()).getText();
             if (file != null) {
-                View view;
                 try {
-                    view = MazeInterface.getView(new Maze(file), gType);
-                    //sc.getStylesheets().add("");
-                    Stage st = new Stage();
-                    st.setScene(view);
-                    //view.setScene(sc);
-                    st.setFullScreen(true);
-                    st.show();
-                    //sc.getStylesheets().add("");
-                } catch (FormatNotSupported formatNotSupported) {
-                    formatNotSupported.printStackTrace();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-
+                    mazeM = new Maze(file);
+                    if (gType.equals("MultiPlayer In Network")) {
+                            name = MazeInterface.readInput("What's your name ?");
+                            hostmenu.initHost(name, mazeM);
+                        }
+                     else {
+                            view = MazeInterface.getView(mazeM, gType);
+                            //sc.getStylesheets().add("");
+                            Stage st = new Stage();
+                            st.setScene(view);
+                            //view.setScene(sc);
+                            st.setFullScreen(true);
+                            st.show();
+                            //sc.getStylesheets().add("");
+                        }
+                    }
+                    catch (FormatNotSupported formatNotSupported) {
+                            formatNotSupported.printStackTrace();
+                        }
+                        catch (IOException e1) {
+                e1.printStackTrace();
             }
+
+
+                }
         });
 
         settings2.getChildren().addAll(type2, choose, backToMaze2);
@@ -369,13 +405,27 @@ public class Menu extends Application {
 
         Button play = new Button("PLAY");
         play.setOnMouseClicked(e -> {
+            //previous=play.getParent();
             changePanel(stack, game);
             //changePanel(stack,level);
         });
 
+        Button jplay=new Button("JOIN A GROUP");
+        jplay.setOnMouseClicked(e->{
+            //previous=jplay.getParent();
+            try {
+                    name = MazeInterface.readInput("What's your name ?");
+                    hostmenu.initClient(name);
+                    changePanel(stack, hostmenu);
+                } catch (FormatNotSupported exception) {
+
+                }
+            });
+
 
         Button cred = new Button("CREDITS");
         cred.setOnMouseClicked(e -> {
+           // previous=cred.getParent();
             Alert dev = new Alert(Alert.AlertType.INFORMATION);
             dev.setTitle("Developpers of Maz3D");
             dev.setContentText("Game made by Faridah Akinotcho, Frédéric Francine" + "\r\n" + "Iman Lignel, Pierre Méjane");
@@ -385,20 +435,13 @@ public class Menu extends Application {
 
         Button rank = new Button("RANKING");
         rank.setOnMouseClicked(e -> {
+            //previous=rank.getParent();
 
         });
 
-        Button network = new Button("Network");
-        network.setOnMouseClicked(e -> {
-            //changePanel(stack, hoteClient);
-            //changePanel(stack,level);
-        });
 
         stage.setTitle("Menu of Maz3D");
-        menu.getChildren().addAll(label, play, rank, cred, quit);
-        //level.setVisible(false);
-       // hoteClient.setVisible(false);
-        multiP.setVisible(false);
+        menu.getChildren().addAll(label, play, jplay,rank, cred, quit);
         mode.setVisible(false);
         game.setVisible(false);
         maze.setVisible(false);
@@ -421,6 +464,21 @@ public class Menu extends Application {
         past.setVisible(false);
         mtn.toFront();//on met au dessus de la pile, le panel qui nous intéresse
         mtn.setVisible(true);//puis on l'affiche
+    }
+
+    public static int numberSelected(CheckBox[] tab){
+        int res=0;
+        for(CheckBox c:tab){
+            if(c!=null && c.isSelected()) res ++;
+        }
+        return res;
+    }
+
+    public static void deSelectAll(CheckBox[] tab){
+        for(CheckBox c:tab) if(c!=null){
+            c.setDisable(false);
+            c.setSelected(false);
+        }
     }
 
     public static void addCss(Dialog a) {
@@ -448,3 +506,40 @@ public class Menu extends Application {
     }
 
 }
+
+    /*PAnneau pour le mode multijoueur
+    HBox netw=new HBox();
+
+        Button loc=new Button("Local");
+        Button net=new Button("Network");
+        Button go=new Button("Go !");
+
+    ToggleGroup mult=new ToggleGroup();
+    RadioButton loc = new RadioButton("Local");
+    RadioButton net = new RadioButton("Network");
+        loc.setToggleGroup(mult);
+                net.setToggleGroup(mult);
+
+// netw.getChildren().addAll(net,loc,net);
+// netw.getStyleClass().add("hbox");
+
+
+
+        loc.setOnMouseClicked(evt->{
+            loc.setDisable(true);
+            net.setDisable(true);
+        });
+
+        net.setOnMouseClicked(evt->{
+            loc.setDisable(false);
+            net.setDisable(false);
+        });
+
+//multiP.getChildren().addAll(netw,backToSet);
+
+Panneau multijoueur
+
+
+
+locnet.getChildren().addAll(loc, net);*/
+
