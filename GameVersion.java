@@ -59,10 +59,10 @@ public abstract class GameVersion implements Serializable{
         int x=(int)begin.getX();
         int y=(int)begin.getY();
         //Take care of this tomorrow
-        if(y==0) orientation=270;
+        if(y==0) orientation=90;
         else if(x==0)orientation=0;
         else if(x==maze.getWidth()-1) orientation=180;
-        else if(y==maze.getHeight()-1) orientation=90;
+        else if(y==maze.getHeight()-1) orientation=270;
 
       player.setPosition(begin,orientation);
     }
