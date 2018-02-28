@@ -128,6 +128,14 @@ public class hostMenu extends VBox{
 	}catch(Exception e){}
 	}
 
+	public <K> K[] toTab(ArrayList<K> list){
+		K[] tab =(K[]) new Object[list.size()];
+		for(int i=0;i<tab.length;i++){
+			tab[i]=list.get(i);
+		}
+		return tab;
+	}
+
 	class waitClients extends Thread{
 		private volatile boolean exit = false;
 
