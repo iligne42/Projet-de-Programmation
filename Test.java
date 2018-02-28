@@ -61,13 +61,13 @@ public class Test extends Application{
 
   }
 
-  public void doFloor(Group root, MazeFloors maze){
+  /*public void doFloor(Group root, MazeFloors maze){
     LinkedList<Maze> floors = maze.getFloor();
     int i=0;
     for (Maze a : floors) {
       createMaze(root,a,i);
     }
-  }
+  }*/
 
   public void createMaze(Group root,Maze maze,int floor){
     int CASE;

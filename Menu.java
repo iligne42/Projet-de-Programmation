@@ -73,7 +73,7 @@ public class Menu extends Application {
         Button go=new Button("Go !");
         go.setOnMouseClicked(e->{
             try {
-                view = MazeInterface.getView(mazeM,gType,name);
+                view = MazeInterface.getView(mazeM,gType,name,MazeInterface.getTime(dif));
                 Stage st = new Stage();
                 //sc.getStylesheets().add("");
                 st.setScene(view);
@@ -271,7 +271,7 @@ public class Menu extends Application {
             else {
                 try {
                     mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif));
-                    view = MazeInterface.getView(mazeM, gType);
+                    view = MazeInterface.getView(mazeM, gType, MazeInterface.getTime(dif));
                     Stage st = new Stage();
                     //sc.getStylesheets().add("");
                     st.setScene(view);
@@ -371,7 +371,7 @@ public class Menu extends Application {
                             hostmenu.initHost(name, mazeM);
                         }
                      else {
-                            view = MazeInterface.getView(mazeM, gType);
+                            view = MazeInterface.getView(mazeM, gType, MazeInterface.getTime(dif));
                             //sc.getStylesheets().add("");
                             Stage st = new Stage();
                             st.setScene(view);

@@ -15,7 +15,7 @@ public class Player implements Serializable{
 		position=null;
 		orientation=0;
 		speed=(float)0.5;
-		orientationSpeed=45;
+		orientationSpeed=5;
 		bonus=new LinkedList<>();
 		keys=new LinkedList<>();
 	}

@@ -39,7 +39,7 @@ public class MazeFloors{
     }
 
     public static void main(String []args) throws FormatNotSupported{
-        MazeFloors mf=new MazeFloors(20,10,1,0,0,0,0,3,0);
+        MazeFloors mf=new MazeFloors(20,10,3,0,0,0,0,3,0);
         mf.print();
     }
 }

@@ -19,7 +19,7 @@ public class SingleView extends View{
         public SoloControl() throws IOException{
             game.start();
             timePane.start();
-            mazePane.initMaze();
+            mazePane.initMaze(0);
             SingleView.this.setOnKeyPressed(e->{
                 System.out.println(e.getCode());
                     switch (e.getCode()){
