@@ -14,7 +14,7 @@ public class Player implements Serializable{
 		this.name=name;
 		position=null;
 		orientation=0;
-		speed=(float)0.3;
+		speed=(float)0.5;
 		orientationSpeed=5;
 		bonus=new LinkedList<>();
 		keys=new LinkedList<>();

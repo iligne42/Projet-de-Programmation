@@ -8,13 +8,13 @@ import java.util.Optional;
 
 public interface MazeInterface {
 
-    static String getTime(int t) {
+    /*static String getTime(int t) {
         int minutes = t / 60;
         int seconds = t % 60;
         int hours = minutes / 60;
         minutes %= 60;
         return ((hours < 10) ? "0" : "") + hours + ":" + ((minutes < 10) ? "0" : "") + minutes + ":" + ((seconds < 10) ? "0" : "") + seconds;
-    }
+    }*/
 
     static int getSeconds(String s) {
         int t = 0;
@@ -121,8 +121,8 @@ public interface MazeInterface {
         return new Maze(L,l);
     }
 
-    static View getView(Maze m, String ty, String name) throws FormatNotSupported, IOException {
-        int time = 0;
+    static View getView(Maze m, String ty, String name, int time) throws FormatNotSupported, IOException {
+        //int time = 0;
         int type = 0;
         if (ty.equals("Solo"))
             return new SingleView(new SoloVersion(m, name));
@@ -134,8 +134,8 @@ public interface MazeInterface {
         else return new MultiView(new MultiPlayerVersion(setMulti(), m));
     }
 
-    static View getView(Maze m, String ty) throws FormatNotSupported, IOException {
-        int time = 0;
+    static View getView(Maze m, String ty, int time) throws FormatNotSupported, IOException {
+        //int time = 0;
         int type = 0;
         if (ty.equals("Solo"))
             return new SingleView(new SoloVersion(m, readInput("What's your name ?")));
@@ -147,9 +147,9 @@ public interface MazeInterface {
     }
 
 //HERE ADD THE OPTIONS FOR THE NETWORK THING
-    static View getView(int L, int l, String ty) throws FormatNotSupported, IOException {
+    static View getView(int L, int l, String ty, int time) throws FormatNotSupported, IOException {
         //int size=getSize(lev);
-        int time = 0;
+        //int time = 0;
         if (ty.equals("Solo")) {
             if (l == -1)
                 return new SingleView(new SoloVersion(readInt("Choose the length"), readInt("Choose the width"), readInput("What's your name")));
@@ -186,6 +186,28 @@ public interface MazeInterface {
                 break;
         }
         return size;
+    }
+
+    static int getTime(String s){
+        int time=0;
+        switch(s){
+            case "Easy":
+                time=300;
+                break;
+
+            case "Normal":
+                time=900;
+                break;
+
+            case "Hard":
+                time=1800;
+                break;
+
+            case "Super Hard":
+                time=7200;
+                break;
+        }
+        return time;
     }
 
 
