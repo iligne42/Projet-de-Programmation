@@ -49,6 +49,25 @@ public class Player implements Serializable{
 		orientation=(orientation+360-orientationSpeed)%360;
 	}
 
+	public void pickUp(Key key){
+		keys.add(key);
+	}
+
+	public void pickUp(Bonus bonuss){
+		bonus.add(bonuss);
+	}
+
+	public boolean openDoor(Point2D point){
+		if(maze.getCase(point)!=Maze.DOOR)return true;
+		else{
+			Door door = maze.getDoor(point);
+			for ( Key a : keys){
+				if(door.getKey().equals(a)) return true;
+			}
+			return false;
+		}
+	}
+
 	public static void main(String[] args) {
 		Player p=new Player("Pierre");
 		p.setPosition(new Point2D.Float(1.F,1.F),45);

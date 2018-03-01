@@ -27,6 +27,9 @@ public class Door extends Divers{
     public Point2D getKeyPlace(){return key.getPosition();}
     public Key getKey(){return key;}
 
+    public boolean isTheKey(Point2D point){
+      return (getKeyPlace().equals(point));
+    }
     private void place(){
         Random rand=new Random();
         int i=0; int j=0;
