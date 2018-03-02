@@ -140,7 +140,7 @@ public class View extends Scene{
 
                             protected String computeValue() {
 
-                                return MazeInterface.getTime(timeSeconds.getValue());
+                                return MazeInterface.getT(timeSeconds.getValue());
 
                             }
 
@@ -276,7 +276,7 @@ public class View extends Scene{
 
             public String getElapsedTime() {
 
-                return MazeInterface.getTime(timeLimit-timeSeconds.get());
+                return MazeInterface.getT(timeLimit-timeSeconds.get());
 
             }
 
@@ -324,7 +324,7 @@ public class View extends Scene{
 
             public String getElapsedTime() {
 
-                return MazeInterface.getTime(timeSeconds.get());
+                return MazeInterface.getT(timeSeconds.get());
 
             }
 
@@ -676,7 +676,7 @@ public class View extends Scene{
 
                     protected String computeValue() {
 
-                        return MazeInterface.getTime(TimeProperty.this.getValue());
+                        return MazeInterface.getT(TimeProperty.this.getValue());
 
                     }
 

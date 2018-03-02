@@ -27,7 +27,7 @@ public class Scores{
 
         public String toString(){
             String scores="";
-            for(Pair<String,Integer> p: this) scores+=p.getKey()+"-"+MazeInterface.getTime(p.getValue())+"\n";
+            for(Pair<String,Integer> p: this) scores+=p.getKey()+"-"+MazeInterface.getT(p.getValue())+"\n";
             return scores;
         }
 

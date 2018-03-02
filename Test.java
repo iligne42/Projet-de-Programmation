@@ -111,9 +111,13 @@ public class Test extends Application{
           break;
           case Maze.BONUS:
           cell = makeFloor(COLOR_WAY);
+          //faire drawBonus, attention il faut regarder le type de bonus, autrement dit le type de labyrinthe
           setBox(cell,i,j,root,floor);
           break;
           case Maze.OBSTACLE:
+          cell = makeFloor(COLOR_WAY);
+          //faire drawObstacle, attention à la forme de l'obstacle
+          setBox(cell,i,j,root,floor);
           break;
           case Maze.STAIRSUP:
           drawStair(4,1,root,i,j,floor);

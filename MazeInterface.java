@@ -8,13 +8,13 @@ import java.util.Optional;
 
 public interface MazeInterface {
 
-    /*static String getTime(int t) {
+    static String getT(int t) {
         int minutes = t / 60;
         int seconds = t % 60;
         int hours = minutes / 60;
         minutes %= 60;
         return ((hours < 10) ? "0" : "") + hours + ":" + ((minutes < 10) ? "0" : "") + minutes + ":" + ((seconds < 10) ? "0" : "") + seconds;
-    }*/
+    }
 
     static int getSeconds(String s) {
         int t = 0;
@@ -88,7 +88,7 @@ public interface MazeInterface {
 
             }catch(FormatNotSupported e){
 
-                System.out.println("Entrée incorecte.");
+                System.out.println("Entrée incorrecte.");
 
             }
 
