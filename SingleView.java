@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 
+
 public class SingleView extends View{
 
     public SingleView(GameVersion game) throws IOException{

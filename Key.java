@@ -47,7 +47,7 @@ public class Key extends Divers{
         //System.out.println("La clé:"+j+","+i);
         double k=centrer(i);
         double l=centrer(j);
-        p.setLocation(l,k);
+        p.setLocation(l,k);        
     }
 
     public static void main(String[]args){

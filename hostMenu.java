@@ -119,13 +119,19 @@ public class hostMenu extends VBox{
 
 	public void lancerLabi(Maze tmp){
 		try{
-		Stage stage=new Stage();
-		SoloVersion sv=new SoloVersion(tmp,myName);
-		SingleView SV=new SingleView(sv);
-		stage.setScene(SV);
-		stage.setFullScreen(true);
-		stage.show();
-	}catch(Exception e){}
+			Stage stage=new Stage();
+			SoloVersion sv=new SoloVersion(tmp,myName);
+			netView NV=new netView(sv,me);
+			stage.setScene(NV);
+			stage.setFullScreen(true);
+			stage.show();
+			if(hote){
+				Server server = new Server(socServ,names, sockets);
+			}
+		}catch(FormatNotSupported e){
+
+		}catch(IOException e){}
+
 	}
 
 	public <K> K[] toTab(ArrayList<K> list){

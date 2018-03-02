@@ -68,8 +68,8 @@ public abstract class GameVersion implements Serializable{
     }
 
 
-    public boolean gameOver(){
-        Point2D pos=player.getPosition();
+  public boolean gameOver(){
+      Point2D pos=player.getPosition();
       Point end=maze.ending();
       return ((int)pos.getX()==end.getX() && (int)pos.getY()==end.getY());
   }
@@ -78,7 +78,22 @@ public abstract class GameVersion implements Serializable{
   public boolean validMove(){
       Point2D point;
       point = player.getPosition();
-      return point.getX()>0 && point.getY()>0 && point.getX()<maze.getWidth() && point.getY()<maze.getHeight() && maze.getCase(point)!=Maze.WALL;
+
+      return point.getX()>0 && point.getY()>0 && point.getX()<maze.getWidth() && point.getY()<maze.getHeight() && maze.getCase(point)!=Maze.WALL && player.openDoor(point);
+  }
+
+  public void pickObject(){
+    Point2D point = player.getPosition();
+    if(maze.getCase(point)==Maze.KEY){
+      Key key = maze.getKey(point);
+      player.pickUp(key);
+      maze.free((int)point.getX(),(int)point.getY());
+    }
+    else if(maze.getCase(point)==Maze.BONUS){
+      Bonus bonus = maze.getBonus(point);
+      player.pickUp(bonus);
+      maze.free((int)point.getX(),(int)point.getY());
+    }
   }
 
   public void retreat(Point2D prev){
@@ -124,13 +139,14 @@ public abstract class GameVersion implements Serializable{
               case 3:
                   player.moveLeft();
                   break;
-
               case 4:
                   player.moveRight();
                   break;
           }
           System.out.println(p);
+      pickObject();
       if(!validMove()) this.retreat(p);
+
       //while(!validMove()) this.retreat(p);
   }
 
@@ -228,7 +244,3 @@ public abstract class GameVersion implements Serializable{
     }*/
 
     }
-
-
-
-

@@ -2,7 +2,7 @@ import javafx.util.Pair;
 import java.io.*;
 import java.util.ArrayList;
 
-public class Scores{
+public class Scores implements Serializable{
     protected ScoreList list;
     protected File file;
 
