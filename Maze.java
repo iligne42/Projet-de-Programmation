@@ -379,6 +379,17 @@ public class Maze implements Serializable{
         maze[i][j]=value;
         return new Point(i,j);
     }*/
+    public Key getKey(Point2D point){
+      for (Door a : doors)
+        if(a.isTheKey(point))return a.getKey();
+      return null;
+    }
+
+    public Bonus getBonus(Point2D point){
+      for (Bonus a : bonus)
+        if(a.getPosition().equals(point))return a;
+      return null;
+    }
 
     public void fill(int value, Point2D p){
         maze[(int)p.getY()][(int)p.getX()]=value;
@@ -452,6 +463,14 @@ public class Maze implements Serializable{
             if(doors.get(i).equals(d)) return true;
         }
         return false;
+    }
+
+    public Door getDoor(Point2D point){
+      for (Door a : doors){
+        if(a.getPosition().equals(point))
+          return a;
+      }
+      return null;    
     }
 
     private void addBonus(int nb, int type){
