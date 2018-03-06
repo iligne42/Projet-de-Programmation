@@ -9,8 +9,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Stack;
@@ -31,10 +30,25 @@ public class MultiPlayerVersion implements Serializable{
         return game;
     }
 
-    public void save(String file) throws IOException{
+   /* public void save(String file) throws IOException{
       game.save(file);
       //save the players too
-  }
+  }*/
+
+    public void save(String file) throws IOException {
+        FileOutputStream fos = new FileOutputStream(file+".ser");
+        ObjectOutputStream oos=new ObjectOutputStream(fos);
+        oos.writeObject(this);
+        oos.close();
+    }
+
+    public MultiPlayerVersion load(String file) throws IOException,ClassNotFoundException{
+        FileInputStream fis=new FileInputStream(file);
+        ObjectInputStream ois=new ObjectInputStream(fis);
+        MultiPlayerVersion g=(MultiPlayerVersion)ois.readObject();
+        ois.close();
+        return g;
+    }
 
   public boolean gameOver(){
       return players.isEmpty();

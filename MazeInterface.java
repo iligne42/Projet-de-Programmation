@@ -23,12 +23,6 @@ public interface MazeInterface {
         return t;
     }
 
-    /*static String getInput(String s){
-        while(notValid())
-        return new Alert(AlertType.In)
-
-    }*/
-
     static boolean notValid(String line) {
         if (line == null || line.equals("")) return true;
         for (int i = 0; i < line.length(); i++) {
@@ -88,7 +82,7 @@ public interface MazeInterface {
 
             }catch(FormatNotSupported e){
 
-                System.out.println("Entrée incorrecte.");
+                System.out.println("Entrée incorecte.");
 
             }
 
@@ -117,12 +111,15 @@ public interface MazeInterface {
         return res;
     }
 
-    static Maze getMaze(int L, int l ) throws FormatNotSupported{
+    static Maze getMaze(int L, int l ) throws FormatNotSupported,IOException{
+        if(l==-1){
+            L=readInt("Choose the length");
+            l=readInt("Choose the width");
+        }
         return new Maze(L,l);
     }
 
     static View getView(Maze m, String ty, String name, int time) throws FormatNotSupported, IOException {
-        //int time = 0;
         int type = 0;
         if (ty.equals("Solo"))
             return new SingleView(new SoloVersion(m, name));
@@ -135,7 +132,6 @@ public interface MazeInterface {
     }
 
     static View getView(Maze m, String ty, int time) throws FormatNotSupported, IOException {
-        //int time = 0;
         int type = 0;
         if (ty.equals("Solo"))
             return new SingleView(new SoloVersion(m, readInput("What's your name ?")));
@@ -147,9 +143,7 @@ public interface MazeInterface {
     }
 
 //HERE ADD THE OPTIONS FOR THE NETWORK THING
-    static View getView(int L, int l, String ty, int time) throws FormatNotSupported, IOException {
-        //int size=getSize(lev);
-        //int time = 0;
+    static View getView(int L, int l, String ty,int time) throws FormatNotSupported, IOException {
         if (ty.equals("Solo")) {
             if (l == -1)
                 return new SingleView(new SoloVersion(readInt("Choose the length"), readInt("Choose the width"), readInput("What's your name")));
@@ -210,14 +204,10 @@ public interface MazeInterface {
         return time;
     }
 
-
     static int rand(int a, int b) {
         double x = Math.random() * (b - a) + a;
         return (int) x;
     }
 
-   /* static String[] readInput(String[] s){
-
-    }*/
 
 }

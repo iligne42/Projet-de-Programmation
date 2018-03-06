@@ -11,17 +11,27 @@ public class Scores implements Serializable{
         public boolean add(String name,int score){
             int i=0;
             if(this.size()==0) return super.add(new Pair<>(name,score));
-            Pair<String,Integer> pair=this.get(i);
+            Pair<String,Integer> pair;
             int val;
             while(i<this.size()){
+                pair=this.get(i);
                 val=pair.getValue();
                 if(score<val){
-                    super.add(i,new Pair<>(name,score));
-                    break;
+                     super.add(i,new Pair<>(name,score));
+                     return true;
+
                 }
-                pair=this.get(++i);
+                i++;
             }
             if(this.size()>10) this.remove(this.size()-1);
+            return true;
+        }
+
+        public boolean add(Scores score){
+            ScoreList l=score.list;
+            for(Pair<String,Integer> p:l){
+                this.add(p.getKey(),p.getValue());
+            };
             return true;
         }
 

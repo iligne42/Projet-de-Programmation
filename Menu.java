@@ -164,7 +164,7 @@ public class Menu extends Application {
         opt[1]=new CheckBox("Doors");
         opt[2]=new CheckBox("Monsters");
         opt[3]=new CheckBox("Teleporters");
-        opt[4]=new CheckBox("Bonuses");
+        opt[4]=new CheckBox("Bonus");
 
         class OptionAction implements EventHandler<MouseEvent>{
             private int pos;
@@ -260,23 +260,23 @@ public class Menu extends Application {
                         try {
                         name = MazeInterface.readInput("What's your name ?");
                         mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif));
-                        hostmenu.initHost(name,mazeM);
+                        //hostmenu.initHost(name,mazeM);
                         //hostmenu.getChildren().add(go);
                        changePanel(stack, hostmenu);
                         //gType=;
-                    } catch (FormatNotSupported exception) {
+                    } catch (Exception exception) {
 
                     }
             }
             else {
                 try {
                     mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif));
-                    view = MazeInterface.getView(mazeM, gType, MazeInterface.getTime(dif));
+                    view = MazeInterface.getView(mazeM, gType,MazeInterface.getTime(dif));
                     Stage st = new Stage();
                     //sc.getStylesheets().add("");
                     st.setScene(view);
                     //view.setScene(sc);
-                    st.setFullScreen(true);
+                   st.setFullScreen(true);
                     st.show();
                 } catch (FormatNotSupported formatNotSupported) {
 
@@ -304,9 +304,13 @@ public class Menu extends Application {
 
         Button load = new Button("Load maze file");
         load.setOnMouseClicked(e -> {
-           // previous=load.getParent();
-            changePanel(stack, settings2);
-
+                    // previous=load.getParent();
+                    changePanel(stack, settings2);
+                });
+        Button backToGame = new Button("Back");
+        backToGame.setOnMouseClicked(e -> {
+            changePanel(stack, game);
+        });
         /*if(file!=null){
             HBox h=new HBox();
             Button ok=new Button("Set");
@@ -316,12 +320,8 @@ public class Menu extends Application {
             view=MazeInterface.getView(new Maze(file),type);
         }*/
 
-        });
 
-        Button backToGame = new Button("Back");
-        backToGame.setOnMouseClicked(e -> {
-            changePanel(stack, game);
-        });
+
 
         maze.getChildren().addAll(random, load, backToGame);
 
@@ -371,7 +371,7 @@ public class Menu extends Application {
                             hostmenu.initHost(name, mazeM);
                         }
                      else {
-                            view = MazeInterface.getView(mazeM, gType, MazeInterface.getTime(dif));
+                            view = MazeInterface.getView(mazeM, gType,MazeInterface.getTime(dif));
                             //sc.getStylesheets().add("");
                             Stage st = new Stage();
                             st.setScene(view);
@@ -507,39 +507,4 @@ public class Menu extends Application {
 
 }
 
-    /*PAnneau pour le mode multijoueur
-    HBox netw=new HBox();
-
-        Button loc=new Button("Local");
-        Button net=new Button("Network");
-        Button go=new Button("Go !");
-
-    ToggleGroup mult=new ToggleGroup();
-    RadioButton loc = new RadioButton("Local");
-    RadioButton net = new RadioButton("Network");
-        loc.setToggleGroup(mult);
-                net.setToggleGroup(mult);
-
-// netw.getChildren().addAll(net,loc,net);
-// netw.getStyleClass().add("hbox");
-
-
-
-        loc.setOnMouseClicked(evt->{
-            loc.setDisable(true);
-            net.setDisable(true);
-        });
-
-        net.setOnMouseClicked(evt->{
-            loc.setDisable(false);
-            net.setDisable(false);
-        });
-
-//multiP.getChildren().addAll(netw,backToSet);
-
-Panneau multijoueur
-
-
-
-locnet.getChildren().addAll(loc, net);*/
 
