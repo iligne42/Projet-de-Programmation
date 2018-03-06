@@ -128,7 +128,23 @@ public abstract class GameVersion implements Serializable{
         this.handleMove(p);
     }
 
-    public void handleMove(Point2D start){
+     public void pickObject(){
+        Point2D point = player.getPosition();
+        if(maze.getCase(point)==Maze.KEY) {
+            Key key = maze.getKey(point);
+            player.pickUp(key);
+            maze.free((int) point.getX(), (int) point.getY());
+        }
+
+        else if(maze.getCase(point)==Maze.BONUS){
+         Bonus bonus = maze.getBonus(point);
+         player.pickUp(bonus);
+         maze.free((int)point.getX(),(int)point.getY());
+         }
+    }
+
+
+        public void handleMove(Point2D start){
         Point2D goal = player.getPosition();
         int angle = player.orientation();
         double radius = player.radius();
@@ -151,6 +167,7 @@ public abstract class GameVersion implements Serializable{
         else if(!isInBounds(goal)){
             player.setPosition(start,angle);
         }
+        pickObject();
     }
 
     //Renvoie le coin supérieur gauche du mur avec lequel il y a eu la collision, null sinon
