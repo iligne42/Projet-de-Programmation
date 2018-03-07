@@ -52,9 +52,11 @@ public class Monstres extends Divers{
     public DoubleProperty getY(){
       return y;
     }
+
     public IntegerProperty getDirec(){
       return orientation;
     }
+
     public void change(){
       x.set(p.getX());
       y.set(p.getY());

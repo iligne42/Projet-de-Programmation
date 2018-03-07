@@ -121,8 +121,10 @@ public class hostMenu extends VBox{
 		try{
 			Stage stage=new Stage();
 			SoloVersion sv=new SoloVersion(tmp,myName);
+			System.out.println("reussi 1");
 			netView NV=new netView(sv,me);
 			stage.setScene(NV);
+			System.out.println("reussi 2");
 			stage.setFullScreen(true);
 			stage.show();
 			if(hote){

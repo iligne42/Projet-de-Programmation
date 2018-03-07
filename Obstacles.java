@@ -1,8 +1,13 @@
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.*;
+import javafx.scene.transform.Rotate;
 
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.Random;
 //import javafx.scene.shape.TriangleMesh;
 
@@ -30,5 +35,6 @@ public class Obstacles extends Divers{
         double l=centrer(j);
         p.setLocation(l,k);
     }*/
+
 
 }

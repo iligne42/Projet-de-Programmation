@@ -57,7 +57,7 @@ public class Player implements Serializable{
 		bonus.add(bonuss);
 	}
 
-	public boolean openDoor(Point2D point){
+	/*public boolean openDoor(Point2D point){
 		if(maze.getCase(point)!=Maze.DOOR)return true;
 		else{
 			Door door = maze.getDoor(point);
@@ -66,7 +66,7 @@ public class Player implements Serializable{
 			}
 			return false;
 		}
-	}
+	}*/
 
 	public static void main(String[] args) {
 		Player p=new Player("Pierre");

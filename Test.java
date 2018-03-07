@@ -50,7 +50,7 @@ public class Test extends Application{
   public void start(Stage stage) throws FormatNotSupported,IOException{
       Group root = new Group();
       Scene scene = new Scene(root,500,500,true);
-      maze= new Maze(SIZE_MAZE,SIZE_MAZE,0,2,0,2,0,0);
+      maze= new Maze(SIZE_MAZE,SIZE_MAZE,10,2,0,2,0,0);
       createMaze(root,maze,1);
       //setCamToStart(cam);
       //eventMouse(scene,root);
@@ -88,7 +88,7 @@ public class Test extends Application{
           break;
           case Maze.END:
           PhongMaterial COLOR_END = new PhongMaterial();
-          COLOR_END.setDiffuseMap(new Image("/end.jpg"));
+          //COLOR_END.setDiffuseMap(new Image("/end.jpg"));
           COLOR_END.setSpecularColor(Color.WHITE);
           cell = makeFloor(COLOR_END);
           setBox(cell,i,j,root,floor);
@@ -128,6 +128,7 @@ public class Test extends Application{
           break;
           case Maze.OBSTACLE:
           cell = makeFloor(COLOR_WAY);
+          drawObstacle(root,i,j);
           //faire drawObstacle, attention à la forme de l'obstacle
           setBox(cell,i,j,root,floor);
           break;
@@ -249,31 +250,33 @@ public class Test extends Application{
   }
   public void drawKey(Group root,int posx,int posy) throws IOException{
     FXMLLoader fxmlLoader = new FXMLLoader();
-    fxmlLoader.setLocation(this.getClass().getResource("key.fxml"));
-    MeshView key = fxmlLoader.<MeshView>load();
-    key.setRotationAxis(Rotate.Z_AXIS);
+    fxmlLoader.setLocation(this.getClass().getResource("bigkey.fxml"));
+    Group key = fxmlLoader.<Group>load();
+    /*key.setRotationAxis(Rotate.Z_AXIS);
     key.setRotate(180.0);
     key.setTranslateX(posx*SIZE_BOX);
-    key.setTranslateZ(posy*SIZE_BOX);
+    key.setTranslateZ(posy*SIZE_BOX);*/
     PhongMaterial mat = new PhongMaterial();
     mat.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
     mat.setDiffuseColor(Color.YELLOW);
-    key.setMaterial(mat);
+    //key.setMaterial(mat);
     RotateTransition rt = new RotateTransition(Duration.millis(1000));
     rt.setByAngle(360.0);
     rt.setAxis(Rotate.X_AXIS);
     rt.setCycleCount(TranslateTransition.INDEFINITE);
     rt.setAutoReverse(true);
-    rt.setNode(key);
-    /*for ( Node a : key.getChildren() ) {
+    //rt.setNode(key);
+    for ( Node a : key.getChildren() ) {
       if(a instanceof Shape3D) {
           ((Shape3D)a).setMaterial(mat);
           ((Shape3D)a).setTranslateX(posx*SIZE_BOX);
           ((Shape3D)a).setTranslateZ(posy*SIZE_BOX);
+          ((Shape3D)a).setRotationAxis(Rotate.Z_AXIS);;
+          ((Shape3D)a).setRotate(180.0);
           rt.setNode(a);
       }
       else a.setVisible(false);
-    }*/
+    }
     rt.play();
     root.getChildren().add(key);
     //keyOrBonus.add(key);
@@ -294,6 +297,27 @@ public class Test extends Application{
       i++;
       root.getChildren().add(step);
     }
+  }
+
+  public void drawObstacle(Group root,int i, int j) throws IOException{
+    FXMLLoader fxmlLoader = new FXMLLoader();
+    fxmlLoader.setLocation(this.getClass().getResource("Spider.fxml"));
+    Group obs = fxmlLoader.load();
+    PhongMaterial mat = new PhongMaterial();
+    mat.setSpecularColor(Color.BLACK);
+    mat.setDiffuseColor(Color.DARKGREY);
+    for ( Node n : obs.getChildren() ) {
+      if(n instanceof Shape3D) {
+        ((Shape3D)n).setMaterial(mat);
+        ((Shape3D)n).setTranslateX(i*SIZE_BOX);
+        ((Shape3D)n).setTranslateZ(j*SIZE_BOX);
+        ((Shape3D)n).setTranslateY(SIZE_BOX/2);
+        //rt.setNode(n);
+      }
+      else n.setVisible(false);
+    }
+    //obs.setRotationAxis(Rotate.Y_AXIS);
+    root.getChildren().add(obs);
   }
 
   public void buildCamera(PerspectiveCamera cam){

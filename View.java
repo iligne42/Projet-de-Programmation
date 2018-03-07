@@ -430,7 +430,10 @@ public class View extends Scene{
 
                             cell = new Box(SIZE_BOX, 0, SIZE_BOX);
 
-                            if(maze.getCase(i,j)==Maze.START) cell.setMaterial(COLOR_ENTRY);
+                            if(maze.getCase(i,j)==Maze.START){
+                                //test=cell;
+                                cell.setMaterial(COLOR_ENTRY);
+                            }
 
                             else if(maze.getCase(i,j)==Maze.END) cell.setMaterial(COLOR_END);
 

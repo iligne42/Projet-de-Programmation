@@ -114,6 +114,8 @@ public class Maze implements Serializable{
     public int getCase(Point2D p){return getCase((int)p.getY(),(int)p.getX());}
     public int getCase(int i, int j){return maze[i][j];}
     public LinkedList<Monstres> getMonstres() { return monstres; }
+    public LinkedList<Obstacles> getObstacles(){ return obstacles;}
+    public LinkedList<Bonus> getBonus(){return bonus;}
     public void free(int i, int j){ maze[i][j]=WAY;}
 
     public Point specialPlaces(int value){

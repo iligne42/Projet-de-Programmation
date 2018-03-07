@@ -79,10 +79,10 @@ public abstract class GameVersion implements Serializable{
       Point2D point;
       point = player.getPosition();
 
-      return point.getX()>0 && point.getY()>0 && point.getX()<maze.getWidth() && point.getY()<maze.getHeight() && maze.getCase(point)!=Maze.WALL && player.openDoor(point);
+      return point.getX()>0 && point.getY()>0 && point.getX()<maze.getWidth() && point.getY()<maze.getHeight() && maze.getCase(point)!=Maze.WALL;// && player.openDoor(point);
   }
 
-  public void pickObject(){
+  /*public void pickObject(){
     Point2D point = player.getPosition();
     if(maze.getCase(point)==Maze.KEY){
       Key key = maze.getKey(point);
@@ -94,7 +94,7 @@ public abstract class GameVersion implements Serializable{
       player.pickUp(bonus);
       maze.free((int)point.getX(),(int)point.getY());
     }
-  }
+  }*/
 
   public void retreat(Point2D prev){
       Point2D fin=this.BorderOnTheSameLine(prev, player.getPosition());
@@ -144,8 +144,8 @@ public abstract class GameVersion implements Serializable{
                   break;
           }
           System.out.println(p);
-      pickObject();
-      if(!validMove()) this.retreat(p);
+      //pickObject();
+     if(!validMove()) this.retreat(p);
 
       //while(!validMove()) this.retreat(p);
   }
