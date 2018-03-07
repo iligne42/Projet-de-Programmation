@@ -84,7 +84,7 @@ public class Test extends Application{
           COLOR_ENTRY.setSpecularColor(Color.BLACK);
           cell=makeFloor(COLOR_ENTRY);
           setBox(cell,i,j,root,floor);
-          drawKey(root,j,i);
+          drawObstacle(root,j,i);
           break;
           case Maze.END:
           PhongMaterial COLOR_END = new PhongMaterial();
@@ -301,7 +301,12 @@ public class Test extends Application{
 
   public void drawObstacle(Group root,int i, int j) throws IOException{
     FXMLLoader fxmlLoader = new FXMLLoader();
-    fxmlLoader.setLocation(this.getClass().getResource("Spider.fxml"));
+    if(false) {
+      fxmlLoader.setLocation(this.getClass().getResource("Spider.fxml"));
+    }
+    else{
+      fxmlLoader.setLocation(this.getClass().getResource("gate.fxml"));
+    }
     Group obs = fxmlLoader.load();
     PhongMaterial mat = new PhongMaterial();
     mat.setSpecularColor(Color.BLACK);
@@ -336,26 +341,26 @@ public class Test extends Application{
     cam.getTransforms().addAll(rotateZ,tx,ty);
     if(posz==0.0){
       cam.setTranslateZ(-1000);
-      System.out.println("puo");
+      //System.out.println("puo");
     }
     if(posz==SIZE_BOX*(maze.getHeight()-1)){
       cam.setTranslateZ(1000+posz);
       cam.setRotate(180.0);
-      System.out.println("puoi");
+      //System.out.println("puoi");
     }
     if(posx==SIZE_BOX*(maze.getWidth()-1)){
       cam.setTranslateX(1000+posx);
       cam.setRotate(270.0);
-      System.out.println("puao");
+      //System.out.println("puao");
     }
     if(posx == 0){
       cam.setTranslateX(-600.0);
       cam.setRotate(90.0);
-      System.out.println("pu");
+      //System.out.println("pu");
     }
     //Box begin2 = cases[y][x];
     //System.out.println("x "+begin2.getTranslateX()+"/ z "+begin2.getTranslateZ()+" box 2");
-    System.out.println("x "+cam.getTranslateX()+" / z "+cam.getTranslateZ());
+    //System.out.println("x "+cam.getTranslateX()+" / z "+cam.getTranslateZ());
   }
   public void spinLeft(PerspectiveCamera cam){
     cam.setRotate((cam.getRotate()-angle)%360);
