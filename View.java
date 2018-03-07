@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.*;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -34,7 +35,7 @@ public class View extends Scene {
         content = root;
         PerspectiveCamera cam = new PerspectiveCamera(true);
         this.mazePane = new MazePane(cam);
-        mazeScene = new SubScene(mazePane, 1000, 1000, true, SceneAntialiasing.BALANCED);
+        mazeScene = new SubScene(mazePane, 1490, 860, true, SceneAntialiasing.BALANCED);
         mazeScene.setCamera(cam);
         if (game instanceof SoloVersion) timePane = new SoloTimePane();
         else if (game instanceof TimeTrialVersion) timePane = new TimeTrialPane(((TimeTrialVersion) game).timeLimit);
@@ -174,14 +175,14 @@ public class View extends Scene {
 
         public MazePane(Camera cam) {
             camera = cam;
-            light = new PointLight(Color.DARKORANGE);
+            light = new PointLight(Color.WHITESMOKE);
         }
 
         public void initMaze() {
             Group rotate = new Group();
             ObservableList<Node> childs = rotate.getChildren();
             Box cell;
-            //Box test = null;
+            Box test = null;
             Box roof = new Box(MAZE_WIDTH * SIZE_BOX, 0, MAZE_LENGTH * SIZE_BOX);
             roof.setMaterial(COLOR_WAY);
             roof.setTranslateY(-SIZE_BOX / 2);
@@ -213,7 +214,7 @@ public class View extends Scene {
             this.getChildren().add(rotate);
             buildCamera(rotate);
             printMaze();
-           // if (test != null) System.out.println("Test " + test.getTranslateX() + "   " + test.getTranslateZ());
+           if (test != null) System.out.println("Test " + test.getTranslateX() + "   " + test.getTranslateZ());
 
         }
 
@@ -231,7 +232,7 @@ public class View extends Scene {
             camera.setFarClip(10000);
             camera.setNearClip(0.1);
             camera.setTranslateY(0);
-            light.setTranslateY(0);
+           // light.setTranslateY(0);
             Point2D position = game.player().getPosition();
             System.out.println(position);
             x = new SimpleDoubleProperty(position.getX() * SIZE_BOX-SIZE_BOX/2);
@@ -241,9 +242,10 @@ public class View extends Scene {
             camera.translateZProperty().bind(z);
             camera.rotateProperty().bind(angle);
             camera.setRotationAxis(Rotate.Y_AXIS);
-            light.translateXProperty().bind(x);
-            light.translateZProperty().bind(z);
+           // light.translateXProperty().bind(x);
+           // light.translateZProperty().bind(z);
             root.getChildren().add(camera);
+           // root.getChildren().add(light);
             System.out.println(camera.getTranslateX() + "   " + camera.getTranslateY() + "    " + camera.getTranslateZ());
         }
 
@@ -268,6 +270,12 @@ public class View extends Scene {
     }*/
 
     protected abstract class GameControl {
+        protected double mouseXOld;
+        protected double mouseYOld;
+
+        public GameControl(){
+            handleAction();
+        }
 
         public void displayScore(Pane root) {
             root.getChildren().clear();
@@ -295,6 +303,9 @@ public class View extends Scene {
         }
 
         public void handleAction() {
+            game.start();
+            timePane.start();
+            mazePane.initMaze();
             View.this.setOnKeyPressed(e -> {
                 System.out.println(e.getCode());
                 switch (e.getCode()) {
@@ -317,26 +328,30 @@ public class View extends Scene {
                 mazePane.z.set(pos.getY()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
                 mazePane.angle.set(90-game.player().orientation());
                 System.out.println(mazeScene.getCamera().getTranslateX() + "     " + mazeScene.getCamera().getTranslateZ() + "   " + mazeScene.getCamera().getRotate());
+                if(game.gameOver()){
+                    whenIsFinished();
+                }
+                else if (timePane.timeOver()) {
+                    //timePane.setVisible(false);
+                    //Print you loose dumbass
+                }
+            });
+               View.this.addEventHandler(MouseEvent.ANY, evt->{
+                   if(evt.getEventType()==MouseEvent.MOUSE_DRAGGED || evt.getEventType()==MouseEvent.MOUSE_PRESSED){
+                       double mouseXNew=evt.getSceneX();
+                       double mouseYNew=evt.getSceneY();
+                       if(evt.getEventType()==MouseEvent.MOUSE_DRAGGED){
+                         //  double pitchRotate=mazePane.camera.getRotate()+()
+                       }
+                   }
+                   if(evt.getEventType()==MouseEvent.MOUSE_CLICKED){
+
+                   }
 
             });
-              /*  View.this.addEventHandler(MouseEvent.ANY,evt->{
-                    //save mouseold coordinates somewhere
-                    double mouseXnew=evt.getSceneX();
-                    double mouseYnew=evt.getSceneY();
-                    switch (evt.getEventType()){
-                        //checkfor, orin case
-                        case MouseEvent.MOUSE_DRAGGED:
-                            double pitchR=
-                            break;
-                            case MouseEvent.
-                    }
-                }
-            });*/
         }
 
-        public void whenIsFinished(){
-
-        }
+        public abstract void whenIsFinished();
 
 
    /* public void setScene(Scene s){
