@@ -20,43 +20,16 @@ public class netView extends SingleView{
     protected class NetControl extends GameControl{
         private Socket me;
         public NetControl(Socket me) throws IOException{
+            super();
             this.me=me;
-            game.start();
-            timePane.start();
-            mazePane.initMaze();
-            setOnKeyPressed(e->{
-                System.out.println(e.getCode());
-                    switch (e.getCode()){
-                            case UP:    game.move(1); break;
-                            case RIGHT: game.move(4); break;
-                            case DOWN:  game.move(2); break;
-                            case LEFT:  game.move(3); break;
-                           // case S: mazePane.rotateY.setAngle(mazePane.rotateY.getAngle()+5);
-                        }
-                        Point2D pos=game.player().getPosition();
-                        netView.this.mazePane.x.set(pos.getX()*netView.this.mazePane.SIZE_BOX);
-                        netView.this.mazePane.z.set(pos.getY()*netView.this.mazePane.SIZE_BOX);
-                        netView.this.mazePane.angle.set(90-game.player().orientation());
-                System.out.println(netView.this.getCamera().getTranslateX()+"     "+netView.this.getCamera().getTranslateZ()+"   "+netView.this.getCamera().getRotate());
+        }
 
-                       // System.out.println(game.player().getPosition().getX()+"    "+game.player.getPosition().getY());
-
-                //netView.this.mazePane.printMaze();
-                    if (game.gameOver()) {
-                        timePane.stop();
-                        whenIsFinished();
-                    } else if (timePane.timeOver()) {
-                        timePane.setVisible(false);
-                        //Print you loose dumbass
-                    }
-
-
-                });
-
-            }
-
-        private void whenIsFinished(){
+        public void whenIsFinished(){
             Scores sc = game.scores();
+            timePane.stop();
+            netView.this.setOnKeyPressed(null);
+            game.addToScoresList();
+            
             //setVisible(false);
             try{
                 System.out.println("ERRORRRRRR -----------------------------");
@@ -68,8 +41,8 @@ public class netView extends SingleView{
             while(true){
                 try{
                     Object tmp = netFunc.readObject(me);
-                    if(tmp instanceof ArrayList)
-                        printPlayer((ArrayList<String>) tmp);
+                    if(tmp instanceof Scores)
+                        System.out.println((Scores) tmp);
                     else
                         System.exit(1);
                 }catch(IOException e){

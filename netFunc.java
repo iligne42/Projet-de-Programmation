@@ -16,9 +16,13 @@ public class netFunc{
 		return "error";
 	}
 
-	public static String readString(Socket socket) throws IOException{
+	public static String readString(Socket socket){
+		try{
 		BufferedReader tmp = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		return tmp.readLine();
+		}catch(IOException e){
+			return null;
+		}
 	}
 
 	public static void sendString(Socket socket, String s) throws IOException{
@@ -28,8 +32,14 @@ public class netFunc{
 	}
 
 	public static Object readObject(Socket socket) throws IOException, ClassNotFoundException{
+		try{
 		ObjectInputStream tmp=new ObjectInputStream(socket.getInputStream());
 		return tmp.readObject();
+		}catch(IOException e){
+			return null;
+		}catch(ClassNotFoundException e){
+			return null;
+		}
 	}
 
 	public static <K extends Serializable> void sendObject(Socket socket, K obj) throws IOException{

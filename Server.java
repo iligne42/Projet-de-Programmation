@@ -6,13 +6,14 @@ public class Server{
 	private ServerSocket socServ;
 	private ArrayList<String> names;
 	private ArrayList<Socket> sockets;
-
+	private Scores score;
 	private ArrayList<Triplet> arrivedList;
 
 	public Server(ServerSocket socServ, ArrayList<String> names, ArrayList<Socket> sockets){
 		this.socServ=socServ;
 		this.names=names;
 		this.sockets=sockets;
+		score=new Scores();
 		arrivedList=new ArrayList<Triplet>();
 		for(int i=0;i<names.size();i++){
 			waitScore ws= new waitScore(sockets.get(i),names.get(i));
@@ -24,10 +25,8 @@ public class Server{
 	private void sendScoreFinished(){
 		ArrayList<String> tmp = new ArrayList<String>();
 		for(Triplet t:arrivedList)
-			tmp.add(t.getC());
-		for(Triplet t:arrivedList)
 			try{
-				netFunc.sendObject(t.getA(),tmp);
+				netFunc.sendObject(t.getA(),score);
 			}catch(IOException e){
 				arrivedList.remove(t);
 			}
@@ -57,6 +56,7 @@ public class Server{
 				Object tmp=netFunc.readObject(soc);
 				System.out.println(name+" est arrivé.");
 				Triplet t=new Triplet(soc,(Scores)tmp,name);
+				score.add((Scores)tmp);
 				arrivedList.add(t);
 				names.remove(name);
 				sockets.remove(soc);

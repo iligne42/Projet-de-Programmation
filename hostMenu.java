@@ -25,6 +25,7 @@ public class hostMenu extends VBox{
 	private TilePane Players;
 	private Maze maze;
 	private String myName;
+	private Stage stageChat;
 
 	public hostMenu(){
 		super();
@@ -33,6 +34,7 @@ public class hostMenu extends VBox{
 	}
 
 	public void initHost(String name,Maze m){
+		System.out.println("je creer un hote");
 		maze=m;
 		clear();
 		hote=true;
@@ -42,7 +44,32 @@ public class hostMenu extends VBox{
 		sockets = new ArrayList<Socket>();
 		initMe(name,"localHost");
 		getClient();
+		makeChat();
 		}catch(Exception e){e.printStackTrace();}
+	}
+
+	public void makeChat(){
+		stageChat = new Stage();
+		stageChat.setTitle("Chat");
+		StackPane layout = new StackPane();
+		chatPane chat=new chatPane();
+		layout.getChildren().add(chat);
+		Scene scene=new Scene(layout,800,800);
+		stageChat.setScene(scene);
+		chat.initHost(myName);
+		stageChat.show();
+	}
+
+	public void makeChat(String addr){
+		stageChat = new Stage();
+		stageChat.setTitle("Chat");
+		StackPane layout = new StackPane();
+		chatPane chat=new chatPane();
+		layout.getChildren().add(chat);
+		Scene scene=new Scene(layout,800,800);
+		stageChat.setScene(scene);
+		chat.initClient(myName,addr);
+		stageChat.show();
 	}
 
 	public void initClient(String name){
@@ -56,6 +83,7 @@ public class hostMenu extends VBox{
 		but.setOnMouseClicked(e->{
 			clear();
 			initMe(name,text.getText());
+			makeChat(text.getText());
 		});
 		this.getChildren().add(waitIP);
 	}
