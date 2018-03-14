@@ -1,3 +1,4 @@
+
 import java.io.IOException;
 
 public class TimeTrialVersion extends GameVersion {
@@ -28,3 +29,4 @@ public class TimeTrialVersion extends GameVersion {
 
 
 }
+

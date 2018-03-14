@@ -96,11 +96,19 @@ public class Scores implements Serializable{
         }
     }
 
+    public boolean add(Scores score){
+        return list.add(score);
+    }
+
     public void addToScoresList(String name, int score){
         list.add(name,score);
     }
 
     public String getScores(){
+        return list.toString();
+    }
+
+    public String toString(){
         return list.toString();
     }
 

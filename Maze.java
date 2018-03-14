@@ -1,3 +1,4 @@
+
 import java.awt.geom.Point2D;
 import java.io.*;
 import java.text.Normalizer;
@@ -390,6 +391,15 @@ public class Maze implements Serializable{
             if(a.getPosition().equals(point))return a;
         return null;
     }
+
+    /*public Pair <Teleporteur,Teleporteur> getTeleport(int i, int j){
+        for(Pair<Teleporteur,Teleporteur> t:teleport){
+            //if()
+        }
+    }
+    }*/
+
+
 
     public void fill(int value, Point2D p){
         maze[(int)p.getY()][(int)p.getX()]=value;

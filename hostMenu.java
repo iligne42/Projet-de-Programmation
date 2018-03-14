@@ -25,6 +25,7 @@ public class hostMenu extends VBox{
 	private TilePane Players;
 	private Maze maze;
 	private String myName;
+	private Stage stageChat;
 
 	public hostMenu(){
 		super();
@@ -33,16 +34,42 @@ public class hostMenu extends VBox{
 	}
 
 	public void initHost(String name,Maze m){
+		System.out.println("je creer un hote");
 		maze=m;
 		clear();
 		hote=true;
 		getChildren().addAll(new Label("Vous êtes l'hôte."),Players);
 		try{
-			socServ = new ServerSocket(netFunc.PORT);
-			sockets = new ArrayList<Socket>();
-			initMe(name,"localHost");
-			getClient();
+		socServ = new ServerSocket(netFunc.PORT);
+		sockets = new ArrayList<Socket>();
+		initMe(name,"localHost");
+		getClient();
+		makeChat();
 		}catch(Exception e){e.printStackTrace();}
+	}
+
+	public void makeChat(){
+		stageChat = new Stage();
+		stageChat.setTitle("Chat");
+		StackPane layout = new StackPane();
+		chatPane chat=new chatPane();
+		layout.getChildren().add(chat);
+		Scene scene=new Scene(layout,800,800);
+		stageChat.setScene(scene);
+		chat.initHost(myName);
+		stageChat.show();
+	}
+
+	public void makeChat(String addr){
+		stageChat = new Stage();
+		stageChat.setTitle("Chat");
+		StackPane layout = new StackPane();
+		chatPane chat=new chatPane();
+		layout.getChildren().add(chat);
+		Scene scene=new Scene(layout,800,800);
+		stageChat.setScene(scene);
+		chat.initClient(myName,addr);
+		stageChat.show();
 	}
 
 	public void initClient(String name){
@@ -56,6 +83,7 @@ public class hostMenu extends VBox{
 		but.setOnMouseClicked(e->{
 			clear();
 			initMe(name,text.getText());
+			makeChat(text.getText());
 		});
 		this.getChildren().add(waitIP);
 	}
@@ -121,8 +149,10 @@ public class hostMenu extends VBox{
 		try{
 			Stage stage=new Stage();
 			SoloVersion sv=new SoloVersion(tmp,myName);
+			System.out.println("reussi 1");
 			netView NV=new netView(sv,me);
 			stage.setScene(NV);
+			System.out.println("reussi 2");
 			stage.setFullScreen(true);
 			stage.show();
 			if(hote){
@@ -165,7 +195,7 @@ public class hostMenu extends VBox{
 						}
 						System.out.println("J'envoie les listes");
 					}else
-						tmp.close();
+					tmp.close();
 				}catch(Exception e){}
 			}
 		}
@@ -178,19 +208,19 @@ public class hostMenu extends VBox{
 	class waitInfo extends Thread{
 		public void run(){
 			while(true){
-				try{
-					Object tmp=netFunc.readObject(me);
-					if(tmp instanceof ArrayList){
-						names=(ArrayList<String>)tmp;
-						Platform.runLater(() -> printPlayer());
-					}else if(tmp instanceof Maze){
-						((Maze)tmp).print();
-						Platform.runLater(()-> lancerLabi((Maze)tmp));
-						break;
-					}else{
-						break;
-					}
-				}catch(Exception e){}
+			try{
+				Object tmp=netFunc.readObject(me);
+				if(tmp instanceof ArrayList){
+					names=(ArrayList<String>)tmp;
+					Platform.runLater(() -> printPlayer());
+				}else if(tmp instanceof Maze){
+					((Maze)tmp).print();
+					Platform.runLater(()-> lancerLabi((Maze)tmp));
+					break;
+				}else{
+					break;
+				}
+			}catch(Exception e){}
 			}
 		}
 	}

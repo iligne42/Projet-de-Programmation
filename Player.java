@@ -25,7 +25,7 @@ public class Player implements Serializable{
 		orientationSpeed=5;
 		bonus=new LinkedList<>();
 		keys=new LinkedList<>();
-		shape=new Circle(0.1);
+		shape=new Circle(0.15);
 		//body=new Cylinder()
 		//shape.setFill(Color.BLUE);
 	}
@@ -57,7 +57,8 @@ public class Player implements Serializable{
         return bonus;
     }
 
-    public void moveForward(){
+
+	public void moveForward(){
 		position.setLocation(position.getX()+Math.cos(Math.toRadians(orientation))*speed, position.getY()+Math.sin(Math.toRadians(orientation))*speed);
 		//System.out.println(Math.cos(Math.PI/2)*speed);
 		//System.out.println(position.getX()+"   "+position.getY());
@@ -83,7 +84,6 @@ public class Player implements Serializable{
     public void pickUp(Bonus bonuss){
         bonus.add(bonuss);
     }
-
 
 
 	public static void main(String[] args) {

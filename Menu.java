@@ -506,5 +506,3 @@ public class Menu extends Application {
     }
 
 }
-
-

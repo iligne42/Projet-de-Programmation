@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.*;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -78,7 +79,7 @@ public class View extends Scene {
            timeSeconds=new TimeProperty(time);
             timeLabel = new Label();
             timeLabel.textProperty().bind(timeSeconds.asString());
-            timeLabel.setStyle("-fx-alignment:center; -fx-background-color:green");
+            timeLabel.setStyle("-fx-alignment:center; -fx-background-color:grey");
             timeLine = new Timeline();
             this.getChildren().add(timeLabel);
             this.setStyle("-fx-border-color:red; -fx-alignment:center");
@@ -132,6 +133,7 @@ public class View extends Scene {
                 game.elapse(1);
                 timeSeconds.set(timeLimit - game.getElapsed());
                // if (timeSeconds.get() == 0) timeLine.stop();
+
             }));
         }
 
@@ -161,7 +163,8 @@ public class View extends Scene {
     protected class MazePane extends Pane {
         protected final Maze maze = game.maze();
         protected PerspectiveCamera camera;
-        protected PointLight light;
+        protected AmbientLight light;
+        protected PointLight cameraLight;
         protected final int MAZE_LENGTH = maze.getHeight();
         protected final int MAZE_WIDTH = maze.getWidth();
         protected final int SIZE_BOX = 400;
@@ -169,12 +172,13 @@ public class View extends Scene {
         protected PhongMaterial COLOR_WAY = new PhongMaterial(Color.BLACK);
         protected PhongMaterial COLOR_ENTRY = new PhongMaterial(Color.RED);
         protected PhongMaterial COLOR_END = new PhongMaterial(Color.LIGHTGOLDENRODYELLOW);
-        protected DoubleProperty x, z, angle;
+        protected DoubleProperty x, z,angle;
         protected Rotate rotateZ;
 
         public MazePane(PerspectiveCamera cam) {
             camera = cam;
-            light = new PointLight(Color.WHITESMOKE);
+            light = new AmbientLight(Color.WHITE);
+           // cameraLight=new PointLight(Color.DARKORANGE);
         }
 
         public void initMaze() {
@@ -187,6 +191,13 @@ public class View extends Scene {
             roof.setTranslateY(-SIZE_BOX / 2);
             roof.setTranslateX(SIZE_BOX*(MAZE_WIDTH-1)/2);
             roof.setTranslateZ(SIZE_BOX*(MAZE_LENGTH-1)/2);
+           /* light.setTranslateX(SIZE_BOX*(MAZE_WIDTH-1)/2);
+            light.setTranslateZ(SIZE_BOX*(MAZE_LENGTH-1)/2);
+            light.setTranslateY(-SIZE_BOX/3);*/
+            COLOR_WALL.setDiffuseMap(new Image("brick.jpg"));
+         // COLOR_WALL.setBumpMap(new Image("brick.jpg"));
+         //  COLOR_WALL.setSpecularColor(Color.BLACK);
+         //  COLOR_WALL.setDiffuseColor(Color.LIGHTGOLDENRODYELLOW);
 
             for (int i = 0; i < MAZE_LENGTH; i++) {
                 for (int j = 0; j < MAZE_WIDTH; j++) {
@@ -209,58 +220,16 @@ public class View extends Scene {
                     childs.add(cell);
                 }
             }
-           // rotate.getChildren().add(roof);
+            rotate.getChildren().add(light);
+             //rotate.getChildren().add(roof);
             this.getChildren().add(rotate);
             buildCamera(rotate);
+          light.getScope().add(rotate);
             printMaze();
            if (test != null) System.out.println("Test " + test.getTranslateX() + "   " + test.getTranslateZ());
 
         }
 
-       /* public void initMaze() {
-            Group rotate = new Group();
-            ObservableList<Node> childs = rotate.getChildren();
-            Box cell;
-            Box test = null;
-            Box roof = new Box(MAZE_WIDTH * SIZE_BOX, 0, MAZE_LENGTH * SIZE_BOX);
-            roof.setMaterial(COLOR_WAY);
-            roof.setTranslateY(-SIZE_BOX / 2);
-            roof.setTranslateX(SIZE_BOX*(MAZE_WIDTH-1)/2);
-            roof.setTranslateZ(SIZE_BOX*(MAZE_LENGTH-1)/2);
-
-            for (int i = 0; i < MAZE_LENGTH; i++) {
-                for (int j = 0; j < MAZE_WIDTH; j++) {
-                   cell = new Box(SIZE_BOX, 0, SIZE_BOX);
-                        if (maze.getCase(i, j) == Maze.START) {
-                            cell.setMaterial(COLOR_ENTRY);
-                            //test = cell;
-                        }
-                        else if (maze.getCase(i, j) == Maze.END) cell.setMaterial(COLOR_END);
-                        else{
-                            if(i%2==j%2)cell.setMaterial(COLOR_WAY);
-                            else cell.setMaterial(COLOR_WALL);
-                            /*if(i%2==0) {
-                                if (j % 2 == 0) cell.setMaterial(COLOR_WAY);
-                                else cell.setMaterial(COLOR_WALL);
-                            }
-                            else{
-                                if (j % 2 == 1) cell.setMaterial(COLOR_WAY);
-                                else cell.setMaterial(COLOR_WALL);
-                            }
-                        }
-                        cell.setTranslateY(SIZE_BOX / 2);
-                    cell.setTranslateX(j * SIZE_BOX);
-                    cell.setTranslateZ(i * SIZE_BOX);
-                    childs.add(cell);
-                }
-            //rotate.getChildren().add(roof);
-            this.getChildren().add(rotate);
-            buildCamera(rotate);
-            printMaze();
-            if (test != null) System.out.println("Test " + test.getTranslateX() + "   " + test.getTranslateZ());
-
-        }
-*/
         public void printMaze() {
             for (int i = 0; i < MAZE_LENGTH; i++) {
                 for (int j = 0; j < MAZE_WIDTH; j++)
@@ -273,11 +242,10 @@ public class View extends Scene {
             rotateZ=new Rotate();
             //Ici vérifier dans quel sens la début est pour modifier x et z
             System.out.println("Height " + maze.getHeight() + "   Width  " + maze.getWidth());
-            camera.setFarClip(6000);
+            camera.setFarClip(10000);
             camera.setNearClip(0.1);
             camera.setTranslateY(0);
-            //camera.setVerticalFieldOfView(false);
-           // light.setTranslateY(0);
+            //cameraLight.setTranslateY(0);
             Point2D position = game.player().getPosition();
             System.out.println(position);
             x = new SimpleDoubleProperty(position.getX() * SIZE_BOX-SIZE_BOX/2);
@@ -289,10 +257,13 @@ public class View extends Scene {
             camera.setRotationAxis(Rotate.Y_AXIS);
             rotateZ.setAxis(Rotate.X_AXIS);
             camera.getTransforms().add(rotateZ);
-           // light.translateXProperty().bind(x);
-           // light.translateZProperty().bind(z);
+         //  cameraLight.translateXProperty().bind(x);
+         //  cameraLight.translateZProperty().bind(z);
+         //  cameraLight.setRotationAxis(Rotate.Y_AXIS);
+         //  cameraLight.rotateProperty().bind(angle);
+
             //root.getChildren().add(camera);
-           // root.getChildren().add(light);
+          // root.getChildren().add(cameraLight);
             //System.out.println(camera.getTranslateX() + "   " + camera.getTranslateY() + "    " + camera.getTranslateZ());
         }
 
@@ -372,8 +343,7 @@ public class View extends Scene {
                     break;
                     case H: mazePane.rotateZ.setAngle(mazePane.rotateZ.getAngle()-5);
                     break;
-
-                }
+                    }
                 Point2D pos=game.player().getPosition();
                 mazePane.x.set(pos.getX()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
                 mazePane.z.set(pos.getY()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
