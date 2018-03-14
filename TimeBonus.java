@@ -2,7 +2,7 @@ public class TimeBonus extends Bonus{
     private int time;
 
     public TimeBonus(Maze m){
-        super(m,"Vous gagné du temps: 10 secondes.");
+        super(m,"Time");
         time=10;
     }
 

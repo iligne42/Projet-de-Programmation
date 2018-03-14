@@ -6,7 +6,6 @@ import java.awt.*;
 import javafx.util.*;
 public class Maze implements Serializable{
     private int[][] maze;
-    //private int nbObstacles;
     private LinkedList<Obstacles> obstacles;
     private LinkedList<Monstres> monstres;
     private LinkedList<Pair<Teleporteur,Teleporteur>> teleport;
@@ -37,15 +36,13 @@ public class Maze implements Serializable{
 
     public Maze(int L, int l, int nbObstacles, int nbMonstres, int nbTeleport , int nbDoors, int nbBonus ,int typeBonus) throws FormatNotSupported{
         if(L<5 || l<5) throw new FormatNotSupported("The maze is too small");
-        //this.nbObstacles=nbObstacles;
-        //appeler fonction "spéciale" pour création de labyrinthe avec obstacles
         maze = new int[L][l];
         if(nbObstacles==0){
             obstacles=null;
             randomMaze();
         }else {
             obstacles = new LinkedList<>();
-            randomMaze(nbObstacles);
+            randomMaze(nbObstacles, "Rectangle");
         }
         if(nbMonstres==0) monstres=null;
         else{
@@ -115,7 +112,9 @@ public class Maze implements Serializable{
     public int getCase(int i, int j){return maze[i][j];}
     public LinkedList<Monstres> getMonstres() { return monstres; }
     public LinkedList<Obstacles> getObstacles(){ return obstacles;}
+    public String getTypeObstacle(){return obstacles.getFirst().getShape();}
     public LinkedList<Bonus> getBonus(){return bonus;}
+    public String detTypeBonus(){return bonus.getFirst().getAvantage();}
     public void free(int i, int j){ maze[i][j]=WAY;}
 
     public Point specialPlaces(int value){
@@ -181,12 +180,12 @@ public class Maze implements Serializable{
         }while(!possibleMaze());
     }
 
-    private void randomMaze(int nbObstacles){ //crée le labyrinthe aléatoire avec obstacles
+    private void randomMaze(int nbObstacles, String typeObstacle){ //crée le labyrinthe aléatoire avec obstacles
         randomMaze();
         int tmp=0;
         while(nbObstacles!=0 && tmp!=5){
             //Point p=addObstacle();
-            Obstacles o=new Obstacles(this, "Rectangle");
+            Obstacles o=new Obstacles(this, typeObstacle);
             obstacles.add(o);
             fill(OBSTACLE, o.getPosition());
             if(possibleMaze()) nbObstacles--;

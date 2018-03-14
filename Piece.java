@@ -2,7 +2,7 @@ public class Piece extends Bonus{
     private int montant;
 
     public Piece(Maze m){
-        super(m,"Vous avez gagné de l'argent.");
+        super(m,"Piece");
         montant=10;
     }
 

@@ -24,6 +24,11 @@ public class Obstacles extends Divers{
         put();
     }
 
+    public String getShape(){
+        if(s instanceof Rectangle) return "Rectangle";
+        else return "Cercle";
+    }
+
     /*private void put(Point2D p){
         Random rand=new Random();
         int i=0; int j=0;
