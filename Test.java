@@ -50,7 +50,7 @@ public class Test extends Application{
     public void start(Stage stage) throws FormatNotSupported,IOException{
         Group root = new Group();
         Scene scene = new Scene(root,500,500,true);
-        maze= new Maze(SIZE_MAZE,SIZE_MAZE,10,2,0,2,0,0);
+        maze= new Maze(SIZE_MAZE,SIZE_MAZE,10,0,0,0,6,0);
         createMaze(root,maze,1);
         //setCamToStart(cam);
         //eventMouse(scene,root);
@@ -84,7 +84,7 @@ public class Test extends Application{
                         COLOR_ENTRY.setSpecularColor(Color.BLACK);
                         cell=makeFloor(COLOR_ENTRY);
                         setBox(cell,i,j,root,floor);
-                        drawObstacle(root,j,i);
+                        drawBonus(root,i,j);
                         break;
                     case Maze.END:
                         PhongMaterial COLOR_END = new PhongMaterial();
@@ -123,7 +123,7 @@ public class Test extends Application{
                         break;
                     case Maze.BONUS:
                         cell = makeFloor(COLOR_WAY);
-                        //faire drawBonus, attention il faut regarder le type de bonus, autrement dit le type de labyrinthe
+                        drawBonus(root,i,j);
                         setBox(cell,i,j,root,floor);
                         break;
                     case Maze.OBSTACLE:
@@ -301,7 +301,7 @@ public class Test extends Application{
 
     public void drawObstacle(Group root,int i, int j) throws IOException{
         FXMLLoader fxmlLoader = new FXMLLoader();
-        if(false) {
+        if(maze.getTypeObstacle().equals("Cercle")) {
             fxmlLoader.setLocation(this.getClass().getResource("Spider.fxml"));
         }
         else{
@@ -323,6 +323,23 @@ public class Test extends Application{
         }
         //obs.setRotationAxis(Rotate.Y_AXIS);
         root.getChildren().add(obs);
+    }
+
+    public void drawBonus(Group root, int i, int j) throws IOException{
+        Bonus last = maze.getBonus().getLast();
+        MeshView bonus = last.initBonus();
+        RotateTransition rt = new RotateTransition(Duration.millis(2000));
+        rt.setByAngle(360.0);
+        rt.setAxis(Rotate.Y_AXIS);
+        rt.setCycleCount(TranslateTransition.INDEFINITE);
+        rt.setAutoReverse(false);
+        bonus.setTranslateX(j*SIZE_BOX);
+        bonus.setTranslateZ(i*SIZE_BOX);
+        bonus.setTranslateY(-SIZE_BOX/2);
+        bonus.setRotationAxis(Rotate.Z_AXIS);
+        rt.setNode(bonus);
+        rt.play();
+        root.getChildren().add(bonus);
     }
 
     public void buildCamera(PerspectiveCamera cam){
