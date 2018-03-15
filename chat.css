@@ -1,0 +1,16 @@
+.root{
+    -fx-background-image:url("Dark-Background.jpg");
+}
+
+.button{
+    -fx-pref-width:140px;
+    -fx-pref-height:50px;
+}
+
+.TextField{
+    -fx-alignement:center;
+}
+
+.hbox{
+    -fx-pref-width:600px;
+}

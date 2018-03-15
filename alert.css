@@ -27,12 +27,6 @@
 
 }
 
-.button .Text{
-        /*-fx-effect: dropshadow( one-pass-box , rgba(255,255,255,0.5) , 0, 0.0 , 0 , 1);*/
-        /*-fx-font-weight:800;*/
-        /*-fx-font-family: "Comic Sans MS, Comic Sans, cursive";*/
-}
-
 .button{
     -fx-pref-width:140px;
     -fx-pref-height:50px;

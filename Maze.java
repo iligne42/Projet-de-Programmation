@@ -42,7 +42,11 @@ public class Maze implements Serializable{
             randomMaze();
         }else {
             obstacles = new LinkedList<>();
-            randomMaze(nbObstacles, "Rectangle");
+            int typeObs=rand.nextInt(2);
+            String shapeObs="";
+            if(typeObs==0) shapeObs="Rectangle";
+            else shapeObs="Cercle";
+            randomMaze(nbObstacles, shapeObs);
         }
         if(nbMonstres==0) monstres=null;
         else{

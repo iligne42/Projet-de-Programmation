@@ -1,3 +1,4 @@
+import javafx.animation.Interpolator;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -50,26 +51,15 @@ public class Test extends Application{
   public void start(Stage stage) throws FormatNotSupported,IOException{
       Group root = new Group();
       Scene scene = new Scene(root,500,500,true);
-      maze= new Maze(SIZE_MAZE,SIZE_MAZE,10,0,0,0,6,0);
+      maze= new Maze(SIZE_MAZE,SIZE_MAZE,0,0,0,5,6,0);
       createMaze(root,maze,1);
-      //setCamToStart(cam);
-      //eventMouse(scene,root);
       buildCamera(cam);
       handleKeyBoard(scene,cam);
       root.getChildren().add(cam);
-      //drawKey(root,maze);
       scene.setCamera(cam);
       stage.setScene(scene);
       stage.show();
   }
-
-/*  public void doFloor(Group root, MazeFloors maze){
-    LinkedList<Maze> floors = maze.getFloor();
-    int i=0;
-    for (Maze a : floors) {
-      createMaze(root,a,i);
-    }
-  }*/
 
   public void createMaze(Group root,Maze maze,int floor) throws IOException{
     int CASE;
@@ -80,11 +70,10 @@ public class Test extends Application{
         switch(CASE){
           case Maze.START:
           PhongMaterial COLOR_ENTRY = new PhongMaterial();
-          //COLOR_ENTRY.setDiffuseMap();
           COLOR_ENTRY.setSpecularColor(Color.BLACK);
           cell=makeFloor(COLOR_ENTRY);
           setBox(cell,i,j,root,floor);
-          drawBonus(root,i,j);
+          drawKey(root,i,j);
           break;
           case Maze.END:
           PhongMaterial COLOR_END = new PhongMaterial();
@@ -129,7 +118,6 @@ public class Test extends Application{
           case Maze.OBSTACLE:
           cell = makeFloor(COLOR_WAY);
           drawObstacle(root,i,j);
-          //faire drawObstacle, attention à la forme de l'obstacle
           setBox(cell,i,j,root,floor);
           break;
           case Maze.STAIRSUP:
@@ -141,37 +129,13 @@ public class Test extends Application{
           case Maze.WALL:
           PhongMaterial COLOR_WALL = new PhongMaterial();
           COLOR_WALL.setDiffuseMap(new Image("brick.jpg"));
-        //  COLOR_WALL.setDiffuseColor(Color.GREY);
-          //COLOR_WALL.setSpecularColor(Color.BLACK);
           cell=new Box(SIZE_BOX,SIZE_BOX,SIZE_BOX);
           cell.setMaterial(COLOR_WALL);
-          //cell.setTranslateY(0);
           setBox(cell,i,j,root,floor);
           break;
         }
       }
     }
-    /*Box roof = new Box(maze.getHeight()*SIZE_BOX,0,maze.getWidth()*SIZE_BOX);
-    roof.setTranslateX(0);
-    roof.setTranslateZ(0);
-    roof.setTranslateY();
-    root.getChildren().add(roof);
-    /*Slider s = new Slider(0,360,0);
-    s.setTranslateX(10);
-    s.setTranslateY(800);
-    root.rotateProperty().bind(s.valueProperty());
-
-    Slider t = new Slider(-10000,10000,0);
-    t.setTranslateX(200);
-    t.setTranslateY(500);
-    root.translateZProperty().bind(t.valueProperty());
-
-    Slider g = new Slider(-10000,10000,0);
-    g.setTranslateX(400);
-    g.setTranslateY(500);
-    root.translateXProperty().bind(g.valueProperty());
-
-    root.getChildren().addAll(s,t,g);*/
   }
 
   public Box makeFloor(PhongMaterial color){
@@ -193,79 +157,34 @@ public class Test extends Application{
       }
     }
   }
-  /*public void drawDoor(Group root,Maze maze,int i,int j){
-    Box door = new Box(SIZE_BOX,SIZE_BOX,0);
-    PhongMaterial COLOR_DOOR = new PhongMaterial();
-    COLOR_DOOR.setDiffuseMap(new Image("/door.png"));
-    door.setMaterial(COLOR_DOOR);
-    door.setTranslateX(j*SIZE_BOX);
-    door.setTranslateZ(i*SIZE_BOX);
-    if(nearToWall(maze,i+1,j)&&nearToWall(maze,i-1,j))door.setTranslateZ(12);
-    else if(nearToWall(maze,i,j+1)&&nearToWall(maze,i,j-1))door.setTranslateX(12);
-  }
 
-  public boolean nearToWall(Maze maze, int i, int j){
-    try {
-      return maze.getCase(i,j)==Maze.WALL;
-    }
-    catch (Exception e) {
-      return false;
-    }
-  }*/
   public void setBox(Box cell,int i, int j, Group root,int floor){
     cell.setTranslateX(j*SIZE_BOX);
     cell.setTranslateZ(i*SIZE_BOX);
-    //cell.setTranslateY((floor-1)*SIZE_BOX-SIZE_BOX/2);
     root.getChildren().add(cell);
   }
 
   public void drawMonster(Group root,int i, int j,int floor) throws IOException{
     Monstres last = maze.getMonstres().getLast();
     MeshView ghost = last.initMonster();
-    /*FXMLLoader fxmlLoader = new FXMLLoader();
-    fxmlLoader.setLocation(this.getClass().getResource("ghost.fxml"));
-    MeshView ghost = fxmlLoader.<MeshView>load();
-    PhongMaterial mat = new PhongMaterial();
-    mat.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
-    mat.setDiffuseColor(Color.WHITE);
-    ghost.setMaterial(mat);
-    ghost.setRotationAxis(Rotate.Y_AXIS);*/
     ghost.setTranslateX(j*SIZE_BOX);
     ghost.setTranslateZ(i*SIZE_BOX);
     ghost.setTranslateY(-SIZE_BOX/2);
-    /*ghost.translateXProperty().bind(last.getY()*SIZE_BOX);
-    ghost.translateZProperty().bind(last.getX()*SIZE_BOX);
-    ghost.rotateProperty().bind(last.getDirec());
-    /*TranslateTransition t = new TranslateTransition(Duration.millis(1000));
-    t.setByX(SIZE_BOX);
-    t.setCycleCount(TranslateTransition.INDEFINITE);
-    t.setAutoReverse(true);
-    t.setOnFinished(e->{
-      ghost.setRotate(ghost.getRotate()+90.0);
-    });
-    t.setNode(ghost);
-    t.play();*/
-    //ghost.rotateProperty().bind();
     root.getChildren().add(ghost);
   }
   public void drawKey(Group root,int posx,int posy) throws IOException{
     FXMLLoader fxmlLoader = new FXMLLoader();
     fxmlLoader.setLocation(this.getClass().getResource("bigkey.fxml"));
     Group key = fxmlLoader.<Group>load();
-    /*key.setRotationAxis(Rotate.Z_AXIS);
-    key.setRotate(180.0);
-    key.setTranslateX(posx*SIZE_BOX);
-    key.setTranslateZ(posy*SIZE_BOX);*/
     PhongMaterial mat = new PhongMaterial();
     mat.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
     mat.setDiffuseColor(Color.YELLOW);
-    //key.setMaterial(mat);
     RotateTransition rt = new RotateTransition(Duration.millis(1000));
     rt.setByAngle(360.0);
     rt.setAxis(Rotate.X_AXIS);
     rt.setCycleCount(TranslateTransition.INDEFINITE);
-    rt.setAutoReverse(true);
-    //rt.setNode(key);
+    rt.setAutoReverse(false);
+    rt.setInterpolator(Interpolator.LINEAR);
     for ( Node a : key.getChildren() ) {
       if(a instanceof Shape3D) {
           ((Shape3D)a).setMaterial(mat);
@@ -279,7 +198,6 @@ public class Test extends Application{
     }
     rt.play();
     root.getChildren().add(key);
-    //keyOrBonus.add(key);
   }
 
   public void drawStair(int nbStep,int dir,Group root,int i,int j,int floor){
@@ -321,18 +239,18 @@ public class Test extends Application{
       }
       else n.setVisible(false);
     }
-    //obs.setRotationAxis(Rotate.Y_AXIS);
     root.getChildren().add(obs);
   }
 
   public void drawBonus(Group root, int i, int j) throws IOException{
     Bonus last = maze.getBonus().getLast();
     MeshView bonus = last.initBonus();
-    RotateTransition rt = new RotateTransition(Duration.millis(2000));
+    RotateTransition rt = new RotateTransition(Duration.millis(3000));
     rt.setByAngle(360.0);
     rt.setAxis(Rotate.Y_AXIS);
     rt.setCycleCount(TranslateTransition.INDEFINITE);
     rt.setAutoReverse(false);
+    rt.setInterpolator(Interpolator.LINEAR);
     bonus.setTranslateX(j*SIZE_BOX);
     bonus.setTranslateZ(i*SIZE_BOX);
     bonus.setTranslateY(-SIZE_BOX/2);
