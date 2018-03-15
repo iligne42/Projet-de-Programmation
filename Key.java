@@ -18,6 +18,10 @@ public class Key extends Divers{
         beforeDoor();
     }
 
+    public Door getDoor(){
+        return this.door;
+    }
+
     public int getX(){return (int)p.getX();}
     public int getY(){return (int)p.getY();}
     //public Point2D getPlace(){return p;}
