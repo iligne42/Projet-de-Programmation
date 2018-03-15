@@ -30,8 +30,8 @@ public class Player implements Serializable{
 		//shape.setFill(Color.BLUE);
 	}
 
-	public double radius(){
-		return shape.getRadius();
+	public float radius(){
+		return (float)shape.getRadius();
 	}
 
 	public void setPosition(Point2D position, int ori){

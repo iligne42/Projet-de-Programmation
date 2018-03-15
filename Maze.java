@@ -35,6 +35,7 @@ public class Maze implements Serializable{
         }
     }
 
+
     public Maze(int L, int l, int nbObstacles, int nbMonstres, int nbTeleport , int nbDoors, int nbBonus ,int typeBonus) throws FormatNotSupported{
         if(L<5 || l<5) throw new FormatNotSupported("The maze is too small");
         maze = new int[L][l];
@@ -313,7 +314,7 @@ public class Maze implements Serializable{
         else return false;
     }
 
-    private int orientation(int width, int height){ //renvoit 0 si height est plus grand, 1 si width est plus grand et un nombre aléatoire entre 0 et 1 si ils font la même taille
+    private int orientation(int width, int height){ //renvoie 0 si height est plus grand, 1 si width est plus grand et un nombre aléatoire entre 0 et 1 si ils font la même taille
         if(width<height) return 0; //0 pour horizontal
         else if(height<width) return 1; //1 pour vertical
         else return rand.nextInt(2);
@@ -381,16 +382,82 @@ public class Maze implements Serializable{
         maze[i][j]=value;
         return new Point(i,j);
     }*/
-    public Key getKey(Point2D point){
-      for (Door a : doors)
-        if(a.isTheKey(point))return a.getKey();
-      return null;
+
+    //Renvoie la porte à la case de position x,y selons les axes
+    public Door getDoor(int x,int y){
+        for(Door a:doors) {
+            Point2D d = a.getPosition();
+            if ((int) d.getX() == x && (int) d.getY() == y) return a;
+        }
+        return null;
+    }
+
+    public Monstres getMonster(int x, int y){
+        for(Monstres m:monstres){
+            Point2D p=m.getPosition();
+            if((int)p.getX()==x && (int)p.getY()==y) return m;
+        }
+        return null;
+    }
+
+    public Bonus getBonus(int x, int y){
+        for(Bonus a:bonus){
+            Point2D p=a.getPosition();
+            if((int)p.getX()==x && (int)p.getY()==y) return a;
+        }
+        return null;
+    }
+
+    public Key getKey(int x, int y){
+        for(Door a: doors)
+            if(a.isTheKey(x,y)) return a.getKey();
+        return null;
+    }
+
+    public Teleporteur getTeleport(int x, int y){
+        for(Pair<Teleporteur,Teleporteur> p:teleport) {
+            Point2D t1 = p.getKey().getStart();
+            Point2D t2 = p.getKey().getEnd();
+            if ((int) t1.getX() == x && (int) t1.getY() == y) return p.getKey();
+            else if((int) t2.getX() == x && (int) t2.getY()==y) return p.getValue();
+        }
+        return null;
+    }
+
+    public Obstacles getObstacle(int x,int y){
+        for(Obstacles o:obstacles){
+            Point2D p=o.getPosition();
+            if((int)p.getX()==x && (int)p.getY()==y) return o;
+        }
+        return null;
     }
 
     public Bonus getBonus(Point2D point){
-      for (Bonus a : bonus)
-        if(a.getPosition().equals(point))return a;
+      for (Bonus a : bonus){
+          Point2D p=a.getPosition();
+          if(p.getX()==point.getX() && p.getY()==point.getY())return a;
+      }
       return null;
+    }
+
+    public Key getKey(Point2D point){
+        for (Door a : doors)
+            if(a.isTheKey(point))return a.getKey();
+        return null;
+    }
+
+    public Monstres getMonster(Point2D point){
+        for(Monstres m:monstres){
+            if(m.getPosition().equals(point)) return m;
+        }
+        return null;
+    }
+
+    public Obstacles getObstacle(Point2D point){
+        for(Obstacles o:obstacles){
+            if((int)o.getPosition().getX()==(int)point.getX() && (int)o.getPosition().getY()==(int)point.getY()) return o;
+        }
+        return null;
     }
 
     public void fill(int value, Point2D p){
