@@ -11,7 +11,7 @@ public class Player implements Serializable{
 	private Point2D position;
 	//private Cylinder body;
 	private Circle shape;
-	private int orientation;
+	private float orientation;
 	private float speed;
 	private int orientationSpeed;
 	private LinkedList<Bonus> bonus;
@@ -34,7 +34,7 @@ public class Player implements Serializable{
 		return (float)shape.getRadius();
 	}
 
-	public void setPosition(Point2D position, int ori){
+	public void setPosition(Point2D position, float ori){
 		this.position=position;
 		this.orientation=ori;
 		shape.setCenterX(position.getX());
@@ -47,15 +47,16 @@ public class Player implements Serializable{
 
 	public String getName(){ return name;}
 	public Point2D getPosition(){ return position;}
-	public int orientation(){ return orientation;}
+	public float orientation(){ return orientation;}
 
-    public LinkedList<Key> keys() {
-        return keys;
-    }
+	public LinkedList<Key> keys() {
+		return keys;
+	}
 
-    public LinkedList<Bonus> getBonus() {
-        return bonus;
-    }
+	public LinkedList<Bonus> getBonus() {
+		return bonus;
+	}
+
 
 
 	public void moveForward(){
@@ -77,13 +78,13 @@ public class Player implements Serializable{
 		orientation=(orientation+360-orientationSpeed)%360;
 	}
 
-    public void pickUp(Key key){
-        keys.add(key);
-    }
+	public void pickUp(Key key){
+		keys.add(key);
+	}
 
-    public void pickUp(Bonus bonuss){
-        bonus.add(bonuss);
-    }
+	public void pickUp(Bonus bonuss){
+		bonus.add(bonuss);
+	}
 
 
 	public static void main(String[] args) {

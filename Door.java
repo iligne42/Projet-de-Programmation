@@ -34,7 +34,7 @@ public class Door extends Divers{
 
     public boolean isTheKey(int i, int j){
         p=getKeyPlace();
-        return ((int)p.getX()==i && (int)p.getY()==j);
+        return (key.getX()==i && key.getY()==j);
     }
 
 
