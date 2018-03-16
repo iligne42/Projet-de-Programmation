@@ -7,14 +7,11 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class Key extends Divers{
-    //private Maze maze;
     private Door door;
-    //private Point2D p;
 
     public Key(Maze m, Door door){
         super(m);
         this.door=door;
-        //p=new Point2D.Double();
         beforeDoor();
     }
 

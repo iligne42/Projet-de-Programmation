@@ -110,8 +110,14 @@ public abstract class GameVersion implements Serializable {
         return p.getX() >= 0 && p.getY() >= 0 && p.getX() < maze.getWidth() && p.getY() < maze.getHeight();
     }
 
-    public void move(int direction) {
+   /* public void update(double timeElapsed){
+        //elapsed=elapsed+timeElapsed;
         Point2D p = (Point2D) player.getPosition().clone();
+        player.updatePosition(timeElapsed);
+        this.handleMove(p);
+    }*/
+
+    public void move(int direction) {
         switch (direction) {
             case 1:
                 player.moveForward();
@@ -127,13 +133,12 @@ public abstract class GameVersion implements Serializable {
                 player.moveRight();
                 break;
         }
-        this.handleMove(p);
     }
 
 
     public void handleMove(Point2D start) {
         Point2D goal = player.getPosition();
-        int angle = player.orientation();
+        float angle = player.orientation();
         float radius = player.radius();
         if (start.getX() != goal.getX() || start.getY() != goal.getY()) {
             if (!isInBounds(goal)) player.setPosition(start, angle);
@@ -247,7 +252,7 @@ public abstract class GameVersion implements Serializable {
 
     /*---------------------------------------------------------Actions après déplacement-------------------------------------------------*/
 
-    public void slide(Point2D start,Point2D goal,Point2D wallB,float radius,int angle){
+    public void slide(Point2D start,Point2D goal,Point2D wallB,float radius,float angle){
         Line2D wallLine = wallSegment(start, wallB, goal, radius,1,1);
         System.out.println(wallLine.getP1() + "    " + wallLine.getP2());
         Point2D collide = getCollisionCenter(wallLine, start, goal, radius);
@@ -272,7 +277,7 @@ public abstract class GameVersion implements Serializable {
         }
     }
 
-    public void retreat(Point2D start,Point2D goal,Point2D intersection,int ori,float radius){
+    public void retreat(Point2D start,Point2D goal,Point2D intersection,float ori,float radius){
         Vector3D radiusMvt=new Vector3D(goal).subtract(new Vector3D(start)).negColinear(radius);
         Vector3D interMvt=new Vector3D(intersection).subtract(new Vector3D(goal));
         Vector3D pDepth=radiusMvt.add(interMvt);
@@ -280,7 +285,7 @@ public abstract class GameVersion implements Serializable {
         //player.setPosition(new Point2D.Double(2*intersection.getX()-goal.getX(),2*intersection.getY()-goal.getY()),ori);
     }
 
-    public void openDoor(Point2D c,Point2D start,Point2D goal,float radius,int angle) {
+    public void openDoor(Point2D c,Point2D start,Point2D goal,float radius,float angle) {
         Door door = maze.getDoor((int)c.getX(),(int)c.getY());
         if (door != null) {
             boolean b=false;
@@ -295,7 +300,7 @@ public abstract class GameVersion implements Serializable {
         }
     }
 
-    public boolean monsterInFront(Monstres monster, Point2D start, Point2D goal,double angle) {
+    public boolean monsterInFront(Monstres monster, Point2D start, Point2D goal,float angle) {
         return monster.getDirec().get()==(angle+180)%360 && new Vector3D(goal).subtract(new Vector3D(start)).dotProduct(new Vector3D(monster.getPosition()).subtract(new Vector3D(start)))>0;
     }
 

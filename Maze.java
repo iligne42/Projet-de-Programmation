@@ -383,7 +383,7 @@ public class Maze implements Serializable{
         return new Point(i,j);
     }*/
 
-    //Renvoie la porte à la case de position x,y selons les axes
+    //Renvoie la porte à la case de position x,y selon les axes
     public Door getDoor(int x,int y){
         for(Door a:doors) {
             Point2D d = a.getPosition();
