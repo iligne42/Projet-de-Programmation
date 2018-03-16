@@ -243,19 +243,37 @@ public class Test extends Application{
   }
 
   public void drawBonus(Group root, int i, int j) throws IOException{
+    FXMLLoader fxmlLoader = new FXMLLoader();
     Bonus last = maze.getBonus().getLast();
-    MeshView bonus = last.initBonus();
+    PhongMaterial mat = new PhongMaterial();
+    if(last.getAvantage().equals("Piece")) {
+      fxmlLoader.setLocation(this.getClass().getResource("Coin.fxml")); //mettre pieces ou bonus temps
+      mat.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
+      mat.setDiffuseColor(Color.YELLOW);
+    }else{
+      fxmlLoader.setLocation(this.getClass().getResource("sablier4.fxml"));
+      mat.setSpecularColor(Color.MAROON);
+      mat.setDiffuseColor(Color.BROWN);
+    }
+    Group bonus=fxmlLoader.load();
     RotateTransition rt = new RotateTransition(Duration.millis(3000));
     rt.setByAngle(360.0);
     rt.setAxis(Rotate.Y_AXIS);
     rt.setCycleCount(TranslateTransition.INDEFINITE);
     rt.setAutoReverse(false);
     rt.setInterpolator(Interpolator.LINEAR);
-    bonus.setTranslateX(j*SIZE_BOX);
-    bonus.setTranslateZ(i*SIZE_BOX);
-    bonus.setTranslateY(-SIZE_BOX/2);
-    bonus.setRotationAxis(Rotate.Z_AXIS);
-    rt.setNode(bonus);
+    for(Node n : bonus.getChildren()) {
+      if (n instanceof Shape3D) {
+        ((Shape3D)n).setMaterial(mat);
+        ((Shape3D)n).setRotationAxis(Rotate.Z_AXIS);
+        ((Shape3D)n).setTranslateX(j * SIZE_BOX);
+        ((Shape3D)n).setTranslateZ(i * SIZE_BOX);
+        //((Shape3D)n).setTranslateY(-SIZE_BOX / 2);
+        ((Shape3D)n).setRotationAxis(Rotate.Z_AXIS);
+        rt.setNode(n);
+      }
+      else n.setVisible(false);
+    }
     rt.play();
     root.getChildren().add(bonus);
   }
