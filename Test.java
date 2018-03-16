@@ -33,189 +33,192 @@ import javafx.scene.shape.Shape3D;
 import java.io.IOException;
 import javafx.animation.Interpolator;
 
-public class Test extends Application{
-//  public Maze maze;
+public class Test extends Application {
+  //  public Maze maze;
   PerspectiveCamera cam = new PerspectiveCamera(true);
   public int SIZE_MAZE = 15;
   public int SIZE_BOX = 400;
   protected PhongMaterial COLOR_WAY = new PhongMaterial(Color.BLACK);
   protected PhongMaterial COLOR_WALL = new PhongMaterial(Color.GREY);
-  public double mousePosX,mousePosY,mouseOldX,mouseOldY,mouseDeltaX,mouseDeltaY;
-  public Rotate rotateZ=new Rotate();
-  public Translate tx=new Translate(),ty=new Translate();
-  public int STEP = 50,SPEED=1;
-  public double angle=5.0;
+  public double mousePosX, mousePosY, mouseOldX, mouseOldY, mouseDeltaX, mouseDeltaY;
+  public Rotate rotateZ = new Rotate();
+  public Translate tx = new Translate(), ty = new Translate();
+  public int STEP = 50, SPEED = 1;
+  public double angle = 5.0;
   public Box[][] cases;
   private ObservableList<Node> keyOrBonus;
 
   @Override
-  public void start(Stage stage) throws FormatNotSupported,IOException{
-      Group root = new Group();
-      Scene scene = new Scene(root,500,500,true);
-      MazeFloors mazes = new MazeFloors(SIZE_MAZE,SIZE_MAZE,3,5,2,0,2,0,0);
-      doFloor(root,mazes);
-      //setCamToStart(cam);
-      //eventMouse(scene,root);
-      buildCamera(cam,mazes);
-      handleKeyBoard(scene,cam);
-      root.getChildren().add(cam);
-      //drawKey(root,maze);
-      scene.setCamera(cam);
-      stage.setScene(scene);
-      stage.show();
+  public void start(Stage stage) throws FormatNotSupported, IOException {
+    Group root = new Group();
+    Scene scene = new Scene(root, 500, 500, true);
+    MazeFloors mazes = new MazeFloors(SIZE_MAZE, SIZE_MAZE, 3, 5, 2, 0, 2, 0, 0);
+    doFloor(root, mazes);
+    //setCamToStart(cam);
+    //eventMouse(scene,root);
+    buildCamera(cam, mazes);
+    handleKeyBoard(scene, cam);
+    root.getChildren().add(cam);
+    //drawKey(root,maze);
+    scene.setCamera(cam);
+    stage.setScene(scene);
+    stage.show();
   }
-  public void doFloor(Group root, MazeFloors maze) throws IOException{
+
+  public void doFloor(Group root, MazeFloors maze) throws IOException {
     LinkedList<Maze> floors = maze.getFloor();
     Group floor = new Group();
-    Maze previous=null;
-    int i=0,posx=0,posz=0;
+    Maze previous = null;
+    int i = 0, posx = 0, posz = 0;
     for (Maze a : floors) {
-      createMaze(floor,a,i);
-      if(previous!=null){
+      createMaze(floor, a, i);
+      if (previous != null) {
         int aposx = (int) a.beginning().getX();
         int aposz = (int) a.beginning().getY();
-        floor.setTranslateX((posx-aposx)*SIZE_BOX);
-        floor.setTranslateZ((posz-aposz)*SIZE_BOX);
-        posx=(int) a.ending().getX()+(posx-aposx);
-        posz=(int) a.ending().getY()+(posz-aposz);
-      }
-      else {
+        floor.setTranslateX((posx - aposx) * SIZE_BOX);
+        floor.setTranslateZ((posz - aposz) * SIZE_BOX);
+        posx = (int) a.ending().getX() + (posx - aposx);
+        posz = (int) a.ending().getY() + (posz - aposz);
+      } else {
         posx = (int) a.ending().getX();
         posz = (int) a.ending().getY();
       }
-      previous=a;
+      previous = a;
       root.getChildren().add(floor);
       floor = new Group();
       i++;
     }
   }
-  public void createMaze(Group root,Maze maze,int floor) throws IOException{
+
+  public void createMaze(Group root, Maze maze, int floor) throws IOException {
     int CASE;
     Box cell;
-    for (int i = 0;i<maze.getHeight() ;i++ ){
-      for (int j = 0; j <maze.getWidth() ;j++ ) {
-        CASE = maze.getCase(i,j);
-        switch(CASE){
+    for (int i = 0; i < maze.getHeight(); i++) {
+      for (int j = 0; j < maze.getWidth(); j++) {
+        CASE = maze.getCase(i, j);
+        switch (CASE) {
           case Maze.START:
-          PhongMaterial COLOR_ENTRY = new PhongMaterial();
-          //COLOR_ENTRY.setDiffuseMap();
-          COLOR_ENTRY.setSpecularColor(Color.BLACK);
-          cell=makeFloor(COLOR_ENTRY);
-          setBox(cell,i,j,root,floor,maze);
-          //drawBonus(root,i,j);
-          drawObstacle(root,i,j,floor,maze);
-          break;
+            PhongMaterial COLOR_ENTRY = new PhongMaterial();
+            //COLOR_ENTRY.setDiffuseMap();
+            COLOR_ENTRY.setSpecularColor(Color.BLACK);
+            cell = makeFloor(COLOR_ENTRY);
+            setBox(cell, i, j, root, floor, maze);
+            //drawBonus(root,i,j);
+            drawObstacle(root, i, j, floor, maze);
+            break;
           case Maze.END:
-          PhongMaterial COLOR_END = new PhongMaterial();
-          //COLOR_END.setDiffuseMap(new Image("/end.jpg"));
-          COLOR_END.setSpecularColor(Color.WHITE);
-          cell = makeFloor(COLOR_END);
-          setBox(cell,i,j,root,floor,maze);
-          break;
+            PhongMaterial COLOR_END = new PhongMaterial();
+            //COLOR_END.setDiffuseMap(new Image("/end.jpg"));
+            COLOR_END.setSpecularColor(Color.WHITE);
+            cell = makeFloor(COLOR_END);
+            setBox(cell, i, j, root, floor, maze);
+            break;
           case Maze.WAY:
-          cell = makeFloor(COLOR_WAY);
-          setBox(cell,i,j,root,floor,maze);
-          break;
+            cell = makeFloor(COLOR_WAY);
+            setBox(cell, i, j, root, floor, maze);
+            break;
           case Maze.DOOR:
-          cell = new Box(SIZE_BOX,SIZE_BOX,SIZE_BOX);
-          PhongMaterial door= new PhongMaterial();
-          door.setDiffuseMap(new Image("/safe.jpg"));
-          door.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
-          cell.setMaterial(door);
-          setBox(cell,i,j,root,floor,maze);
-          break;
+            cell = new Box(SIZE_BOX, SIZE_BOX, SIZE_BOX);
+            PhongMaterial door = new PhongMaterial();
+            door.setDiffuseMap(new Image("/safe.jpg"));
+            door.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
+            cell.setMaterial(door);
+            setBox(cell, i, j, root, floor, maze);
+            break;
           case Maze.KEY:
-          drawKey(root,j,i,floor);
-          cell = makeFloor(COLOR_WAY);
-          setBox(cell,i,j,root,floor,maze);
-          break;
+            drawKey(root, j, i, floor);
+            cell = makeFloor(COLOR_WAY);
+            setBox(cell, i, j, root, floor, maze);
+            break;
           case Maze.TELEPORT:
-          cell = makeFloor(COLOR_WAY);
-          setBox(cell,i,j,root,floor,maze);
-          break;
+            cell = makeFloor(COLOR_WAY);
+            setBox(cell, i, j, root, floor, maze);
+            break;
           case Maze.MONSTRE:
-          cell = makeFloor(COLOR_WAY);
-          drawMonster(root,i,j,floor,maze);
-          setBox(cell,i,j,root,floor,maze);
-          break;
+            cell = makeFloor(COLOR_WAY);
+            drawMonster(root, i, j, floor, maze);
+            setBox(cell, i, j, root, floor, maze);
+            break;
           case Maze.BONUS:
-          cell = makeFloor(COLOR_WAY);
-          drawBonus(root,i,j,maze);
-          setBox(cell,i,j,root,floor,maze);
-          break;
+            cell = makeFloor(COLOR_WAY);
+            drawBonus(root, i, j, maze);
+            setBox(cell, i, j, root, floor, maze);
+            break;
           case Maze.OBSTACLE:
-          cell = makeFloor(COLOR_WAY);
-          drawObstacle(root,i,j,floor,maze);
-          //faire drawObstacle, attention à la forme de l'obstacle
-          setBox(cell,i,j,root,floor,maze);
-          break;
+            cell = makeFloor(COLOR_WAY);
+            drawObstacle(root, i, j, floor, maze);
+            //faire drawObstacle, attention à la forme de l'obstacle
+            setBox(cell, i, j, root, floor, maze);
+            break;
           case Maze.STAIRSUP:
-          drawStair(0,root,i,j,maze,floor);
-          break;
+            drawStair(0, root, i, j, maze, floor);
+            break;
           case Maze.STAIRSDOWN:
-          //drawStair(4,0,root,i,j,floor);
-          break;
+            //drawStair(4,0,root,i,j,floor);
+            break;
           case Maze.WALL:
-          PhongMaterial COLOR_WALL = new PhongMaterial();
-          COLOR_WALL.setBumpMap(new Image("brick.jpg"));
-          COLOR_WALL.setDiffuseColor(Color.LIGHTGOLDENRODYELLOW);
-          COLOR_WALL.setSpecularColor(Color.BLACK);
-          cell=new Box(SIZE_BOX,SIZE_BOX,SIZE_BOX);
-          cell.setMaterial(COLOR_WALL);
-          setBox(cell,i,j,root,floor,maze);
-          break;
+            PhongMaterial COLOR_WALL = new PhongMaterial();
+            COLOR_WALL.setBumpMap(new Image("brick.jpg"));
+            COLOR_WALL.setDiffuseColor(Color.LIGHTGOLDENRODYELLOW);
+            COLOR_WALL.setSpecularColor(Color.BLACK);
+            cell = new Box(SIZE_BOX, SIZE_BOX, SIZE_BOX);
+            cell.setMaterial(COLOR_WALL);
+            setBox(cell, i, j, root, floor, maze);
+            break;
         }
       }
     }
   }
 
-  public Box makeFloor(PhongMaterial color){
-    Box cell = new Box(SIZE_BOX,0,SIZE_BOX);
+  public Box makeFloor(PhongMaterial color) {
+    Box cell = new Box(SIZE_BOX, 0, SIZE_BOX);
     cell.setMaterial(color);
-    cell.setTranslateY(SIZE_BOX/2);
+    cell.setTranslateY(SIZE_BOX / 2);
     return cell;
   }
 
-  public void remove(Group root,int i, int j){
-    int posz = i*SIZE_BOX;
-    int posx = j*SIZE_BOX;
+  public void remove(Group root, int i, int j) {
+    int posz = i * SIZE_BOX;
+    int posx = j * SIZE_BOX;
     Node removable;
-    for ( Node a : keyOrBonus ) {
-      if(a.getTranslateX()==posx && a.getTranslateZ()==posz){
-        removable=a;
+    for (Node a : keyOrBonus) {
+      if (a.getTranslateX() == posx && a.getTranslateZ() == posz) {
+        removable = a;
         root.getChildren().remove(removable);
         break;
       }
     }
   }
-  public void setBox(Box cell,int i, int j, Group root,int floor,Maze maze){
-    cell.setTranslateX(j*SIZE_BOX);
-    cell.setTranslateZ(i*SIZE_BOX);
-    int place = maze.getCase(i,j);
-    if(place==Maze.WALL || place== Maze.DOOR || place==Maze.STAIRSUP || place==Maze.STAIRSDOWN)
-      cell.setTranslateY((-floor)*SIZE_BOX);
+
+  public void setBox(Box cell, int i, int j, Group root, int floor, Maze maze) {
+    cell.setTranslateX(j * SIZE_BOX);
+    cell.setTranslateZ(i * SIZE_BOX);
+    int place = maze.getCase(i, j);
+    if (place == Maze.WALL || place == Maze.DOOR || place == Maze.STAIRSUP || place == Maze.STAIRSDOWN)
+      cell.setTranslateY((-floor) * SIZE_BOX);
     else
-      cell.setTranslateY((-floor)*SIZE_BOX+SIZE_BOX/2);
+      cell.setTranslateY((-floor) * SIZE_BOX + SIZE_BOX / 2);
     root.getChildren().add(cell);
   }
 
-  public void drawMonster(Group root,int i, int j,int floor,Maze maze) throws IOException{
+  public void drawMonster(Group root, int i, int j, int floor, Maze maze) throws IOException {
     Monstres last = maze.getMonstres().getLast();
     MeshView ghost = last.initMonster();
-    ghost.setTranslateX(j*SIZE_BOX);
-    ghost.setTranslateZ(i*SIZE_BOX);
-    ghost.setTranslateY((-floor)*SIZE_BOX-SIZE_BOX/2);
+    ghost.setTranslateX(j * SIZE_BOX);
+    ghost.setTranslateZ(i * SIZE_BOX);
+    ghost.setTranslateY((-floor) * SIZE_BOX - SIZE_BOX / 2);
     root.getChildren().add(ghost);
   }
-  public void drawKey(Group root,int posx,int posy,int floor) throws IOException{
+
+  public void drawKey(Group root, int posx, int posy, int floor) throws IOException {
     FXMLLoader fxmlLoader = new FXMLLoader();
     fxmlLoader.setLocation(this.getClass().getResource("key.fxml"));
     MeshView key = fxmlLoader.<MeshView>load();
     key.setRotationAxis(Rotate.Z_AXIS);
     key.setRotate(180.0);
-    key.setTranslateX(posx*SIZE_BOX);
-    key.setTranslateZ(posy*SIZE_BOX);
-    key.setTranslateY(-floor*SIZE_BOX);
+    key.setTranslateX(posx * SIZE_BOX);
+    key.setTranslateZ(posy * SIZE_BOX);
+    key.setTranslateY(-floor * SIZE_BOX);
     PhongMaterial mat = new PhongMaterial();
     mat.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
     mat.setDiffuseColor(Color.YELLOW);
@@ -231,79 +234,114 @@ public class Test extends Application{
     root.getChildren().add(key);
   }
 
-  public void drawStair(int dir,Group root,int i,int j,Maze maze,int floor){
+  public void drawStair(int dir, Group root, int i, int j, Maze maze, int floor) {
     Box step;
-    int nbStep=4;
+    int nbStep = 4;
     Group stairs = new Group();
-    int size=SIZE_BOX/nbStep,a=0;
-    while(nbStep!=a){
-      step=new Box(SIZE_BOX,size*(a+1),size);
+    int size = SIZE_BOX / nbStep, a = 0;
+    while (nbStep != a) {
+      step = new Box(SIZE_BOX, size * (a + 1), size);
       step.setMaterial(new PhongMaterial(Color.BLUE));
-      step.setTranslateX(j*SIZE_BOX);
-      step.setTranslateZ(i*SIZE_BOX+size*a-SIZE_BOX/2-size);
-      if(dir==0)
-        step.setTranslateY(SIZE_BOX/2+(size/2)*(-1)*(a+1));
+      step.setTranslateX(j * SIZE_BOX);
+      step.setTranslateZ(i * SIZE_BOX + size * a - SIZE_BOX / 2 - size);
+      if (dir == 0)
+        step.setTranslateY(SIZE_BOX / 2 + (size / 2) * (-1) * (a + 1));
       else
-        step.setTranslateY(SIZE_BOX/2+(size/2)*(a+1));
+        step.setTranslateY(SIZE_BOX / 2 + (size / 2) * (a + 1));
       a++;
       stairs.getChildren().add(step);
     }
     stairs.setRotationAxis(Rotate.Y_AXIS);
-    if(j==0){
+    if (j == 0) {
       System.out.println("pat");//modifZ-
       stairs.setRotate(-90);
-    }
-    else if(j==maze.getWidth()-1){
+    } else if (j == maze.getWidth() - 1) {
       System.out.println("sac");
       stairs.setRotate(90);
-    }
-    else if(i==maze.getHeight()-1){
+    } else if (i == maze.getHeight() - 1) {
       System.out.println("sec");//modifZ moins
       stairs.setRotate(0);
-    }
-    else if(i==0){
+    } else if (i == 0) {
       System.out.println("zed");
       stairs.setRotate(180);//modifZ-
     }
     root.getChildren().add(stairs);
   }
 
-  public void drawObstacle(Group root,int i, int j,int floor,Maze maze) throws IOException{
+  public void drawObstacle(Group root, int i, int j, int floor, Maze maze) throws IOException {
     FXMLLoader fxmlLoader = new FXMLLoader();
-    int scale = 0,posy;
-    if(maze.getTypeObstacle().equals("Cercle")) {
+    int scale = 0, posy;
+    if (maze.getTypeObstacle().equals("Cercle")) {
       fxmlLoader.setLocation(this.getClass().getResource("Spider.fxml"));
       scale = 2;
-      posy = SIZE_BOX/10;
-    }
-    else{
+      posy = SIZE_BOX / 10;
+    } else {
       fxmlLoader.setLocation(this.getClass().getResource("gate.fxml"));
       scale = 3;
-      posy = SIZE_BOX/20;
+      posy = SIZE_BOX / 20;
     }
     fxmlLoader.setLocation(this.getClass().getResource("gate.fxml"));
     scale = 4;
-    posy = SIZE_BOX/5;
+    posy = SIZE_BOX / 5;
     //fxmlLoader.setLocation(this.getClass().getResource("Spider.fxml"));
     Group obs = fxmlLoader.load();
     PhongMaterial mat = new PhongMaterial();
     mat.setSpecularColor(Color.BLACK);
     mat.setDiffuseColor(Color.DARKGREY);
-    for ( Node n : obs.getChildren() ) {
-      if(n instanceof Shape3D) {
-        ((Shape3D)n).setTranslateX(j*SIZE_BOX);
-        ((Shape3D)n).setTranslateZ(i*SIZE_BOX);
-        ((Shape3D)n).setMaterial(mat);
-        ((Shape3D)n).setScaleX(((Shape3D)n).getScaleX()*scale);
-        ((Shape3D)n).setScaleY(((Shape3D)n).getScaleY()*scale);
-        ((Shape3D)n).setScaleZ(((Shape3D)n).getScaleZ()*scale);
-        ((Shape3D)n).setTranslateY(SIZE_BOX/2-posy-(floor*SIZE_BOX));
+    for (Node n : obs.getChildren()) {
+      if (n instanceof Shape3D) {
+        ((Shape3D) n).setTranslateX(j * SIZE_BOX);
+        ((Shape3D) n).setTranslateZ(i * SIZE_BOX);
+        ((Shape3D) n).setMaterial(mat);
+        ((Shape3D) n).setScaleX(((Shape3D) n).getScaleX() * scale);
+        ((Shape3D) n).setScaleY(((Shape3D) n).getScaleY() * scale);
+        ((Shape3D) n).setScaleZ(((Shape3D) n).getScaleZ() * scale);
+        ((Shape3D) n).setTranslateY(SIZE_BOX / 2 - posy - (floor * SIZE_BOX));
       }
     }
     root.getChildren().add(obs);
   }
 
-  public void drawBonus(Group root, int i, int j,Maze maze) throws IOException{
+  public void drawBonus(Group root, int i, int j, Maze maze) throws IOException {
+    FXMLLoader fxmlLoader = new FXMLLoader();
+    Bonus last = maze.getBonus().getLast();
+    PhongMaterial mat = new PhongMaterial();
+    if (last.getAvantage().equals("Piece")) {
+      fxmlLoader.setLocation(this.getClass().getResource("Coin.fxml")); //mettre pieces ou bonus temps
+      mat.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
+      mat.setDiffuseColor(Color.YELLOW);
+    } else {
+      fxmlLoader.setLocation(this.getClass().getResource("sablier4.fxml"));
+      mat.setSpecularColor(Color.MAROON);
+      mat.setDiffuseColor(Color.BROWN);
+    }
+    Group bonus = fxmlLoader.load();
+    RotateTransition rt = new RotateTransition(Duration.millis(3000));
+    rt.setByAngle(360.0);
+    rt.setAxis(Rotate.Y_AXIS);
+    rt.setCycleCount(TranslateTransition.INDEFINITE);
+    rt.setAutoReverse(false);
+    rt.setInterpolator(Interpolator.LINEAR);
+    for (Node n : bonus.getChildren()) {
+      if (n instanceof Shape3D) {
+        ((Shape3D) n).setMaterial(mat);
+        ((Shape3D) n).setRotationAxis(Rotate.Z_AXIS);
+        ((Shape3D) n).setTranslateX(j * SIZE_BOX);
+        ((Shape3D) n).setTranslateZ(i * SIZE_BOX);
+        //((Shape3D)n).setTranslateY(-SIZE_BOX / 2);
+        ((Shape3D) n).setRotationAxis(Rotate.Z_AXIS);
+        rt.setNode(n);
+      } else n.setVisible(false);
+    }
+    rt.play();
+    root.getChildren().add(bonus);
+  }
+
+
+
+
+
+  /*public void drawBonus(Group root, int i, int j,Maze maze) throws IOException{
     Bonus last = maze.getBonus().getLast();
     MeshView bonus = last.initBonus();
     RotateTransition rt = new RotateTransition(Duration.millis(3000));
@@ -320,7 +358,7 @@ public class Test extends Application{
     rt.setNode(bonus);
     rt.play();
     root.getChildren().add(bonus);
-  }
+  }*/
 
   public void buildCamera(PerspectiveCamera cam,MazeFloors mazes){
     cam.setFarClip(10000.0);
