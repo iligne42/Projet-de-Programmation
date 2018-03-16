@@ -55,6 +55,7 @@ public class hostMenu extends VBox{
 		chatPane chat=new chatPane();
 		layout.getChildren().add(chat);
 		Scene scene=new Scene(layout,800,800);
+		scene.getStylesheets().add("chat.css");
 		stageChat.setScene(scene);
 		chat.initHost(myName);
 		stageChat.show();
