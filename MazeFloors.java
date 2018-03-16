@@ -9,7 +9,9 @@ public class MazeFloors{
     public MazeFloors(int L, int l, int nb)throws FormatNotSupported{
         this(L,l,nb,0,0,0,0,0,0);
     }
-
+    public LinkedList<Maze>getFloor(){
+      return mazes;
+    }
     public MazeFloors(int L, int l, int nb, int nbObstacles, int nbMonstres,int nbTeleport,int nbDoors,int nbBonus, int typeBonus) throws FormatNotSupported{
         if(nb==0) throw new FormatNotSupported("You must put a number of floors, min 1");
         mazes=new LinkedList<Maze>();

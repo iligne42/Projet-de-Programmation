@@ -1,9 +1,10 @@
-
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Optional;
 
 public interface MazeInterface {
@@ -88,6 +89,14 @@ public interface MazeInterface {
 
         }
 
+    }
+
+    static GameVersion load(String file) throws IOException, ClassNotFoundException {
+        FileInputStream fis = new FileInputStream(file);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        GameVersion g = (GameVersion) ois.readObject();
+        ois.close();
+        return g;
     }
 
     static int nbPlayer() {
@@ -208,6 +217,5 @@ public interface MazeInterface {
         double x = Math.random() * (b - a) + a;
         return (int) x;
     }
-
 
 }

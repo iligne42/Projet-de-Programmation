@@ -29,6 +29,10 @@ public class Obstacles extends Divers{
         else return "Cercle";
     }
 
+    public Shape shape(){
+        return s;
+    }
+
     /*private void put(Point2D p){
         Random rand=new Random();
         int i=0; int j=0;

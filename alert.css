@@ -1,5 +1,5 @@
 .dialog-pane{
-    -fx-background-color:#0F1096;
+   -fx-background-image:url("lab.jpg");
 }
 
 .dialog-pane .label{
@@ -7,7 +7,7 @@
     -fx-font-family:"URW Chancery L, cursive";
     -fx-font-size: 12px;
     -fx-font-weight:bold;
-    -fx-text-alignement:center;
+    -fx-text-alignment:center;
 }
 
 .dialog-pane .button-bar .container .button{

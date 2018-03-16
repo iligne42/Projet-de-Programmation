@@ -25,13 +25,13 @@ public class Player implements Serializable{
 		orientationSpeed=5;
 		bonus=new LinkedList<>();
 		keys=new LinkedList<>();
-		shape=new Circle(0.1);
+		shape=new Circle(0.15);
 		//body=new Cylinder()
 		//shape.setFill(Color.BLUE);
 	}
 
-	public double radius(){
-		return shape.getRadius();
+	public float radius(){
+		return (float)shape.getRadius();
 	}
 
 	public void setPosition(Point2D position, int ori){
@@ -48,6 +48,15 @@ public class Player implements Serializable{
 	public String getName(){ return name;}
 	public Point2D getPosition(){ return position;}
 	public int orientation(){ return orientation;}
+
+    public LinkedList<Key> keys() {
+        return keys;
+    }
+
+    public LinkedList<Bonus> getBonus() {
+        return bonus;
+    }
+
 
 	public void moveForward(){
 		position.setLocation(position.getX()+Math.cos(Math.toRadians(orientation))*speed, position.getY()+Math.sin(Math.toRadians(orientation))*speed);
@@ -76,16 +85,6 @@ public class Player implements Serializable{
         bonus.add(bonuss);
     }
 
-    /*public boolean openDoor(Point2D point){
-        if(maze.getCase(point)!=Maze.DOOR)return true;
-        else{
-            Door door = maze.getDoor(point);
-            for ( Key a : keys){
-                if(door.getKey().equals(a)) return true;
-            }
-            return false;
-        }
-    }*/
 
 	public static void main(String[] args) {
 		Player p=new Player("Pierre");

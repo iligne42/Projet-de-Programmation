@@ -260,7 +260,7 @@ public class Menu extends Application {
                         try {
                         name = MazeInterface.readInput("What's your name ?");
                         mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif));
-                        hostmenu.initHost(name,mazeM);
+                        //hostmenu.initHost(name,mazeM);
                         //hostmenu.getChildren().add(go);
                        changePanel(stack, hostmenu);
                         //gType=;
@@ -395,7 +395,7 @@ public class Menu extends Application {
         settings2.getChildren().addAll(type2, choose, backToMaze2);
 
         /*Panneau pour le menu principal*/
-        Label label = new Label("Maz3D");
+        Label label = new Label("A Maz3D");
         label.setStyle("-fx-font-size: 58; -fx-text-fill:#bdbbb6; -fx-alignment:top-center;");
         label.setId("mazd");
         Button quit = new Button("QUIT");
@@ -506,5 +506,3 @@ public class Menu extends Application {
     }
 
 }
-
-

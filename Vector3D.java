@@ -49,9 +49,13 @@ public class Vector3D implements Serializable{
         return new Vector3D(x*alpha,y*alpha,z*alpha);
     }
 
+    public boolean isNulVector(){
+        return x==0 && y==0 && z==0;
+    }
+
 
     public Vector3D normalize(){
-        return this.multiply(1/norm());
+        return (isNulVector())?this:this.multiply(1/norm());
     }
 
     public void setTo(double x,double y, double z){
@@ -59,6 +63,8 @@ public class Vector3D implements Serializable{
         this.y=y;
         this.z=z;
     }
+
+
 
     public Vector3D add(Vector3D f){
         return new Vector3D(x+f.x(),y+f.y(),z+f.z());
@@ -81,8 +87,7 @@ public class Vector3D implements Serializable{
     }
 
     public Vector3D posColinear(double norm){
-        double alpha=norm/this.norm();
-        return multiply(alpha);
+        return isNulVector()?this:multiply(norm/this.norm());
     }
 
     public Vector3D negColinear(double norm){
