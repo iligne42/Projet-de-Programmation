@@ -67,33 +67,20 @@ public class View extends Scene {
     }
 
     protected abstract class TimePane extends Pane {//not sure though, it is a layout
-        protected LongProperty lastUpdate;
+        protected Timeline timeLine;
         protected Label timeLabel;
         protected IntegerProperty timeSeconds;
-        protected AnimationTimer gameTimer;
 
 
 
         public TimePane(int time) {
-            lastUpdate=new SimpleLongProperty();
             timeSeconds=new TimeProperty(time);
             timeLabel = new Label();
             timeLabel.textProperty().bind(timeSeconds.asString());
             timeLabel.setStyle("-fx-alignment:center; -fx-background-color:grey");
+            timeLine = new Timeline();
             this.getChildren().add(timeLabel);
             this.setStyle("-fx-border-color:red; -fx-alignment:center");
-            gameTimer=new AnimationTimer() {
-                @Override
-                public void handle(long now) {
-                    if(lastUpdate.get()>0) {
-                        double elapsedTime = (now - lastUpdate.get()) / 1000000000.0;
-                        //game.update(elapsedTime);
-                        timeSeconds.set(game.getElapsed());
-                    }
-                    lastUpdate.set(now);
-
-                }
-            };
         }
 
         public String getElapsedTime(){
@@ -114,21 +101,19 @@ public class View extends Scene {
 
 
         public void stop() {
-            gameTimer.stop();
+            timeLine.stop();
         }
 
-        public void start(){
-            gameTimer.start();
-        }
-
-       /* public void pause() {
-            timePane.pause();
+        public void pause() {
+            timeLine.pause();
         }
 
         public void start() {
-            gameTimer.playFromStart();
-        }*/
+            timeLine.playFromStart();
+        }
     }
+
+
 
 
 
@@ -145,13 +130,13 @@ public class View extends Scene {
                     game.elapse(1);
                     timeSeconds.set(timeLimit-game.getElapsed());
                 }));*/
-           /* gameTimer.setCycleCount(timeLimit);
+            timeLine.setCycleCount(timeLimit);
             timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (event) -> {
                 game.elapse(1);
                 timeSeconds.set(timeLimit - game.getElapsed());
                // if (timeSeconds.get() == 0) timeLine.stop();
 
-            }));*/
+            }));
         }
 
         public boolean timeOver() {
@@ -164,14 +149,14 @@ public class View extends Scene {
 
         public SoloTimePane() {
             super(0);
-           // timeLine.setCycleCount(Timeline.INDEFINITE);
+            timeLine.setCycleCount(Timeline.INDEFINITE);
                /* timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1),(event)->{
                     timeSeconds.set(timeSeconds.get()+1);
                 }));*/
-          /*  timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (event) -> {
+          timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (event) -> {
                 game.elapse(1);
                 timeSeconds.set(game.getElapsed());
-            }));*/
+            }));
         }
 
     }
@@ -455,4 +440,69 @@ public class View extends Scene {
             timeLine.playFromStart();
         }
     }*/
+
+       /* protected abstract class TimePane extends Pane {//not sure though, it is a layout
+        //protected LongProperty lastUpdate;
+        protected Timeline timeLine;
+        protected Label timeLabel;
+        protected IntegerProperty timeSeconds;
+       // protected AnimationTimer gameTimer;
+
+
+
+        public TimePane(int time) {
+           // lastUpdate=new SimpleLongProperty();
+            timeSeconds=new TimeProperty(time);
+            timeLabel = new Label();
+            timeLabel.textProperty().bind(timeSeconds.asString());
+            timeLabel.setStyle("-fx-alignment:center; -fx-background-color:grey");
+            this.getChildren().add(timeLabel);
+            this.setStyle("-fx-border-color:red; -fx-alignment:center");
+           gameTimer=new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    if(lastUpdate.get()>0) {
+                        double elapsedTime = (now - lastUpdate.get()) / 1000000000.0;
+                        //game.update(elapsedTime);
+                        timeSeconds.set(game.getElapsed());
+                    }
+                    lastUpdate.set(now);
+
+                }
+            };
+        }
+
+        public String getElapsedTime(){
+            return MazeInterface.getT(game.getElapsed());
+        }
+
+        public  int getElapsedSeconds(){
+            return game.getElapsed();
+        }
+
+        public boolean timeOver() {
+            return false;
+        }
+
+        public void setTimeSeconds(int time) {
+            timeSeconds.set(time);
+        }
+
+
+       public void stop() {
+            gameTimer.stop();
+        }
+
+        public void start(){
+            gameTimer.start();
+        }
+
+       /* public void pause() {
+            timePane.pause();
+        }
+
+        public void start() {
+            gameTimer.playFromStart();
+        }*/
+
 }
