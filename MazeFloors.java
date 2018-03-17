@@ -9,6 +9,7 @@ public class MazeFloors{
     public MazeFloors(int L, int l, int nb)throws FormatNotSupported{
         this(L,l,nb,0,0,0,0,0,0);
     }
+
     public LinkedList<Maze>getFloor(){
       return mazes;
     }

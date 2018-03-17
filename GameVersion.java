@@ -118,6 +118,7 @@ public abstract class GameVersion implements Serializable {
     }*/
 
     public void move(int direction) {
+        Point2D p = (Point2D) player.getPosition().clone();
         switch (direction) {
             case 1:
                 player.moveForward();
@@ -133,6 +134,7 @@ public abstract class GameVersion implements Serializable {
                 player.moveRight();
                 break;
         }
+        this.handleMove(p);
     }
 
 
