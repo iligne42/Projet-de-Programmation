@@ -52,7 +52,7 @@ public class Test extends Application {
     public void start(Stage stage) throws FormatNotSupported, IOException {
         Group root = new Group();
         Scene scene = new Scene(root, 500, 500, true);
-        MazeFloors mazes = new MazeFloors(SIZE_MAZE, SIZE_MAZE, 3, 5, 2, 0, 2, 0, 0);
+        MazeFloors mazes = new MazeFloors(SIZE_MAZE, SIZE_MAZE, 2, 0, 2, 0, 0, 4, 0);
         doFloor(root, mazes);
         //setCamToStart(cam);
         //eventMouse(scene,root);
@@ -103,8 +103,8 @@ public class Test extends Application {
                         COLOR_ENTRY.setSpecularColor(Color.BLACK);
                         cell = makeFloor(COLOR_ENTRY);
                         setBox(cell, i, j, root, floor, maze);
-                        //drawBonus(root,i,j);
-                        drawObstacle(root, i, j, floor, maze);
+                        drawBonus(root,i,j,maze);
+                        //drawObstacle(root, i, j, floor, maze);
                         break;
                     case Maze.END:
                         PhongMaterial COLOR_END = new PhongMaterial();
@@ -303,10 +303,10 @@ public class Test extends Application {
     }
 
     public void drawBonus(Group root, int i, int j, Maze maze) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
+        //FXMLLoader fxmlLoader = new FXMLLoader();
         Bonus last = maze.getBonus().getLast();
-        PhongMaterial mat = new PhongMaterial();
-        if (last.getAvantage().equals("Piece")) {
+        //PhongMaterial mat = new PhongMaterial();
+        /*if (last.getAvantage().equals("Piece")) {
             fxmlLoader.setLocation(this.getClass().getResource("Coin.fxml")); //mettre pieces ou bonus temps
             mat.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
             mat.setDiffuseColor(Color.YELLOW);
@@ -315,14 +315,15 @@ public class Test extends Application {
             mat.setSpecularColor(Color.MAROON);
             mat.setDiffuseColor(Color.BROWN);
         }
-        Group bonus = fxmlLoader.load();
+        Group bonus = fxmlLoader.load();*/
+        MeshView bonus = last.initBonus();
         RotateTransition rt = new RotateTransition(Duration.millis(3000));
         rt.setByAngle(360.0);
         rt.setAxis(Rotate.Y_AXIS);
         rt.setCycleCount(TranslateTransition.INDEFINITE);
         rt.setAutoReverse(false);
         rt.setInterpolator(Interpolator.LINEAR);
-        for (Node n : bonus.getChildren()) {
+        /*for (Node n : bonus.getChildren()) {
             if (n instanceof Shape3D) {
                 ((Shape3D) n).setMaterial(mat);
                 ((Shape3D) n).setRotationAxis(Rotate.Z_AXIS);
@@ -332,7 +333,14 @@ public class Test extends Application {
                 ((Shape3D) n).setRotationAxis(Rotate.Z_AXIS);
                 rt.setNode(n);
             } else n.setVisible(false);
-        }
+        }*/
+        bonus.setTranslateX(j * SIZE_BOX);
+        bonus.setTranslateZ(i * SIZE_BOX);
+        //bonus.setTranslateY((-floor) * SIZE_BOX - SIZE_BOX / 2);
+        bonus.setScaleX(bonus.getScaleX()* SIZE_BOX/10);
+        bonus.setScaleZ(bonus.getScaleZ()* SIZE_BOX/10);
+        bonus.setScaleY(bonus.getScaleY()* SIZE_BOX/10);
+        rt.setNode(bonus);
         rt.play();
         root.getChildren().add(bonus);
     }

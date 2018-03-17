@@ -20,15 +20,17 @@ public abstract class Bonus extends Divers{
 
     public MeshView initBonus() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
+        PhongMaterial mat = new PhongMaterial();
         if(avantage.equals("Piece")) {
             fxmlLoader.setLocation(this.getClass().getResource("ghost.fxml")); //mettre pieces ou bonus temps
+            mat.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
+            mat.setDiffuseColor(Color.YELLOW);
         }else{
-            fxmlLoader.setLocation(this.getClass().getResource("ghost.fxml"));
+            fxmlLoader.setLocation(this.getClass().getResource("sablier.fxml"));
+            mat.setSpecularColor(Color.MAROON);
+            mat.setDiffuseColor(Color.BROWN);
         }
         MeshView bonus = fxmlLoader.<MeshView>load();
-        PhongMaterial mat = new PhongMaterial();
-        mat.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
-        mat.setDiffuseColor(Color.WHITE);
         bonus.setMaterial(mat);
         bonus.setRotationAxis(Rotate.Z_AXIS);
         return bonus;
