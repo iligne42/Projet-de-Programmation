@@ -52,7 +52,7 @@ public class Test extends Application{
   public void start(Stage stage) throws FormatNotSupported,IOException{
       Group root = new Group();
       Scene scene = new Scene(root,500,500,true);
-      MazeFloors mazes = new MazeFloors(SIZE_MAZE,SIZE_MAZE,3,0,2,0,2,0,0);
+      MazeFloors mazes = new MazeFloors(SIZE_MAZE,SIZE_MAZE,3,0,2,0,2,3,1);
       doFloor(root,mazes);
       //setCamToStart(cam);
       //eventMouse(scene,root);
@@ -159,6 +159,7 @@ public class Test extends Application{
           COLOR_ENTRY.setSpecularColor(Color.BLACK);
           cell=makeFloor(COLOR_ENTRY);
           setBox(cell,i,j,root,floor,maze);
+          drawBonus(root,i,j,maze);
           break;
           case Maze.END:
           PhongMaterial COLOR_END = new PhongMaterial();
