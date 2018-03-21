@@ -162,7 +162,7 @@ public class View extends Scene {
     }
 
 
-    protected class MazePane extends Pane {
+    protected class MazePane extends Group {
         protected final Maze maze = game.maze();
         protected PerspectiveCamera camera;
         protected AmbientLight light;
@@ -196,10 +196,10 @@ public class View extends Scene {
            /* light.setTranslateX(SIZE_BOX*(MAZE_WIDTH-1)/2);
             light.setTranslateZ(SIZE_BOX*(MAZE_LENGTH-1)/2);
             light.setTranslateY(-SIZE_BOX/3);*/
-            COLOR_WALL.setDiffuseMap(new Image("brick.jpg"));
-         // COLOR_WALL.setBumpMap(new Image("brick.jpg"));
-         //  COLOR_WALL.setSpecularColor(Color.BLACK);
-         //  COLOR_WALL.setDiffuseColor(Color.LIGHTGOLDENRODYELLOW);
+           // COLOR_WALL.setDiffuseMap(new Image("brick.jpg"));
+            COLOR_WALL.setBumpMap(new Image("brick.jpg"));
+          COLOR_WALL.setSpecularColor(Color.BLACK);
+         COLOR_WALL.setDiffuseColor(Color.LIGHTGOLDENRODYELLOW);
 
             for (int i = 0; i < MAZE_LENGTH; i++) {
                 for (int j = 0; j < MAZE_WIDTH; j++) {
