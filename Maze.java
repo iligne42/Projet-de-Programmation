@@ -197,7 +197,7 @@ public class Maze implements Serializable{
                 tmp++;
             }
         }
-        if(tmp==5) System.out.println("Nous ne pouvions pas mettre autant d'obstacles. Il y en manque donc "+nbObstacles+".");
+        if(tmp==5) System.out.println("Nous ne pouvions pas mettre autant d'obstacles. Il en manque donc "+nbObstacles+".");
     }
 
     private void createBorder(){ //crée la "base" du labyrinthe(contour)
