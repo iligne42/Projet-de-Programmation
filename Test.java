@@ -52,7 +52,7 @@ public class Test extends Application{
   public void start(Stage stage) throws FormatNotSupported,IOException{
       Group root = new Group();
       Scene scene = new Scene(root,500,500,true);
-      MazeFloors mazes = new MazeFloors(SIZE_MAZE,SIZE_MAZE,3,0,2,0,2,3,1);
+      MazeFloors mazes = new MazeFloors(SIZE_MAZE,SIZE_MAZE,3,0,2,0,0,3,0);
       doFloor(root,mazes);
       //setCamToStart(cam);
       //eventMouse(scene,root);
@@ -159,7 +159,7 @@ public class Test extends Application{
           COLOR_ENTRY.setSpecularColor(Color.BLACK);
           cell=makeFloor(COLOR_ENTRY);
           setBox(cell,i,j,root,floor,maze);
-          drawBonus(root,i,j,maze);
+          //drawBonus(root,i,j,maze);
           break;
           case Maze.END:
           PhongMaterial COLOR_END = new PhongMaterial();
@@ -196,7 +196,7 @@ public class Test extends Application{
           break;
           case Maze.BONUS:
           cell = makeFloor(COLOR_WAY);
-          drawBonus(root,i,j,maze);
+          drawBonus(root,i,j,maze,floor);
           setBox(cell,i,j,root,floor,maze);
           break;
           case Maze.OBSTACLE:
@@ -360,7 +360,7 @@ public class Test extends Application{
     root.getChildren().add(obs);
   }
 
-  public void drawBonus(Group root, int i, int j, Maze maze) throws IOException {
+  public void drawBonus(Group root, int i, int j, Maze maze,int floor) throws IOException {
         //FXMLLoader fxmlLoader = new FXMLLoader();
         Bonus last = maze.getBonus().getLast();
         //PhongMaterial mat = new PhongMaterial();
@@ -394,7 +394,7 @@ public class Test extends Application{
         }*/
         bonus.setTranslateX(j * SIZE_BOX);
         bonus.setTranslateZ(i * SIZE_BOX);
-        //bonus.setTranslateY((-floor) * SIZE_BOX - SIZE_BOX / 2);
+        bonus.setTranslateY((-floor) * SIZE_BOX - SIZE_BOX / 2);
         bonus.setScaleX(bonus.getScaleX()* SIZE_BOX/10);
         bonus.setScaleZ(bonus.getScaleZ()* SIZE_BOX/10);
         bonus.setScaleY(bonus.getScaleY()* SIZE_BOX/10);

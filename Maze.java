@@ -544,7 +544,7 @@ public class Maze implements Serializable{
 
     private void addBonus(int nb, int type){
         while(nb!=0){
-            if(type==0){
+            if(type==1){
                 TimeBonus tb=new TimeBonus(this);
                 bonus.add(tb);
                 fill(BONUS, tb.getPosition());
