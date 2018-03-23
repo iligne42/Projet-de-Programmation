@@ -18,7 +18,7 @@ public abstract class Bonus extends Divers{
 
     public String getAvantage(){return avantage;}
 
-   /* public MeshView initBonus() throws IOException {
+   public MeshView initBonus() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         PhongMaterial mat = new PhongMaterial();
         if(avantage.equals("Piece")) {
@@ -34,5 +34,5 @@ public abstract class Bonus extends Divers{
         bonus.setMaterial(mat);
         bonus.setRotationAxis(Rotate.Z_AXIS);
         return bonus;
-    }*/
+    }
 }
