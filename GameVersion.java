@@ -99,6 +99,7 @@ public abstract class GameVersion implements Serializable {
         else if (y == maze.getHeight() - 1) orientation = 270;
         begin = new Point2D.Double(begin.getX() + 0.5, begin.getY() + 0.5);
         player.setPosition(begin, orientation);
+        player.setAcceleration();
 
     }
 
@@ -110,14 +111,13 @@ public abstract class GameVersion implements Serializable {
         return p.getX() >= 0 && p.getY() >= 0 && p.getX() < maze.getWidth() && p.getY() < maze.getHeight();
     }
 
-   /* public void update(double timeElapsed){
-        //elapsed=elapsed+timeElapsed;
+   public void update(double timeElapsed){
         Point2D p = (Point2D) player.getPosition().clone();
         player.updatePosition(timeElapsed);
         this.handleMove(p);
-    }*/
+    }
 
-    public void move(int direction) {
+   /* public void move(int direction) {
         Point2D p = (Point2D) player.getPosition().clone();
         switch (direction) {
             case 1:
@@ -135,7 +135,7 @@ public abstract class GameVersion implements Serializable {
                 break;
         }
         this.handleMove(p);
-    }
+    }*/
 
 
     public void handleMove(Point2D start) {
@@ -216,7 +216,7 @@ public abstract class GameVersion implements Serializable {
         Point2D wallBeginning = null;
         for (int i = 0; i < closestWalls.size(); i++) {
             wallBeginning = closestWalls.get(i);
-            System.out.println(wallBeginning);
+            //System.out.println(wallBeginning);
             if(circleRectangleCollision(center,wallBeginning,radius,width,height)) {
                 System.out.println("Colliding wall " + wallBeginning);
                 return wallBeginning;
@@ -276,6 +276,8 @@ public abstract class GameVersion implements Serializable {
         if (checkCollision(player.getPosition(), radius,closestWalls(closestStuff(player.getPosition())),1,1)!=null) {
             //player.setPosition(start, angle);
             player.setPosition(collide, angle);
+            System.out.println(collide);
+            System.out.println("New position2: " + player.getPosition());
         }
     }
 

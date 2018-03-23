@@ -393,7 +393,7 @@ public class Menu extends Application {
         settings2.getChildren().addAll(type2, choose, backToMaze2);
 
         /*Panneau pour le menu principal*/
-        Label label = new Label("A Maz3D");
+        Label label = new Label("A maz3D");
         label.setStyle("-fx-font-size: 58; -fx-text-fill:#bdbbb6; -fx-alignment:top-center;");
         label.setId("mazd");
         Button quit = new Button("QUIT");
