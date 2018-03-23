@@ -1,7 +1,13 @@
+import javafx.fxml.FXMLLoader;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.MeshView;
+import javafx.scene.transform.Rotate;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.*;
 import java.lang.Double;
 public class Teleporteur extends Divers{
@@ -58,5 +64,17 @@ public class Teleporteur extends Divers{
         circleE.setCenterX(e.getX());
         circleE.setCenterY(e.getY());
         circleE.setRadius(0.5);
+    }
+
+    public MeshView initTeleport() throws IOException{
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(this.getClass().getResource("MegaCoin.fxml"));
+        PhongMaterial mat = new PhongMaterial();
+        mat.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
+        mat.setDiffuseColor(Color.YELLOW);
+        MeshView teleport = fxmlLoader.<MeshView>load();
+        teleport.setMaterial(mat);
+        teleport.setRotationAxis(Rotate.Z_AXIS);
+        return teleport;
     }
 }

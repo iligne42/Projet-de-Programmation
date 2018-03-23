@@ -52,7 +52,7 @@ public class Test extends Application{
   public void start(Stage stage) throws FormatNotSupported,IOException{
       Group root = new Group();
       Scene scene = new Scene(root,500,500,true);
-      MazeFloors mazes = new MazeFloors(SIZE_MAZE,SIZE_MAZE,3,0,2,0,0,3,0);
+      MazeFloors mazes = new MazeFloors(SIZE_MAZE,SIZE_MAZE,2,0,2,0,0,3,0);
       doFloor(root,mazes);
       //setCamToStart(cam);
       //eventMouse(scene,root);
@@ -187,6 +187,7 @@ public class Test extends Application{
           break;
           case Maze.TELEPORT:
           cell = makeFloor(COLOR_WAY);
+          drawTeleport(root,i,j,maze,floor);
           setBox(cell,i,j,root,floor,maze);
           break;
           case Maze.MONSTRE:
@@ -394,7 +395,7 @@ public class Test extends Application{
         }*/
         bonus.setTranslateX(j * SIZE_BOX);
         bonus.setTranslateZ(i * SIZE_BOX);
-        bonus.setTranslateY((-floor) * SIZE_BOX - SIZE_BOX / 2);
+        bonus.setTranslateY((-floor) * SIZE_BOX + SIZE_BOX/8);
         bonus.setScaleX(bonus.getScaleX()* SIZE_BOX/10);
         bonus.setScaleZ(bonus.getScaleZ()* SIZE_BOX/10);
         bonus.setScaleY(bonus.getScaleY()* SIZE_BOX/10);
@@ -402,24 +403,18 @@ public class Test extends Application{
         rt.play();
         root.getChildren().add(bonus);
     }
-  /*public void drawBonus(Group root, int i, int j,Maze maze) throws IOException{
-    Bonus last = maze.getBonus().getLast();
-    MeshView bonus = last.initBonus();
-    RotateTransition rt = new RotateTransition(Duration.millis(3000));
-    rt.setByAngle(360.0);
-    rt.setAxis(Rotate.Y_AXIS);
-    rt.setCycleCount(TranslateTransition.INDEFINITE);
-    rt.setAxis(Rotate.Y_AXIS);
-    rt.setAutoReverse(false);
-    rt.setInterpolator(Interpolator.LINEAR);
-    bonus.setTranslateX(j*SIZE_BOX);
-    bonus.setTranslateZ(i*SIZE_BOX);
-    bonus.setTranslateY(-SIZE_BOX/2);
-    bonus.setRotationAxis(Rotate.Z_AXIS);
-    rt.setNode(bonus);
-    rt.play();
-    root.getChildren().add(bonus);
-  }*/
+
+    public void drawTeleport(Group root, int i, int j, Maze maze, int floor) throws IOException{
+      Teleporteur last = maze.getTeleport().getLast();
+      MeshView teleport = last.initTeleport();
+      teleport.setTranslateX(j * SIZE_BOX);
+      teleport.setTranslateZ(i * SIZE_BOX);
+      teleport.setTranslateY((-floor) * SIZE_BOX + SIZE_BOX);
+      /*teleport.setScaleX(teleport.getScaleX()* SIZE_BOX/10);
+      teleport.setScaleZ(teleport.getScaleZ()* SIZE_BOX/10);
+      teleport.setScaleY(teleport.getScaleY()* SIZE_BOX/10);*/
+      root.getChildren().add(teleport);
+    }
 
   public void buildCamera(PerspectiveCamera cam,MazeFloors mazes){
     cam.setFarClip(10000.0);

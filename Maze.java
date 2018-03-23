@@ -117,6 +117,13 @@ public class Maze implements Serializable{
     public String getTypeObstacle(){return obstacles.getFirst().getShape();}
     public LinkedList<Bonus> getBonus(){return bonus;}
     public String detTypeBonus(){return bonus.getFirst().getAvantage();}
+    public LinkedList<Teleporteur> getTeleport(){
+        LinkedList<Teleporteur> t=new LinkedList<>();
+        for(int i=0; i<teleport.size(); i++){
+            t.add(teleport.get(i).getKey());
+        }
+        return t;
+    }
     public void free(int i, int j){ maze[i][j]=WAY;}
 
     public Point specialPlaces(int value){
