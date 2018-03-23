@@ -104,7 +104,7 @@ public class chat{
 					}else{
 						System.out.println(str);
 						messages.add(str);
-						Platform.runLater(()-> pan.addMessage(str));
+						Platform.runLater(()-> pan.miseAjour());
 					}
 				}catch(IOException e){
 					e.printStackTrace();
@@ -122,6 +122,8 @@ public class chat{
 		}
 		return null;
 	}
+
+	public LinkedList<String> getMessages(){return messages;}
 
 	/*public static void main(String[] args) {
 		chat tmp = new chat();

@@ -38,7 +38,7 @@ public class hostMenu extends VBox{
 		maze=m;
 		clear();
 		hote=true;
-		getChildren().addAll(new Label("Vous êtes l'hôte."),Players);
+		getChildren().addAll(new Label("You are the host."),Players);
 		try{
 		socServ = new ServerSocket(netFunc.PORT);
 		sockets = new ArrayList<Socket>();
@@ -54,9 +54,10 @@ public class hostMenu extends VBox{
 		StackPane layout = new StackPane();
 		chatPane chat=new chatPane();
 		layout.getChildren().add(chat);
-		Scene scene=new Scene(layout,800,800);
+		Scene scene=new Scene(layout,500,500);
 		scene.getStylesheets().add("chat.css");
 		stageChat.setScene(scene);
+		stageChat.setResizable(false);
 		chat.initHost(myName);
 		stageChat.show();
 	}
@@ -67,8 +68,9 @@ public class hostMenu extends VBox{
 		StackPane layout = new StackPane();
 		chatPane chat=new chatPane();
 		layout.getChildren().add(chat);
-		Scene scene=new Scene(layout,800,800);
+		Scene scene=new Scene(layout,500,500);
 		stageChat.setScene(scene);
+		stageChat.setResizable(false);
 		chat.initClient(myName,addr);
 		stageChat.show();
 	}
@@ -76,9 +78,9 @@ public class hostMenu extends VBox{
 	public void initClient(String name){
 		clear();
 		VBox waitIP= new VBox();
-		Label lab= new Label("Entrer l'addresse IP de l'hôte.");
+		Label lab= new Label("Put the IP adress of the host.");
 		TextField text= new TextField();
-		Button but = new Button("Valider");
+		Button but = new Button("Validate");
 		waitIP.getChildren().addAll(lab,text,but);
 		waitIP.getStyleClass().add("vbox");
 		but.setOnMouseClicked(e->{

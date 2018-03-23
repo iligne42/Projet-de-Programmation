@@ -260,10 +260,8 @@ public class Menu extends Application {
                         try {
                         name = MazeInterface.readInput("What's your name ?");
                         mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif));
-                        //hostmenu.initHost(name,mazeM);
-                        //hostmenu.getChildren().add(go);
+                        hostmenu.initHost(name,mazeM);
                        changePanel(stack, hostmenu);
-                        //gType=;
                     } catch (Exception exception) {
 
                     }
