@@ -27,6 +27,10 @@ public class Vector3D implements Serializable{
         this.z=z;
     }
 
+    public Vector3D(){
+        this(0,0,0);
+    }
+
 
 
     public double x(){
@@ -63,6 +67,11 @@ public class Vector3D implements Serializable{
         this.y=y;
         this.z=z;
     }
+
+    public String toString(){
+        return ("x="+x+" y="+y+" z="+z);
+    }
+
 
 
 

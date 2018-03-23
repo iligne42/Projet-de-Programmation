@@ -15,6 +15,9 @@ public class PlayerTest {
     private float velocityX;
     private float velocityY;
     private float velocityZ;
+    private float accelerationX;
+    private float accelerationY;
+    private float accelerationZ;
     private static final float gravity = 0.2f;
     private String name;
     private Point2D position;
