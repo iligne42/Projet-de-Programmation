@@ -9,6 +9,8 @@ import javafx.css.*;
 import javafx.util.Callback;
 import java.net.*;
 import java.util.*;
+import javafx.stage.*;
+import javafx.event.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,29 +51,32 @@ public class hostMenu extends VBox{
 	}
 
 	public void makeChat(){
-		stageChat = new Stage();
-		stageChat.setTitle("Chat");
-		StackPane layout = new StackPane();
 		chatPane chat=new chatPane();
-		layout.getChildren().add(chat);
-		Scene scene=new Scene(layout,500,500);
-		scene.getStylesheets().add("chat.css");
-		stageChat.setScene(scene);
-		stageChat.setResizable(false);
 		chat.initHost(myName);
-		stageChat.show();
+		makeStage(chat);
 	}
 
 	public void makeChat(String addr){
+		chatPane chat=new chatPane();
+		chat.initClient(myName,addr);
+		makeStage(chat);
+	}
+
+	public void makeStage(chatPane chat){
 		stageChat = new Stage();
+		stageChat.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+            	chat.close();
+                stageChat.close();
+            }
+        });
 		stageChat.setTitle("Chat");
 		StackPane layout = new StackPane();
-		chatPane chat=new chatPane();
 		layout.getChildren().add(chat);
 		Scene scene=new Scene(layout,500,500);
 		stageChat.setScene(scene);
 		stageChat.setResizable(false);
-		chat.initClient(myName,addr);
 		stageChat.show();
 	}
 

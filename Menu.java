@@ -4,6 +4,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -32,6 +34,13 @@ public class Menu extends Application {
 
     @Override
     public void start(Stage stage) throws FormatNotSupported, IOException {
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
 
         VBox menu = new VBox();
         menu.setPrefSize(500.0, 500.0);

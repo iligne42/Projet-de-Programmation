@@ -15,6 +15,10 @@ public class chatPane extends BorderPane{
 	private TextField text;
 	private Button send;
 
+	public void close(){
+		chat.close();
+	}
+
 	public chatPane(){
 		super();
 		//getStylesheets().add("chat.css");

@@ -24,6 +24,16 @@ public class chat{
 		this.pan=pan;
 	}
 
+	public void close(){
+		if(hote){
+			waitCli.stop();
+			for(Socket soc:sockets){
+				netFunc.closeSocket(soc);
+			}
+		}
+		netFunc.closeSocket(me);
+	}
+
 	public void initHost(String name){
 		hote=true;
 		sockets=new LinkedList<Socket>();
@@ -89,28 +99,31 @@ public class chat{
 		}
 		public void run(){
 			while(true){
-				try{
-					String str = netFunc.readString(soc);
-					if(str==null) {
-						soc.close();
-						sockets.remove(sockets);
-					}
-					newMessage=true;
-					System.out.println("J'ai recu un message.");
-					if(isHote){
-						System.out.println("Je suis hote et j'envoie un msg");
-						for(Socket tmp:sockets)
+				String str = netFunc.readString(soc);
+				if(str==null) {
+					netFunc.closeSocket(soc);
+					sockets.remove(soc);
+				}else{
+				newMessage=true;
+				System.out.println("J'ai recu un message.");
+				if(isHote){
+					System.out.println("Je suis hote et j'envoie un msg");
+					for(Socket tmp:sockets){
+						try{
 							netFunc.sendString(tmp,str);
-					}else{
-						System.out.println(str);
-						messages.add(str);
-						Platform.runLater(()-> pan.miseAjour());
+						}catch(IOException e){
+							netFunc.closeSocket(tmp);
+							sockets.remove(tmp);
+						}
+
 					}
-				}catch(IOException e){
-					e.printStackTrace();
-					System.exit(1);
+				}else{
+					System.out.println(str);
+					messages.add(str);
+					Platform.runLater(()-> pan.miseAjour());
 				}
 			}
+		}
 		}
 	}
 
@@ -122,6 +135,7 @@ public class chat{
 		}
 		return null;
 	}
+
 
 	public LinkedList<String> getMessages(){return messages;}
 
