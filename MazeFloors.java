@@ -2,12 +2,18 @@ import java.io.*;
 import java.text.Normalizer;
 import java.util.*;
 import java.awt.*;
-public class MazeFloors{
+public class MazeFloors implements Serializable{
     private LinkedList<Maze> mazes;
     private int nbFloors;
 
     public MazeFloors(int L, int l, int nb)throws FormatNotSupported{
         this(L,l,nb,0,0,0,0,0,0);
+    }
+
+    public MazeFloors(Maze m){
+        mazes=new LinkedList<Maze>();
+        mazes.add(m);
+        nbFloors=0;
     }
 
     public LinkedList<Maze>getFloor(){

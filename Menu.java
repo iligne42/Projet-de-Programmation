@@ -24,9 +24,10 @@ public class Menu extends Application {
     String gType;
     String dif;
     String name;
-    Maze mazeM;
+    MazeFloors mazeM;
     View view;
     boolean[] supp;
+    int selected;
     //Parent previous;
 
 
@@ -175,7 +176,7 @@ public class Menu extends Application {
             }
             @Override
             public void handle(MouseEvent event){
-                int selected=numberSelected(opt);
+                selected=numberSelected(opt);
                 CheckBox ch=(CheckBox)event.getSource();
                 if(ch.isSelected()){
                     supp[pos]=true;
@@ -259,7 +260,7 @@ public class Menu extends Application {
             if(gType.equals("Multiplayer In Network")){
                         try {
                         name = MazeInterface.readInput("What's your name ?");
-                        mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif));
+                        mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif),0,supp,MazeInterface.nbExtra(dif));
                         hostmenu.initHost(name,mazeM);
                        changePanel(stack, hostmenu);
                     } catch (Exception exception) {
@@ -268,7 +269,7 @@ public class Menu extends Application {
             }
             else {
                 try {
-                    mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif));
+                    mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif),MazeInterface.typeBonus(gType),supp,MazeInterface.nbExtra(dif));
                     view = MazeInterface.getView(mazeM, gType,MazeInterface.getTime(dif));
                     Stage st = new Stage();
                     //sc.getStylesheets().add("");
@@ -363,7 +364,7 @@ public class Menu extends Application {
             String gType = ((RadioButton) typeG.getSelectedToggle()).getText();
             if (file != null) {
                 try {
-                    mazeM = new Maze(file);
+                    mazeM = new MazeFloors(new Maze(file));
                     if (gType.equals("MultiPlayer In Network")) {
                             name = MazeInterface.readInput("What's your name ?");
                             hostmenu.initHost(name, mazeM);

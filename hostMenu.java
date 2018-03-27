@@ -23,7 +23,7 @@ public class hostMenu extends VBox{
 	private waitClients waitCli;
 	private Socket me;
 	private TilePane Players;
-	private Maze maze;
+	private MazeFloors maze;
 	private String myName;
 	private Stage stageChat;
 
@@ -33,7 +33,7 @@ public class hostMenu extends VBox{
 		names = new ArrayList<String>();
 	}
 
-	public void initHost(String name,Maze m){
+	public void initHost(String name,MazeFloors m){
 		System.out.println("je creer un hote");
 		maze=m;
 		clear();
@@ -148,7 +148,7 @@ public class hostMenu extends VBox{
 		}
 	}
 
-	public void lancerLabi(Maze tmp){
+	public void lancerLabi(MazeFloors tmp){
 		try{
 			Stage stage=new Stage();
 			SoloVersion sv=new SoloVersion(tmp,myName);
@@ -218,7 +218,7 @@ public class hostMenu extends VBox{
 					Platform.runLater(() -> printPlayer());
 				}else if(tmp instanceof Maze){
 					((Maze)tmp).print();
-					Platform.runLater(()-> lancerLabi((Maze)tmp));
+					Platform.runLater(()-> lancerLabi((MazeFloors) tmp));
 					break;
 				}else{
 					break;
