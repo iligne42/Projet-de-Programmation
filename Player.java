@@ -21,7 +21,7 @@ public class Player implements Serializable {
 	private LinkedList<Key> keys;
 
 	public enum PlayerState{
-		 BETWEEN,GROUND,STAIRSUP,STAIRSDOWN,JUMP,DEAD;
+		 BETWEEN,GROUND,STAIRSUP,STAIRSDOWN,DEAD;
 	}
 
 	public Player(String name){
@@ -112,6 +112,18 @@ public class Player implements Serializable {
 		setAcceleration();
 	}
 
+	public void reverseState(PlayerState s){
+		switch(s){
+			case STAIRSUP:changeState(PlayerState.STAIRSDOWN);
+			break;
+
+			case STAIRSDOWN:changeState(PlayerState.STAIRSUP);
+			break;
+
+			default:break;
+		}
+	}
+
 	public PlayerState state() {
 		return state;
 	}
@@ -129,9 +141,6 @@ public class Player implements Serializable {
 			case STAIRSDOWN:acceleration.setTo(Math.cos(Math.toRadians(orientation)),-1,Math.sin(Math.toRadians(orientation)));
 				break;
 
-			case JUMP:acceleration.setTo(0,-accConstant,0);
-				break;
-
             case BETWEEN:acceleration.setTo(Math.cos(Math.toRadians(orientation)),0,Math.sin(Math.toRadians(orientation)));
                 break;
 
@@ -139,6 +148,10 @@ public class Player implements Serializable {
 				break;
 		}
 
+	}
+
+	public void jump(){
+		acceleration.setTo(0,-accConstant,0);
 	}
 
 
@@ -165,21 +178,20 @@ public class Player implements Serializable {
 			setAcceleration();
 		}
 		else if(space){
-			changeState(PlayerState.JUMP);
+			jump();
 			velocity=velocity.add(acceleration.multiply(elapsedSeconds));
 			if(velocity.norm()>maxSpeed) velocity=velocity.posColinear(maxSpeed);
 		}
 		else {
-			if(state==PlayerState.JUMP){
-				velocity=velocity.add(new Vector3D(0,gravity,0).multiply(elapsedSeconds));
-				if(velocity.y()<ground){
+				//velocity=velocity.add(new Vector3D(0,gravity,0).multiply(elapsedSeconds));
+				/*if(velocity.y()<ground){
 					velocity.setTo(velocity.x(),0,velocity.z());
 					changeState(previousState);
 					//posY=position du sol
 				}
 
-			}
-			else velocity.setTo(0,0,0);
+			}*/
+			velocity.setTo(0,0,0);
 
 			angularVelocity=0;
 		}
