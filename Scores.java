@@ -105,6 +105,7 @@ public class Scores implements Serializable{
     }
 
     public void addToScoresFile(String name, int score) {
+        current=new Pair<>(name,score);
         lists[dif].add(name, score);
         try {
             FileWriter fw = new FileWriter(file);
@@ -137,6 +138,11 @@ public class Scores implements Serializable{
 
     public String toString(){
         return lists[dif].toString();
+    }
+
+    public String getCurrentScore(){
+        if(current!=null) return current.getKey()+"-"+MazeInterface.getT(current.getValue())+"\r\n";
+        return "";
     }
 
 
