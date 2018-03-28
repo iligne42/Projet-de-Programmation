@@ -2,15 +2,16 @@ import java.net.Socket;
 public class Triplet{
 	private Socket A;
 	private Scores B;
-	private String C;
+	private Player C;
 
-	public Triplet(Socket A, Scores B, String C){
+	public Triplet(Socket A, Scores B, Player C){
 		this.A=A;
 		this.B=B;
 		this.C=C;
 	}
 
-	public Socket getA(){return A;}
-	public Scores getB(){return B;}
-	public String getC(){return C;}
+	public Socket getSocket(){return A;}
+	public Scores getScore(){return B;}
+	public Player gatPlayer(){return C;}
+	public String getName(){return C.getName();}
 }

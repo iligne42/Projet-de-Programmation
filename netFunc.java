@@ -31,7 +31,7 @@ public class netFunc{
 		tmp.flush();
 	}
 
-	public static Object readObject(Socket socket) throws IOException, ClassNotFoundException{
+	public static Object readObject(Socket socket){
 		try{
 		ObjectInputStream tmp=new ObjectInputStream(socket.getInputStream());
 		return tmp.readObject();
