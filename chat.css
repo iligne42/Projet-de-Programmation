@@ -3,7 +3,7 @@
 }
 
 .button{
-    -fx-pref-width:80px;
+    -fx-pref-width:100px;
     -fx-pref-height:50px;
     -fx-background-color:
                 #0D7BA7,
@@ -21,10 +21,11 @@
 }
 
 .text{
-    -fx-pref-width:380px;
+    -fx-pref-width:400px;
     -fx-pref-height:50px;
     -fx-font-size:15px;
     -fx-background-radius: 50;
+    -fx-padding: 10 20 10 20;
 }
 
 .deb{
@@ -38,5 +39,9 @@
     -fx-text-fill: white;
     -fx-font-family:"Palatino Linotype", "Book Antiqua", Palatino,sans-serif;
     -fx-font-size:15px;
+}
+
+.align{
+    -fx-alignment:center;
 }
 

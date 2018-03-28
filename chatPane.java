@@ -21,12 +21,11 @@ public class chatPane extends BorderPane{
 
 	public chatPane(){
 		super();
-		//getStylesheets().add("chat.css");
+		getStyleClass().add("root");
 		messages=new VBox();
 		text=new TextField();
 		text.getStyleClass().add("text");
 		send = new Button();
-		//send.setAlignment(Pos.BOTTOM_RIGHT); //cela me bouge la partie écrite à l'intérieur du bouton
 		send.setText("Send");
 		chat = new chat(this);
 		send.setOnMouseClicked(e->{
@@ -35,21 +34,16 @@ public class chatPane extends BorderPane{
 		});
 		HBox bas = new HBox();
 		bas.getStyleClass().add("hbox");
-		//bas.setAlignment(Pos.BOTTOM_CENTER);
 		bas.getChildren().addAll(text,send);
 		setBottom(bas);
-		//setAlignment(bas,Pos.BOTTOM_CENTER);
 		setTop(messages);
-		//bas.setTranslateX(100);
-		/*send.setLayoutX(250);
-		send.setLayoutY(250);*/
-		//getChildren().addAll(messages,bas);
 		this.setOnKeyPressed(event -> {
 			if(event.getCode()== KeyCode.ENTER){
 				chat.sendMessage(text.getText());
 				text.setText("");
 			}
 		});
+		getStylesheets().add("chat.css");
 	}
 
 	public void initHost(String name){
