@@ -10,36 +10,21 @@ public class TimeTrialVersion extends GameVersion {
 
 
 	public TimeTrialVersion(int length, int width,  int nbFloors,int nbObstacles,int nbMonstres,int nbTeleport,int nbDoors,int nbBonus,int typeBonus,String name, int time) throws FormatNotSupported,IOException{
-		super(length,width,nbFloors,nbObstacles,nbMonstres,nbTeleport,nbDoors,nbBonus,typeBonus,name,new Scores("bestRaces.txt"));
+		super(length,width,nbFloors,nbObstacles,nbMonstres,nbTeleport,nbDoors,nbBonus,typeBonus,name,new Scores("bestRaces.txt",MazeInterface.getDifficulty(length,width)));
 		timeLimit=time;
-		timeLine.setCycleCount(timeLimit);
-		timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (event) -> {
-			elapsed ++;
-			timeSeconds.set(timeLimit-elapsed);
 
-		}));
 	}
 
     public TimeTrialVersion(MazeFloors maze, Player player, int time) throws FormatNotSupported,IOException{
-        super(maze,player,new Scores("bestRaces.txt"));
+		super(maze,player,new Scores("bestRaces.txt",MazeInterface.getDifficulty(maze.getFloor().getFirst().getHeight(),maze.getFloor().getFirst().getWidth())));
         timeLimit=time;
-		timeLine.setCycleCount(timeLimit);
-		timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (event) -> {
-			elapsed ++;
-			timeSeconds.set(timeLimit-elapsed);
 
-		}));
     }
 
     public TimeTrialVersion(MazeFloors maze, String name, int time) throws FormatNotSupported,IOException{
-	    super(maze,name,new Scores("bestRaces.txt"));
+	    super(maze,name,new Scores("bestRaces.txt",MazeInterface.getDifficulty(maze.getFloor().getFirst().getHeight(),maze.getFloor().getFirst().getWidth())));
 	    timeLimit=time;
-		timeLine.setCycleCount(timeLimit);
-		timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (event) -> {
-			elapsed ++;
-			timeSeconds.set(timeLimit-elapsed);
 
-		}));
     }
 
 	public String scoresFile(){

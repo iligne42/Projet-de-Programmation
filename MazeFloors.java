@@ -40,7 +40,7 @@ public class MazeFloors implements Serializable{
         }
     }
 
-    private void print(){ //affiche le labyrinthe dans le terminal
+    public void print(){ //affiche le labyrinthe dans le terminal
         for(int i=0; i<mazes.size(); i++){
             mazes.get(i).print();
             System.out.println("Next Floor!!");

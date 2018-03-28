@@ -27,30 +27,7 @@ public abstract class GameVersion implements Serializable {
     protected Maze current;
     protected Scores scores;
     protected int elapsed = 0;
-    protected Timeline timeLine;
-  protected IntegerProperty timeSeconds;
-    protected Timeline actionDuration;
-    public class TimeProperty extends SimpleIntegerProperty {
-        public TimeProperty(int time) {
-            super(time);
-        }
 
-        @Override
-        public StringBinding asString() {
-            return new StringBinding() {
-                {
-                    super.bind(GameVersion.TimeProperty.this);
-                }
-
-                @Override
-                protected String computeValue() {
-                    return MazeInterface.getT(GameVersion.TimeProperty.this.getValue());
-                }
-            };
-
-
-        }
-    }
 
 
     public GameVersion(int length, int width, int nbFloors,int nbObstacles,int nbMonstres,int nbTeleport,int nbDoors,int nbBonus,int typeBonus, String name, Scores score) throws FormatNotSupported {
@@ -60,7 +37,6 @@ public abstract class GameVersion implements Serializable {
         floor=0;
         current=floors.get(floor);
         scores = score;
-        timeLine=new Timeline();
     }
 
     public GameVersion(MazeFloors mazeF, String name, Scores score) throws FormatNotSupported {
@@ -70,7 +46,7 @@ public abstract class GameVersion implements Serializable {
         floor=0;
         current=floors.get(floor);
         scores = score;
-        timeLine=new Timeline();
+
     }
 
 
@@ -81,7 +57,6 @@ public abstract class GameVersion implements Serializable {
         floor=0;
         current=floors.get(floor);
         scores = score;
-        timeLine=new Timeline();
     }
 
 
@@ -126,22 +101,6 @@ public abstract class GameVersion implements Serializable {
 
     public void setElapsed(int x) {
         elapsed = x;
-    }
-
-    public IntegerProperty timeSecondsProperty() {
-        return timeSeconds;
-    }
-
-    public void stop(){
-        timeLine.stop();
-    }
-
-    public void tStart(){
-        timeLine.playFromStart();
-    }
-
-    public void pause(){
-        timeLine.pause();
     }
 
     public int getElapsed() {
@@ -289,11 +248,11 @@ public abstract class GameVersion implements Serializable {
         float angle = player.orientation();
         float radius = player.radius();
         if(start.getX() != goal.getX() || start.getY() != goal.getY()) {
-           /* System.out.println();
+            System.out.println();
             System.out.println("Start : " + start);
             System.out.println("Goal : " + goal);
             System.out.println(yPos);
-            System.out.println(player.state());*/
+            System.out.println(player.state());
         }
 
             if (player.state() == Player.PlayerState.BETWEEN){
@@ -423,11 +382,11 @@ public abstract class GameVersion implements Serializable {
             wallBeginning = closestWalls.get(i);
             //System.out.println(wallBeginning);
             if(circleRectangleCollision(center,wallBeginning,radius,width,height)) {
-               // System.out.println("Colliding wall " + wallBeginning);
+                System.out.println("Colliding wall " + wallBeginning);
                 return wallBeginning;
             }
         }
-       // System.out.println("No collision");
+        System.out.println("No collision");
         return null;
     }
 
@@ -464,7 +423,7 @@ public abstract class GameVersion implements Serializable {
         Line2D wallLine = wallSegment(start, wallB, goal, radius,1,1);
         System.out.println(wallLine.getP1() + "    " + wallLine.getP2());
         Point2D collide = getCollisionCenter(wallLine, start, goal, radius);
-     //   System.out.println("Center :" + collide);
+        System.out.println("Center :" + collide);
            /* Vector3D mvt=new Vector3D(goal).subtract(new Vector3D(collide));
             Vector3D wallDir=new Vector3D(wallLine.getP2()).subtract(new Vector3D(wallLine.getP1()));
             Vector3D correctionVector=wallDir.multiply(wallDir.dotProduct(mvt));
@@ -472,18 +431,18 @@ public abstract class GameVersion implements Serializable {
 */
         Vector3D mvt = new Vector3D(collide).subtract(new Vector3D(goal));
         Vector3D wallNormal = wallNormal(collide, wallLine);
-     //   System.out.println("WallNormal: " + wallNormal.x() + "   " + wallNormal.y() + "   " + wallNormal.z());
+        System.out.println("WallNormal: " + wallNormal.x() + "   " + wallNormal.y() + "   " + wallNormal.z());
         double correctionLength = mvt.dotProduct(wallNormal);
-       // System.out.println("Push out of:" + correctionLength);
+        System.out.println("Push out of:" + correctionLength);
         double slideX = goal.getX() + correctionLength * wallNormal.x();
         double slideY = goal.getY() + correctionLength * wallNormal.z();
         player.setPosition(new Point2D.Double(slideX, slideY), angle);
-       // System.out.println("New position: " + player.getPosition());
+        System.out.println("New position: " + player.getPosition());
         if (checkCollision(player.getPosition(), radius,closestWalls(closestStuff(player.getPosition())),1,1)!=null) {
             //player.setPosition(start, angle);
             player.setPosition(collide, angle);
-          //  System.out.println(collide);
-          //  System.out.println("New position2: " + player.getPosition());
+            System.out.println(collide);
+            System.out.println("New position2: " + player.getPosition());
         }
     }
 
@@ -560,6 +519,7 @@ public abstract class GameVersion implements Serializable {
 
 
     public void inBetween(Point2D goal,Point2D start,float angle) {
+        System.out.println(angle);
         Player.PlayerState s = player.previousState();
         Point beg=null;
         int orient=0, orientR=0;
@@ -574,7 +534,7 @@ public abstract class GameVersion implements Serializable {
         }
         if ((int) goal.getX() == (int) beg.getX() && (int) goal.getY() == (int) beg.getY()) {
             if ((int) angle == orientR) player.reverseState(s);
-            else player.setPosition(start, angle);
+            //else player.setPosition(start, angle);
         } else {
             Point nextStair=null;
             Point2D way, wayEnd;
@@ -615,15 +575,15 @@ public abstract class GameVersion implements Serializable {
     //Renvoie le centre de la hitbox au moment exact de la collision avec le mur
     public Point2D getCollisionCenter(Line2D wall, Point2D start, Point2D goal, float radius) {
         Point2D intersection = segmentIntersection(wall, start, goal);
-       // System.out.println("Intersection :" + intersection);
+        System.out.println("Intersection :" + intersection);
         Vector3D interWall = new Vector3D(wall.getP1()).subtract(new Vector3D(intersection));
-       // System.out.println("PA " + interWall.x() + "  " + interWall.y() + "   " + interWall.z());
+        System.out.println("PA " + interWall.x() + "  " + interWall.y() + "   " + interWall.z());
         Vector3D interDirection = new Vector3D(start).subtract(new Vector3D(intersection));
-       // System.out.println(start + "      " + intersection);
-       // System.out.println("PS " + interDirection.x() + "   " + interDirection.y() + "   " + interDirection.z());
+        System.out.println(start + "      " + intersection);
+        System.out.println("PS " + interDirection.x() + "   " + interDirection.y() + "   " + interDirection.z());
         double sinInvAngle = (interWall.norm() * interDirection.norm()) / interWall.crossProduct(interDirection).norm();
         double length = radius * ((java.lang.Double.isNaN(sinInvAngle)) ? 1 : sinInvAngle);
-       // System.out.println("Center to wall :" + length);
+        System.out.println("Center to wall :" + length);
         Vector3D collision = new Vector3D(start).subtract(new Vector3D(intersection)).normalize().posColinear(length);
         return new Point2D.Double(intersection.getX() + collision.x(), intersection.getY() + collision.z());
     }
@@ -703,7 +663,7 @@ public abstract class GameVersion implements Serializable {
     public boolean circleRectangleCollision(Point2D center,Point2D rBeginning,float radius,float width,float height){
         double deltaX = center.getX() - Math.max(rBeginning.getX(), Math.min(center.getX(), rBeginning.getX() + width));
         double deltaY = center.getY() - Math.max(rBeginning.getY(), Math.min(center.getY(), rBeginning.getY() + height));
-       // System.out.println("Where : "+((float) (deltaX * deltaX + deltaY * deltaY))+"  Radius : "+(radius * radius));
+        System.out.println("Where : "+((float) (deltaX * deltaX + deltaY * deltaY))+"  Radius : "+(radius * radius));
         return (((float) (deltaX * deltaX + deltaY * deltaY)) < (radius * radius));
     }
 

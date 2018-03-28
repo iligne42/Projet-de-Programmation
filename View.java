@@ -424,7 +424,7 @@ public class View extends Scene {
 
         public void drawStair(int dir,Group root,int i,int j,Maze maze,int floor){
             Box step;
-            int nbStep=8;
+            int nbStep=12;
             Group stairs = new Group();
             int size=SIZE_BOX/nbStep,a=0;
             while(nbStep!=a){
@@ -571,6 +571,14 @@ public class View extends Scene {
             }
         }
 
+        public void printMaze(){
+            Maze m=game.floors().get(1);
+            for(int i=0;i<m.getHeight();i++){
+                for(int j=0;j<m.getWidth();i++) System.out.println(m.getCase(i,j));
+                System.out.println();
+            }
+        }
+
 
 
 
@@ -599,6 +607,7 @@ public class View extends Scene {
             rotateX=new Rotate();
             rotateX.setAxis(Rotate.X_AXIS);
             camera.getTransforms().add(rotateX);
+           // printMaze();
         }
 
         public void reset() {

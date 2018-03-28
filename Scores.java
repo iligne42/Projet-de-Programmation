@@ -3,8 +3,10 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class Scores implements Serializable{
-    protected ScoreList list;
+    protected ScoreList[] lists;
     protected File file;
+    protected int dif=0;
+    protected Pair<String,Integer> current;
 
     private class ScoreList extends ArrayList<Pair<String,Integer>>{
 
@@ -32,7 +34,7 @@ public class Scores implements Serializable{
         }
 
         public boolean add(Scores score){
-            ScoreList l=score.list;
+            ScoreList l=score.lists[dif];
             for(Pair<String,Integer> p:l){
                 this.add(p.getKey(),p.getValue());
             };
@@ -48,11 +50,15 @@ public class Scores implements Serializable{
     }
 
     public Scores(){
-        list=new ScoreList();
+        lists=new ScoreList[1];
+        for(int i=0;i<lists.length;i++) lists[i]=new ScoreList();
+
     }
 
-    public Scores(String path) throws IOException{
-        list=new ScoreList();
+    public Scores(String path,int dif) throws IOException{
+        lists=new ScoreList[5];
+        for(int i=0;i<lists.length;i++) lists[i]=new ScoreList();
+        this.dif=dif;
         file=new File(path);
         if(!file.exists()) file.createNewFile();
         fillList();
@@ -63,14 +69,15 @@ public class Scores implements Serializable{
     }
 
     public ScoreList getList() {
-        return list;
+        return lists[dif];
     }
 
     public Pair<String,Integer> get(int i){
-        return list.get(i);
+        return lists[dif].get(i);
     }
+
     public int length(){
-        return  list.size();
+        return  lists[dif].size();
     }
 
 
@@ -79,10 +86,14 @@ public class Scores implements Serializable{
             FileReader fr=new FileReader(file);
             BufferedReader br=new BufferedReader(fr);
             String line=null;
+            int i=-1;
             while((line=br.readLine())!=null){
-                String[] tab=line.split("-");
-                list.add(tab[0],MazeInterface.getSeconds(tab[1]));
-                System.out.println(tab[0]+"   "+tab[1]);
+                if(line.equals("**")) i++;
+                else {
+                    String[] tab = line.split("-");
+                    lists[i].add(tab[0], MazeInterface.getSeconds(tab[1]));
+                    System.out.println(tab[0] + "   " + tab[1]);
+                }
             }
             fr.close();
             br.close();
@@ -94,10 +105,10 @@ public class Scores implements Serializable{
     }
 
     public void addToScoresFile(String name, int score) {
-        list.add(name, score);
+        lists[dif].add(name, score);
         try {
             FileWriter fw = new FileWriter(file);
-            fw.write(list.toString());
+            fw.write(listsString());
             fw.close();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -105,19 +116,27 @@ public class Scores implements Serializable{
     }
 
     public boolean add(Scores score){
-        return list.add(score);
+        return lists[dif].add(score);
     }
 
     public void addToScoresList(String name, int score){
-        list.add(name,score);
+        lists[dif].add(name,score);
     }
 
     public String getScores(){
-        return list.toString();
+        return lists[dif].toString();
+    }
+
+    public String listsString(){
+        String s="";
+        for(int i=0;i<lists.length;i++){
+            s+="**\r\n"+lists[i].toString();
+        }
+        return s;
     }
 
     public String toString(){
-        return list.toString();
+        return lists[dif].toString();
     }
 
 

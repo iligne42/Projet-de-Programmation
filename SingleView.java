@@ -28,7 +28,7 @@ public class SingleView extends View{
             timePane.stop();
             SingleView.this.setOnKeyPressed(null);
             game.addToScoresFile();
-            displayScore(game.scores());
+           // displayScore(game.scores());
 
         }
 

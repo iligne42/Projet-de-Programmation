@@ -218,6 +218,14 @@ public interface MazeInterface {
         return size;
     }
 
+    static int getDifficulty(int length,int width){
+        if(length>=10 && length<20 && width>=10 && width<20) return 0;
+        if(length>=20 && length<30 && width>=20 && width<30) return 1;
+        if(length>=30 && length<=50 && width>=30 && width<=50) return 2;
+        if(length==100 && width==100) return 3;
+        else return 4;
+    }
+
     static int typeBonus(String ty){
         if(ty.equals("Against the clock")) return 1;
         return 0;
