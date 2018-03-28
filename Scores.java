@@ -21,6 +21,10 @@ public class Scores implements Serializable{
                      return true;
 
                 }
+                if(this.size()<10){
+                    super.add(new Pair<>(name,score));
+                    return true;
+                }
                 i++;
             }
             if(this.size()>10) this.remove(this.size()-1);
@@ -37,7 +41,7 @@ public class Scores implements Serializable{
 
         public String toString(){
             String scores="";
-            for(Pair<String,Integer> p: this) scores+=p.getKey()+"-"+MazeInterface.getT(p.getValue())+"\n";
+            for(Pair<String,Integer> p: this) scores+=p.getKey()+"-"+MazeInterface.getT(p.getValue())+"\r\n";
             return scores;
         }
 
@@ -75,6 +79,7 @@ public class Scores implements Serializable{
             while((line=br.readLine())!=null){
                 String[] tab=line.split("-");
                 list.add(tab[0],MazeInterface.getSeconds(tab[1]));
+                System.out.println(tab[0]+"   "+tab[1]);
             }
             fr.close();
             br.close();

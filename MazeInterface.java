@@ -20,7 +20,7 @@ public interface MazeInterface {
     static int getSeconds(String s) {
         int t = 0;
         String[] tab = s.split(":");
-        for (int i = 1; i <= tab.length; i++) t += Integer.parseInt(tab[tab.length - i]) * Math.pow(60, i);
+        for (int i = 1; i <= tab.length; i++) t += Integer.parseInt(tab[tab.length - i]) * Math.pow(60, i-1);
         return t;
     }
 
