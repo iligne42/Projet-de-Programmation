@@ -65,6 +65,9 @@ public class Scores implements Serializable{
     public Pair<String,Integer> get(int i){
         return list.get(i);
     }
+    public int length(){
+        return  list.size();
+    }
 
 
     public void fillList(){

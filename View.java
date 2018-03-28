@@ -314,6 +314,13 @@ public class View extends Scene {
             for (String s : splits) root.getChildren().add(new Label(s));
         }
 
+        public void displayScore(Scores sc) {
+            content.getChildren().clear();
+            ScorePane sp=new ScorePane(sc);
+            content.getChildren().add(sp);
+            sp.printScores();
+        }
+
         public void countDownToStart() {
             Label label = new Label();
             label.setStyle("-fx-background-color:transparent");

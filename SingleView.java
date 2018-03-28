@@ -25,11 +25,7 @@ public class SingleView extends View{
             timePane.stop();
             SingleView.this.setOnKeyPressed(null);
             game.addToScoresFile();
-            //displayScore(SingleView.this);
-
-        }
-
-        public void displayScore(VBox root) {
+            displayScore(game.scores());
 
         }
 
