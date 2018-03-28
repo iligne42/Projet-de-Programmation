@@ -11,6 +11,7 @@ import java.net.*;
 import java.util.ArrayList;
 
 public class netView extends SingleView{
+    ArrayList<Player> players=new ArrayList<Player>();
 
     public netView(GameVersion game, Socket me) throws IOException{
         super(game);
@@ -19,19 +20,25 @@ public class netView extends SingleView{
 
     protected class NetControl extends GameControl{
         private Socket me;
+        private sendPos sp;
+        private getPos gp;
         public NetControl(Socket me) throws IOException{
             super();
             this.me=me;
+            sp = new sendPos();
+            sp.start();
+            gp=new getPos();
+            gp.start();
         }
 
         public void whenIsFinished(){
             Scores sc = game.scores();
-            //game.stop();
             timePane.stop();
+            sp.arret();
+            gp.arret();
             netView.this.setOnKeyPressed(null);
             game.addToScoresList();
             
-            //setVisible(false);
             try{
                 System.out.println("ERRORRRRRR -----------------------------");
                 System.out.println(me);
@@ -40,18 +47,58 @@ public class netView extends SingleView{
                 netFunc.sendObject(me,sc);
             }catch(IOException e){}
             while(true){
-                try{
                     Object tmp = netFunc.readObject(me);
                     if(tmp instanceof Scores)
                         System.out.println((Scores) tmp);
-                    else
-                        System.exit(1);
-                }catch(IOException e){
+            }
+        }
 
-                }catch(ClassNotFoundException e){}
+        private class sendPos extends Thread{
+            private volatile boolean end;
+            public sendPos(){
+                super();
+                end=false;
+            }
+
+            public void run(){
+                while(!end){
+                    try{
+                        netFunc.sendObject(me,game.player());
+                    }catch(IOException e){}
+                }
+            }
+    
+            public void arret(){
+               end =true;
+           }
+        }
+
+        public class getPos extends Thread{
+            private volatile boolean end;
+            public getPos(){
+                super();
+                end=false;
+            }
+
+            public void run(){
+                while(!end){
+                    try{
+                        Object tmp=netFunc.readObject(me);
+                        if(tmp instanceof ArrayList){
+                            if(((ArrayList)tmp).get(0) instanceof Player){
+                                players = (ArrayList<Player>)tmp;
+                            }
+                        }
+                    }catch(Exception e){}
+                }
+            }
+
+            public void arret(){
+                end=true;
             }
         }
     }
+
 
     private void printPlayer(ArrayList<String> list){
         System.out.println("Les joueurs ayant fini sont :");
