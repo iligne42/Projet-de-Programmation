@@ -16,10 +16,11 @@ import java.util.Stack;
 
 public class MultiPlayerVersion implements Serializable {
     protected GameVersion game;
+    protected IntegerProperty timeToBeat;
     protected Scores scores;
     protected Stack<Player> players;
 
-    public MultiPlayerVersion(String[] names, Maze maze) throws FormatNotSupported, IOException {
+    public MultiPlayerVersion(String[] names, MazeFloors maze) throws FormatNotSupported, IOException {
         players = new Stack<>();
         scores = new Scores();
         for (int i = names.length - 1; i >= 0; i--) players.push(new Player(names[i]));

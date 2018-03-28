@@ -1,6 +1,7 @@
 
 import javafx.beans.property.IntegerProperty;
 import javafx.scene.Camera;
+import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -14,7 +15,8 @@ public class MultiView extends View {
     // protected Stack<Player> players;
 
     public MultiView(MultiPlayerVersion multi) throws IOException,FormatNotSupported{
-        super(new BorderPane(),multi.getGame());
+        //super(new BorderPane(),multi.getGame());
+        super(new Group(),multi.getGame());
         this.multi = multi;
         control = new MultiControl();
 
@@ -27,14 +29,15 @@ public class MultiView extends View {
         public MultiControl() throws IOException, FormatNotSupported {
             super();
             Label label = new Label();
-            timeToBeat = new TimeProperty(0);
+            timeToBeat = game.new TimeProperty(0);
             label.textProperty().bind(timeToBeat.asString());
             label.setVisible(false);
-            timePane.getChildren().add(label);
+            //timePane.getChildren().add(label);
 
         }
 
         public void whenIsFinished() {
+           // game.stop();
             timePane.stop();
             game.addToScoresList();
             timeToBeat.set(game.scores().get(0).getValue());
@@ -49,8 +52,9 @@ public class MultiView extends View {
                     formatNotSupported.printStackTrace();
                 }
                 mazePane.reset();
-                timePane = new SoloTimePane();
-                timePane.setVisible(true);
+                //game.tStart();
+                timePane = new SoloTimePane(main);
+               // timePane.setVisible(true);
             } else {
                 //displayScore(MultiView.this);
             }

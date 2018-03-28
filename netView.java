@@ -26,6 +26,7 @@ public class netView extends SingleView{
 
         public void whenIsFinished(){
             Scores sc = game.scores();
+            //game.stop();
             timePane.stop();
             netView.this.setOnKeyPressed(null);
             game.addToScoresList();

@@ -58,11 +58,11 @@ public interface MazeInterface {
     }
 
 
-    static int readInt(String s) {
+    static int readInt(String s) throws FormatNotSupported{
         int res = 0;
         try {
             res = Integer.parseInt(readInput(s));
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             Alert error = new Alert(Alert.AlertType.ERROR);
             error.setTitle("Not a number");
             error.setContentText("Your input is not a number, try again");
@@ -128,7 +128,34 @@ public interface MazeInterface {
         return new Maze(L,l);
     }
 
-    static View getView(Maze m, String ty, String name, int time) throws FormatNotSupported, IOException {
+    static MazeFloors getMaze(int L,int l,int typeB,boolean[] sup,int extras) throws FormatNotSupported{
+       int[] extra=new int[sup.length];
+       int nb=getSelected(sup);
+       for(int i=0;i<extra.length;i++){
+           extra[i]=0;
+           if(sup[i]){
+               extra[i]=extras/nb;
+               extras-=extra[i];
+               nb--;
+           }
+       }
+        if(l==-1){
+            L=readInt("Choose the length");
+            l=readInt("Choose the width");
+            //find a way to orevent from checking everyhting you want
+        }
+        return new MazeFloors(L,l,readInt("How many floors do you want?"),extra[0],extra[2],extra[3],extra[1],extra[4],typeB);
+    }
+
+    static int getSelected(boolean[] s){
+        int r=0;
+        for(boolean b:s){
+            r=r+((b)?1:0);
+        }
+        return r;
+    }
+
+    static View getView(MazeFloors m, String ty, String name, int time) throws FormatNotSupported, IOException {
         int type = 0;
         if (ty.equals("Solo"))
             return new SingleView(new SoloVersion(m, name));
@@ -140,7 +167,7 @@ public interface MazeInterface {
         else return new MultiView(new MultiPlayerVersion(setMulti(), m));
     }
 
-    static View getView(Maze m, String ty, int time) throws FormatNotSupported, IOException {
+    static View getView(MazeFloors m, String ty, int time) throws FormatNotSupported, IOException {
         int type = 0;
         if (ty.equals("Solo"))
             return new SingleView(new SoloVersion(m, readInput("What's your name ?")));
@@ -152,7 +179,7 @@ public interface MazeInterface {
     }
 
 //HERE ADD THE OPTIONS FOR THE NETWORK THING
-    static View getView(int L, int l, String ty,int time) throws FormatNotSupported, IOException {
+    /*static View getView(int L, int l, String ty,int time) throws FormatNotSupported, IOException {
         if (ty.equals("Solo")) {
             if (l == -1)
                 return new SingleView(new SoloVersion(readInt("Choose the length"), readInt("Choose the width"), readInput("What's your name")));
@@ -167,7 +194,7 @@ public interface MazeInterface {
             else return new MultiView(new MultiPlayerVersion(setMulti(), new Maze(L, l)));
         }
     }
-
+*/
     static int getSize(String lev) {
         int size = -1;
         switch (lev) {
@@ -189,6 +216,33 @@ public interface MazeInterface {
                 break;
         }
         return size;
+    }
+
+    static int typeBonus(String ty){
+        if(ty.equals("Against the clock")) return 1;
+        return 0;
+    }
+
+    static int nbExtra(String s){
+        int nb=0;
+        switch(s){
+            case "Easy":
+                nb=3;
+                break;
+
+            case "Normal":
+                nb=6;
+                break;
+
+            case "Hard":
+                nb=9;
+                break;
+
+            case "Super Hard":
+                nb=15;
+                break;
+        }
+        return nb;
     }
 
     static int getTime(String s){

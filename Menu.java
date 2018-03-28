@@ -4,6 +4,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
@@ -24,14 +26,22 @@ public class Menu extends Application {
     String gType;
     String dif;
     String name;
-    Maze mazeM;
+    MazeFloors mazeM;
     View view;
     boolean[] supp;
+    int selected;
     //Parent previous;
 
 
     @Override
     public void start(Stage stage) throws FormatNotSupported, IOException {
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
 
         VBox menu = new VBox();
         menu.setPrefSize(500.0, 500.0);
@@ -175,7 +185,7 @@ public class Menu extends Application {
             }
             @Override
             public void handle(MouseEvent event){
-                int selected=numberSelected(opt);
+                selected=numberSelected(opt);
                 CheckBox ch=(CheckBox)event.getSource();
                 if(ch.isSelected()){
                     supp[pos]=true;
@@ -259,7 +269,7 @@ public class Menu extends Application {
             if(gType.equals("Multiplayer In Network")){
                         try {
                         name = MazeInterface.readInput("What's your name ?");
-                        mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif));
+                        mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif),0,supp,MazeInterface.nbExtra(dif));
                         hostmenu.initHost(name,mazeM);
                        changePanel(stack, hostmenu);
                     } catch (Exception exception) {
@@ -268,7 +278,7 @@ public class Menu extends Application {
             }
             else {
                 try {
-                    mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif));
+                    mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif),MazeInterface.typeBonus(gType),supp,MazeInterface.nbExtra(dif));
                     view = MazeInterface.getView(mazeM, gType,MazeInterface.getTime(dif));
                     Stage st = new Stage();
                     //sc.getStylesheets().add("");
@@ -363,7 +373,7 @@ public class Menu extends Application {
             String gType = ((RadioButton) typeG.getSelectedToggle()).getText();
             if (file != null) {
                 try {
-                    mazeM = new Maze(file);
+                    mazeM = new MazeFloors(new Maze(file));
                     if (gType.equals("MultiPlayer In Network")) {
                             name = MazeInterface.readInput("What's your name ?");
                             hostmenu.initHost(name, mazeM);

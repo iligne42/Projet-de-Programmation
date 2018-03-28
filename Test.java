@@ -39,7 +39,6 @@ public class Test extends Application{
   public int SIZE_BOX = 400;
   protected PhongMaterial COLOR_WAY = new PhongMaterial(Color.BLACK);
   protected PhongMaterial COLOR_WALL = new PhongMaterial(Color.GREY);
-  public double mousePosX,mousePosY,mouseOldX,mouseOldY,mouseDeltaX,mouseDeltaY;
   public Rotate rotateZ=new Rotate();
   public Translate tx=new Translate(),ty=new Translate();
   public int STEP = 50,SPEED=1;
@@ -52,7 +51,7 @@ public class Test extends Application{
   public void start(Stage stage) throws FormatNotSupported,IOException{
       Group root = new Group();
       Scene scene = new Scene(root,500,500,true);
-      MazeFloors mazes = new MazeFloors(SIZE_MAZE,SIZE_MAZE,2,0,2,0,0,3,0);
+      MazeFloors mazes = new MazeFloors(SIZE_MAZE,SIZE_MAZE,2,0,2,0,0,10,0);
       doFloor(root,mazes);
       //setCamToStart(cam);
       //eventMouse(scene,root);
@@ -264,6 +263,7 @@ public class Test extends Application{
     ghost.setTranslateY((-floor)*SIZE_BOX-SIZE_BOX/2);
     root.getChildren().add(ghost);
   }
+
   public void drawKey(Group root,int posx,int posy,int floor) throws IOException{
     FXMLLoader fxmlLoader = new FXMLLoader();
     fxmlLoader.setLocation(this.getClass().getResource("key.fxml"));
@@ -288,43 +288,43 @@ public class Test extends Application{
     root.getChildren().add(key);
   }
 
-  public void drawStair(int dir,Group root,int i,int j,Maze maze,int floor){
-    Box step;
-    int nbStep=4;
-    Group stairs = new Group();
-    int size=SIZE_BOX/nbStep,a=0;
-    while(nbStep!=a){
-      step=new Box(SIZE_BOX,size*(a+1),size);
-      step.setMaterial(new PhongMaterial(Color.BLUE));
-      step.setTranslateX(j*SIZE_BOX);
-      step.setTranslateZ(i*SIZE_BOX+size*a);//+SIZE_BOX/2);//-size);
-      step.setTranslateY(SIZE_BOX/2+(size/2)*(-1)*(a+1));
-      a++;
-      stairs.getChildren().add(step);
+    public void drawStair(int dir,Group root,int i,int j,Maze maze,int floor){
+        Box step;
+        int nbStep=4;
+        Group stairs = new Group();
+        int size=SIZE_BOX/nbStep,a=0;
+        while(nbStep!=a){
+            step=new Box(SIZE_BOX,size*(a+1),size);
+            step.setMaterial(new PhongMaterial(Color.BLUE));
+            step.setTranslateX(j*SIZE_BOX);
+            step.setTranslateZ(i*SIZE_BOX+size*a);//+SIZE_BOX/2);//-size);
+            step.setTranslateY(SIZE_BOX/2+(size/2)*(-1)*(a+1));
+            a++;
+            stairs.getChildren().add(step);
+        }
+        stairs.setRotationAxis(Rotate.Y_AXIS);
+        stairs.setTranslateZ(stairs.getTranslateZ()-SIZE_BOX/2+size/2);
+        stairs.setTranslateY(stairs.getTranslateY()-floor*SIZE_BOX);
+        if(dir==1)stairs.setTranslateY(stairs.getTranslateY()+SIZE_BOX);
+        if(j==0){
+            //System.out.println("pat");
+            stairs.setRotate(-90);
+        }
+        else if(j==maze.getWidth()-1){
+            //  System.out.println("sac");
+            stairs.setRotate(90);
+        }
+        else if(i==maze.getHeight()-1){
+            //System.out.println("sec");
+            stairs.setRotate(0);
+        }
+        else if(i==0){
+            //System.out.println("zed");
+            stairs.setRotate(180);
+        }
+        if(dir==1)stairs.setRotate(stairs.getRotate()+180);
+        root.getChildren().add(stairs);
     }
-    stairs.setRotationAxis(Rotate.Y_AXIS);
-    stairs.setTranslateZ(stairs.getTranslateZ()-SIZE_BOX/2+size/2);
-    stairs.setTranslateY(stairs.getTranslateY()-floor*SIZE_BOX);
-    if(dir==1)stairs.setTranslateY(stairs.getTranslateY()+SIZE_BOX);
-    if(j==0){
-      //System.out.println("pat");
-      stairs.setRotate(-90);
-    }
-    else if(j==maze.getWidth()-1){
-    //  System.out.println("sac");
-      stairs.setRotate(90);
-    }
-    else if(i==maze.getHeight()-1){
-      //System.out.println("sec");
-      stairs.setRotate(0);
-    }
-    else if(i==0){
-      //System.out.println("zed");
-      stairs.setRotate(180);
-    }
-    if(dir==1)stairs.setRotate(stairs.getRotate()+180);
-    root.getChildren().add(stairs);
-  }
 
   public void drawObstacle(Group root,int i, int j,int floor,Maze maze) throws IOException{
     FXMLLoader fxmlLoader = new FXMLLoader();
@@ -362,19 +362,7 @@ public class Test extends Application{
   }
 
   public void drawBonus(Group root, int i, int j, Maze maze,int floor) throws IOException {
-        //FXMLLoader fxmlLoader = new FXMLLoader();
         Bonus last = maze.getBonus().getLast();
-        //PhongMaterial mat = new PhongMaterial();
-        /*if (last.getAvantage().equals("Piece")) {
-            fxmlLoader.setLocation(this.getClass().getResource("Coin.fxml")); //mettre pieces ou bonus temps
-            mat.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
-            mat.setDiffuseColor(Color.YELLOW);
-        } else {
-            fxmlLoader.setLocation(this.getClass().getResource("sablier4.fxml"));
-            mat.setSpecularColor(Color.MAROON);
-            mat.setDiffuseColor(Color.BROWN);
-        }
-        Group bonus = fxmlLoader.load();*/
         MeshView bonus = last.initBonus();
         RotateTransition rt = new RotateTransition(Duration.millis(3000));
         rt.setByAngle(360.0);
@@ -382,17 +370,6 @@ public class Test extends Application{
         rt.setCycleCount(TranslateTransition.INDEFINITE);
         rt.setAutoReverse(false);
         rt.setInterpolator(Interpolator.LINEAR);
-        /*for (Node n : bonus.getChildren()) {
-            if (n instanceof Shape3D) {
-                ((Shape3D) n).setMaterial(mat);
-                ((Shape3D) n).setRotationAxis(Rotate.Z_AXIS);
-                ((Shape3D) n).setTranslateX(j * SIZE_BOX);
-                ((Shape3D) n).setTranslateZ(i * SIZE_BOX);
-                //((Shape3D)n).setTranslateY(-SIZE_BOX / 2);
-                ((Shape3D) n).setRotationAxis(Rotate.Z_AXIS);
-                rt.setNode(n);
-            } else n.setVisible(false);
-        }*/
         bonus.setTranslateX(j * SIZE_BOX);
         bonus.setTranslateZ(i * SIZE_BOX);
         bonus.setTranslateY((-floor) * SIZE_BOX + SIZE_BOX/8);
@@ -410,9 +387,6 @@ public class Test extends Application{
       teleport.setTranslateX(j * SIZE_BOX);
       teleport.setTranslateZ(i * SIZE_BOX);
       teleport.setTranslateY((-floor) * SIZE_BOX + SIZE_BOX);
-      /*teleport.setScaleX(teleport.getScaleX()* SIZE_BOX/10);
-      teleport.setScaleZ(teleport.getScaleZ()* SIZE_BOX/10);
-      teleport.setScaleY(teleport.getScaleY()* SIZE_BOX/10);*/
       root.getChildren().add(teleport);
     }
 

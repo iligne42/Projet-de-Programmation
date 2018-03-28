@@ -47,4 +47,13 @@ public class netFunc{
 		tmp.writeObject(obj);
 	}
 
+	public static boolean closeSocket(Socket soc){
+		try{
+			soc.close();
+			return true;
+		}catch(Exception IOException){
+			return false;
+		}
+	}
+
 }
