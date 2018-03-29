@@ -3,7 +3,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.scene.Camera;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Pane;
 
 import java.awt.geom.Point2D;
@@ -16,7 +16,7 @@ public class MultiView extends View {
 
     public MultiView(MultiPlayerVersion multi) throws IOException,FormatNotSupported{
         //super(new BorderPane(),multi.getGame());
-        super(new Group(),multi.getGame());
+        super(new StackPane(),multi.getGame());
         this.multi = multi;
         control = new MultiControl();
 
@@ -53,7 +53,7 @@ public class MultiView extends View {
                 }
                 mazePane.reset();
                 //game.tStart();
-                timePane = new SoloTimePane(main);
+                timePane = new SoloTimePane();
                // timePane.setVisible(true);
             } else {
                 //displayScore(MultiView.this);
