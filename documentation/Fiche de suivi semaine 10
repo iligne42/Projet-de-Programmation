@@ -5,7 +5,7 @@ Objectifs atteints:
 - modélisation des autres joueurs dans la partie multijoueurs
 - amélioration et montée des escaliers
 - poche du joueur
-- toit remis, changement de la couleur du sol et timer
+- toit remis, changement de la couleur du sol
 - timer
 - bonus dans la "vraie" vue
 
@@ -14,6 +14,7 @@ Objectifs à atteindre:
 - faire le graphique pour les autres joueurs en multijoueurs
 - faire la barre menu (aide, arrêter la partie, pause,...) et le pannel transparent pour la carte
 - interaction bonus/modèle
+- corriger les problèmes d'étages
 
 Difficultés rencontrées:
 - collision dans les étages lorsqu'il ne devrait pas y en avoir
