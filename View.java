@@ -197,13 +197,14 @@ public class View extends Scene {
         protected PhongMaterial COLOR_ENTRY = new PhongMaterial(Color.RED);
         protected PhongMaterial COLOR_END = new PhongMaterial(Color.LIGHTGOLDENRODYELLOW);
         protected PhongMaterial COLOR_DOOR= new PhongMaterial();
-        protected PhongMaterial COLOR_STAIRS=new PhongMaterial(Color.BLUE);
+        protected PhongMaterial COLOR_STAIRS=new PhongMaterial(Color.WHITE);
         protected DoubleProperty x=new SimpleDoubleProperty(0);
         protected DoubleProperty z=new SimpleDoubleProperty(0);
         protected DoubleProperty y=new SimpleDoubleProperty(0);
         protected DoubleProperty angle=new SimpleDoubleProperty(0);
         protected Rotate rotateX;
         protected ObservableList<Node> keyOrBonus;
+        protected float radius;
         protected Vector3D[] coordSwitch=new Vector3D[2*floors.size()-1];
 
 
@@ -424,7 +425,7 @@ public class View extends Scene {
 
         public void drawStair(int dir,Group root,int i,int j,Maze maze,int floor){
             Box step;
-            int nbStep=12;
+            int nbStep=8;
             Group stairs = new Group();
             int size=SIZE_BOX/nbStep,a=0;
             while(nbStep!=a){
@@ -734,10 +735,10 @@ public class View extends Scene {
                     case SPACE:
                         game.player.jump(true);
                         break;
-                    case SHIFT:
+                   /*case SHIFT:
                         if(e.isControlDown()) mazePane.rotateX.setAngle(mazePane.rotateX.getAngle()-0.5);
                         else mazePane.rotateX.setAngle(mazePane.rotateX.getAngle()+0.5);
-                        break;
+                        break;*/
 
                 }
 

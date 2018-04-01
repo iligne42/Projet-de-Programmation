@@ -59,7 +59,7 @@ public class Server{
 		public waitScore(Socket s, Player p){
 			super();
 			soc=s;
-			player =p;
+			player=p;
 		}
 
 		public void run(){

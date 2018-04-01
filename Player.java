@@ -33,7 +33,7 @@ public class Player implements Serializable {
 		velocity=new Vector3D();
 		acceleration=new Vector3D();
 		maxSpeed=3f;
-		accConstant=3;
+		accConstant=5;
 		gravity=1.5f;
 		friction=3;
 		orientationSpeed=2;
@@ -124,6 +124,10 @@ public class Player implements Serializable {
 		}
 	}
 
+	public void setGround(int x){
+		ground=x;
+	}
+
 	public PlayerState state() {
 		return state;
 	}
@@ -151,7 +155,7 @@ public class Player implements Serializable {
 	}
 
 	public void jump(){
-		acceleration.setTo(0,-accConstant,0);
+		acceleration.setTo(0,accConstant,0);
 	}
 
 
@@ -169,21 +173,22 @@ public class Player implements Serializable {
 			angularVelocity+=(float)(orientationSpeed*elapsedSeconds);
 			if(angularVelocity>orientationSpeed)angularVelocity=(float)(orientationSpeed);
 			orientation=(orientation+angularVelocity)%360;
+			//orientation=(float)(orientation+orientationSpeed*elapsedSeconds)%360;
 			setAcceleration();
 		}
 		else if(right) {
-			angularVelocity+=(float)(360-orientationSpeed*elapsedSeconds);
-			if(angularVelocity<360-orientationSpeed)angularVelocity=(float)(360-orientationSpeed);
-			orientation=(orientation+angularVelocity)%360;
+			angularVelocity+=(float)(orientationSpeed*elapsedSeconds);
+			if(angularVelocity>orientationSpeed)angularVelocity=(float)(orientationSpeed);
+			orientation=(orientation+(360-angularVelocity))%360;
 			setAcceleration();
 		}
-		else if(space){
+		/*else if(space && posY==ground){
 			jump();
 			velocity=velocity.add(acceleration.multiply(elapsedSeconds));
 			if(velocity.norm()>maxSpeed) velocity=velocity.posColinear(maxSpeed);
-		}
+		}*/
 		else {
-				//velocity=velocity.add(new Vector3D(0,gravity,0).multiply(elapsedSeconds));
+				//velocity=velocity.add(new Vector3D(0,-gravity,0).multiply(elapsedSeconds));
 				/*if(velocity.y()<ground){
 					velocity.setTo(velocity.x(),0,velocity.z());
 					changeState(previousState);

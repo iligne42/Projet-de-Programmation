@@ -255,14 +255,12 @@ public abstract class GameVersion implements Serializable {
             System.out.println(player.state());
         }
 
-            if (player.state() == Player.PlayerState.BETWEEN){
-                inBetween(goal,start,angle);
-
-            }
+            if (player.state() == Player.PlayerState.BETWEEN) inBetween(goal, start, angle);
             else if (player.state() == Player.PlayerState.STAIRSUP) {
                 if ((int) yPos != floor) {
                     System.out.println(player.previousState());
                     if(player.previousState()==Player.PlayerState.BETWEEN){
+                        System.out.println("Yaya");
                         player.changeState(Player.PlayerState.GROUND);
                         next();
                     }
@@ -270,14 +268,15 @@ public abstract class GameVersion implements Serializable {
                         player.changeState(Player.PlayerState.BETWEEN);
                     }
                     floor++;
+                    player.setGround(floor);
                 }
-                else if(Math.ceil(yPos)!=Math.ceil(yPos1)) player.changeState(player.previousState());
+                else if(Math.ceil(yPos)==floor) player.changeState(player.previousState());
                 else if(player.orientation()!=angle1) player.setPosition(start,angle1);
 
             }
 
             else if (player.state() == Player.PlayerState.STAIRSDOWN) {
-                if ((int) yPos != floor) {
+                if (Math.ceil(yPos) != floor) {
                     if (player.previousState() == Player.PlayerState.BETWEEN) {
                         player.changeState(Player.PlayerState.GROUND);
                         prev();
@@ -285,7 +284,7 @@ public abstract class GameVersion implements Serializable {
                         player.changeState(Player.PlayerState.BETWEEN);
                     floor--;
                 }
-                else if(Math.ceil(yPos)!=Math.ceil(yPos1)) player.changeState(player.previousState());
+                else if((int)yPos==floor) player.changeState(player.previousState());
                 else if(player.orientation()!=angle1) player.setPosition(start,angle1);
             }
 
@@ -519,7 +518,6 @@ public abstract class GameVersion implements Serializable {
 
 
     public void inBetween(Point2D goal,Point2D start,float angle) {
-        System.out.println(angle);
         Player.PlayerState s = player.previousState();
         Point beg=null;
         int orient=0, orientR=0;
@@ -534,7 +532,13 @@ public abstract class GameVersion implements Serializable {
         }
         if ((int) goal.getX() == (int) beg.getX() && (int) goal.getY() == (int) beg.getY()) {
             if ((int) angle == orientR) player.reverseState(s);
-            //else player.setPosition(start, angle);
+            else if((int)angle==orient){
+                if(s== Player.PlayerState.STAIRSUP) floor--;
+                else if(s== Player.PlayerState.STAIRSDOWN) floor++;
+                player.changeState(s);
+                player.setGround(floor);
+            }
+            else player.setPosition(start, angle);
         } else {
             Point nextStair=null;
             Point2D way, wayEnd;
