@@ -222,7 +222,6 @@ public class hostMenu extends VBox{
 					names=(ArrayList<String>)tmp;
 					Platform.runLater(() -> printPlayer());
 				}else if(tmp instanceof MazeFloors){
-					//((MazeFloors)tmp).print();
 					Platform.runLater(()-> lancerLabi((MazeFloors) tmp));
 					break;
 				}else{
