@@ -10,11 +10,11 @@ import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 
-public class netView extends SingleView{
+public class netView extends View{
     ArrayList<Player> players=new ArrayList<Player>();
 
     public netView(GameVersion game, Socket me) throws IOException{
-        super(game);
+        super(new StackPane(), game);
         control=new NetControl(me);
     }
 
