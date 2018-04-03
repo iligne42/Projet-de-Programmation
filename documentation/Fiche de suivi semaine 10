@@ -1,0 +1,22 @@
+Fiche de suivi semaine 10
+
+Objectifs atteints:
+- affichage des scores à la fin d'une partie
+- modélisation des autres joueurs dans la partie multijoueurs
+- amélioration et montée des escaliers
+- poche du joueur
+- toit remis, changement de la couleur du sol
+- timer
+- bonus dans la "vraie" vue
+
+Objectifs à atteindre:
+- finir la customisation de l'affichage des scores en fin de partie
+- faire le graphique pour les autres joueurs en multijoueurs
+- faire la barre menu (aide, arrêter la partie, pause,...) et le pannel transparent pour la carte
+- interaction bonus/modèle
+- corriger les problèmes d'étages
+
+Difficultés rencontrées:
+- collision dans les étages lorsqu'il ne devrait pas y en avoir
+- réglage de la position du joueur après changement d'étage
+- beaucoup de problèmes avec la montée des escaliers

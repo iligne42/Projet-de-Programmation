@@ -70,8 +70,8 @@ public class Teleporteur extends Divers{
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(this.getClass().getResource("teleport.fxml"));
         PhongMaterial mat = new PhongMaterial();
-        mat.setSpecularColor(Color.PURPLE);
-        mat.setDiffuseColor(Color.HOTPINK);
+        mat.setSpecularColor(Color.HOTPINK);
+        mat.setDiffuseColor(Color.PURPLE);
         MeshView teleport = fxmlLoader.<MeshView>load();
         teleport.setMaterial(mat);
         teleport.setRotationAxis(Rotate.Z_AXIS);

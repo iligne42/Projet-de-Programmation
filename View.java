@@ -4,13 +4,14 @@ import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
+import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.*;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -19,15 +20,15 @@ import javafx.scene.shape.Shape3D;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Screen;
 import javafx.util.Duration;
-
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.LinkedList;
 
 public class View extends Scene {
-    protected Group main;
-    protected ToolBar tool;
+    protected StackPane main;
+    //protected ToolBar tool;
+    protected VBox inventory;
     protected GameVersion game;
     protected TimePane timePane;
     protected MazePane mazePane;
@@ -35,7 +36,7 @@ public class View extends Scene {
     protected SubScene mazeScene;
     protected Label timeLabel;
 
-    public View(Group root, GameVersion game) {
+    public View(StackPane root, GameVersion game) {
         super(root);
         this.game = game;
         main=root;
@@ -46,8 +47,8 @@ public class View extends Scene {
         mazeScene.setCamera(cam);
        // timeLabel = new Label();
        // timeLabel.textProperty().bind(game.timeSecondsProperty().asString());
-        if (game instanceof SoloVersion) timePane = new SoloTimePane(root);
-        else if (game instanceof TimeTrialVersion) timePane = new TimeTrialPane(((TimeTrialVersion) game).timeLimit,root);
+        if (game instanceof SoloVersion) timePane = new SoloTimePane();
+        else if (game instanceof TimeTrialVersion) timePane = new TimeTrialPane(((TimeTrialVersion) game).timeLimit);
         main.getChildren().add(mazeScene);
 
     }
@@ -93,22 +94,20 @@ public class View extends Scene {
 
 
 
-    protected abstract class TimePane{//not sure though, it is a layout
+    protected abstract class TimePane extends Pane{//not sure though, it is a layout
         protected Timeline timeLine;
         protected Label timeLabel;
         protected IntegerProperty timeSeconds;
 
 
 
-        public TimePane(int time,Group root) {
+        public TimePane(int time) {
             timeSeconds=new TimeProperty(time);
             timeLabel = new Label();
             timeLine = new Timeline();
             timeLabel.textProperty().bind(timeSeconds.asString());
-            timeLabel.setStyle("-fx-alignment:center; -fx-background-color:grey");
-            root.getChildren().add(timeLabel);
-            //this.setStyle("-fx-border-color:red; -fx-alignment:center");
-
+            timeLabel.setStyle("-fx-alignment:center;-fx-text-fill:crimson;-fx-font-size:50pt");
+            this.getChildren().add(timeLabel);
         }
 
 
@@ -140,6 +139,9 @@ public class View extends Scene {
         public void start() {
             timeLine.playFromStart();
         }
+        public void play(){
+          timeLine.play();
+        }
     }
 
 
@@ -149,8 +151,8 @@ public class View extends Scene {
     protected class TimeTrialPane extends TimePane {
         protected int timeLimit;
 
-        public TimeTrialPane(int timeLimit,Group root) {
-            super(timeLimit,root);
+        public TimeTrialPane(int timeLimit) {
+            super(timeLimit);
             this.timeLimit = timeLimit;
             timeLine.setCycleCount(timeLimit);
             timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (event) -> {
@@ -168,8 +170,8 @@ public class View extends Scene {
 
     protected class SoloTimePane extends TimePane {
 
-        public SoloTimePane(Group root) {
-            super(0,root);
+        public SoloTimePane() {
+            super(0);
             timeLine.setCycleCount(Timeline.INDEFINITE);
                /* timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1),(event)->{
                     timeSeconds.set(timeSeconds.get()+1);
@@ -193,26 +195,26 @@ public class View extends Scene {
         protected final int STEP=50;
         protected int posFx,posFz;
         protected PhongMaterial COLOR_WALL = new PhongMaterial();
-        protected PhongMaterial COLOR_WAY = new PhongMaterial(Color.BLACK);
+        protected PhongMaterial COLOR_WAY = new PhongMaterial(Color.DARKGREY);
         protected PhongMaterial COLOR_ENTRY = new PhongMaterial(Color.RED);
         protected PhongMaterial COLOR_END = new PhongMaterial(Color.LIGHTGOLDENRODYELLOW);
         protected PhongMaterial COLOR_DOOR= new PhongMaterial();
-        protected PhongMaterial COLOR_STAIRS=new PhongMaterial(Color.WHITE);
+        protected PhongMaterial COLOR_STAIRS=new PhongMaterial(Color.BLUE);
         protected DoubleProperty x=new SimpleDoubleProperty(0);
         protected DoubleProperty z=new SimpleDoubleProperty(0);
         protected DoubleProperty y=new SimpleDoubleProperty(0);
         protected DoubleProperty angle=new SimpleDoubleProperty(0);
         protected Rotate rotateX;
         protected ObservableList<Node> keyOrBonus;
-        protected float radius;
         protected Vector3D[] coordSwitch=new Vector3D[2*floors.size()-1];
-
-
 
         public MazePane(PerspectiveCamera cam) {
             camera = cam;
-           light = new AmbientLight();
            // cameraLight=new PointLight(Color.DARKORANGE);
+            inventory= new VBox();
+            inventory.setStyle("-fx-background-color: rgba(0, 0, 0, 0); -fx-background-radius: 10;");
+            inventory.setAlignment(Pos.CENTER);
+            inventory.setSpacing(20.0);
         }
 
 
@@ -400,9 +402,17 @@ public class View extends Scene {
                 cell.setTranslateY((-floor)*SIZE_BOX);
             else
                 cell.setTranslateY((-floor)*SIZE_BOX+SIZE_BOX/2);
+                setRoof(i,j,root,floor);
             root.getChildren().add(cell);
         }
-
+        public void setRoof(int i, int j, Group root,int floor){
+            Box roof = new Box(SIZE_BOX,0,SIZE_BOX);
+            roof.setTranslateX(j*SIZE_BOX);
+            roof.setTranslateZ(i*SIZE_BOX);
+            roof.setTranslateY(-floor*SIZE_BOX-SIZE_BOX/2);
+            roof.setMaterial(new PhongMaterial(Color.BLACK));
+            root.getChildren().add(roof);
+        }
         public void setUp(int posx, int posz,int height,int width,Group floor, int a){
             if(posx==0){
                 floor.setTranslateX(floor.getTranslateX()+SIZE_BOX*a);
@@ -425,7 +435,7 @@ public class View extends Scene {
 
         public void drawStair(int dir,Group root,int i,int j,Maze maze,int floor){
             Box step;
-            int nbStep=8;
+            int nbStep=12;
             Group stairs = new Group();
             int size=SIZE_BOX/nbStep,a=0;
             while(nbStep!=a){
@@ -580,12 +590,6 @@ public class View extends Scene {
             }
         }
 
-
-
-
-
-
-
         public void buildCamera(Group root) {
             //Ici vérifier dans quel sens la début est pour modifier x et z
             //System.out.println("Height " + maze.getHeight() + "   Width  " + maze.getWidth());
@@ -638,12 +642,6 @@ public class View extends Scene {
             newRecord.show();
         }
     }*/
-
-
-
-
-
-
 
 
     protected abstract class GameControl {
@@ -716,31 +714,46 @@ public class View extends Scene {
             game.start();
             //game.tStart();
             timePane.start();
-           gameTimer.start();
+            gameTimer.start();
             mazePane.initMaze();
+            main.getChildren().add(timePane);
+            StackPane.setAlignment(timePane,Pos.TOP_LEFT);
             View.this.setOnKeyPressed(e -> {
-                switch (e.getCode()) {
-                    case UP:
-                        game.player.up(true);
-                        break;
-                    case RIGHT:
-                        game.player.right(true);
-                        break;
-                    case DOWN:
-                        game.player.down(true);
-                        break;
-                    case LEFT:
-                        game.player.left(true);
-                        break;
-                    case SPACE:
-                        game.player.jump(true);
-                        break;
-                   /*case SHIFT:
-                        if(e.isControlDown()) mazePane.rotateX.setAngle(mazePane.rotateX.getAngle()-0.5);
-                        else mazePane.rotateX.setAngle(mazePane.rotateX.getAngle()+0.5);
-                        break;*/
-
-                }
+                boolean pocket = main.getChildren().contains(inventory);
+                    if(e.getCode()==KeyCode.M){
+                        if(e.isAltDown()){
+                            if(!pocket)main.getChildren().add(inventory);
+                            updateInventory();
+                            timePane.pause();
+                        }
+                        else if(e.isControlDown()){
+                            main.getChildren().remove(inventory);
+                            timePane.play();
+                        }
+                    }
+                    else if(!pocket){
+                        switch (e.getCode()) {
+                        case UP:
+                            game.player.up(true);
+                            break;
+                        case RIGHT:
+                            game.player.right(true);
+                            break;
+                        case DOWN:
+                            game.player.down(true);
+                            break;
+                        case LEFT:
+                            game.player.left(true);
+                            break;
+                        case SPACE:
+                            game.player.jump(true);
+                            break;
+                        case SHIFT:
+                            if(e.isControlDown()) mazePane.rotateX.setAngle(mazePane.rotateX.getAngle()-0.5);
+                            else mazePane.rotateX.setAngle(mazePane.rotateX.getAngle()+0.5);
+                            break;
+                        }
+                    }
 
                 //System.out.println(((mazeScene.getCamera().getTranslateX()/400)+0.5) + "     " + (((mazeScene.getCamera().getTranslateZ())/400)+0.5) + "   " + (((mazeScene.getCamera().getTranslateZ())/400)+0.5));
                 if(game.gameOver()){
@@ -790,6 +803,46 @@ public class View extends Scene {
 
 
         public abstract void whenIsFinished();
+        public void updateInventory(){
+            inventory.getChildren().clear();
+            String style="-fx-text-fill: crimson;-fx-font: oblique 15pt cursive; -fx-text-alignment: center";
+            int time=0,coin=0;
+            int key = 7;//game.player().keys().size();
+            int bonus = 4;//game.player().getBonus().size();
+            if(bonus+key !=0){
+                if(bonus!=0){
+                    for (Bonus a : game.player().getBonus()) {
+                        if(a instanceof TimeBonus)time++;
+                        else coin++;
+                    }
+                    coin=4;time=3;
+                    if(coin!=0){
+                        Label piece = new Label("Vous avez "+""+coin+" pièce.s");
+                        configLabel(piece,"coin.png",style,inventory);
+                    }
+                    if(time!=0){
+                        Label hourglass = new Label("Vous avez "+""+time+" sablier.s");
+                        configLabel(hourglass,"hourglass.png",style,inventory);
+                    }
+                }
+                if(key!=0){
+                    Label keys = new Label("Vous avez "+""+key+" clé.s");
+                    configLabel(keys,"key.png",style,inventory);
+                }
+            }
+            else{
+                Label nothing = new Label("Vous n'avez aucun objet");
+                nothing.setStyle(style);
+                inventory.getChildren().add(nothing);
+            }
+        }
+        public void configLabel(Label txt,String path,String style,VBox pan){
+            Image img = new Image(getClass().getResourceAsStream(path));
+            txt.setGraphic(new ImageView(img));
+            txt.setContentDisplay(ContentDisplay.RIGHT);
+            txt.setStyle(style);
+            pan.getChildren().add(txt);
+        }
 
 
    /* public void setScene(Scene s){

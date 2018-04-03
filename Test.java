@@ -51,7 +51,7 @@ public class Test extends Application{
   public void start(Stage stage) throws FormatNotSupported,IOException{
       Group root = new Group();
       Scene scene = new Scene(root,500,500,true);
-      MazeFloors mazes = new MazeFloors(SIZE_MAZE,SIZE_MAZE,2,0,2,0,0,10,0);
+      MazeFloors mazes = new MazeFloors(SIZE_MAZE,SIZE_MAZE,2,0,2,5,0,10,0);
       doFloor(root,mazes);
       //setCamToStart(cam);
       //eventMouse(scene,root);
@@ -386,7 +386,20 @@ public class Test extends Application{
       MeshView teleport = last.initTeleport();
       teleport.setTranslateX(j * SIZE_BOX);
       teleport.setTranslateZ(i * SIZE_BOX);
-      teleport.setTranslateY((-floor) * SIZE_BOX + SIZE_BOX);
+      teleport.setTranslateY((-floor) * SIZE_BOX + SIZE_BOX/4);
+      teleport.setRotationAxis(Rotate.X_AXIS);
+      teleport.setRotate(teleport.getRotate()-90);
+      teleport.setScaleX(teleport.getScaleX()* SIZE_BOX/4);
+      teleport.setScaleZ(teleport.getScaleZ()* SIZE_BOX/4);
+      teleport.setScaleY(teleport.getScaleY()* SIZE_BOX/4);
+      RotateTransition rt = new RotateTransition(Duration.millis(3000));
+      rt.setByAngle(360.0);
+      rt.setAxis(Rotate.Y_AXIS);
+      rt.setCycleCount(TranslateTransition.INDEFINITE);
+      rt.setAutoReverse(false);
+      rt.setInterpolator(Interpolator.LINEAR);
+      rt.setNode(teleport);
+      rt.play();
       root.getChildren().add(teleport);
     }
 
