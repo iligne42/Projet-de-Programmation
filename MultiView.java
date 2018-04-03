@@ -39,6 +39,7 @@ public class MultiView extends View {
         public void whenIsFinished() {
            // game.stop();
             timePane.stop();
+            gameTimer.stop();
             game.addToScoresList();
             timeToBeat.set(game.scores().get(0).getValue());
             //Get time to beat, it is the top of the list

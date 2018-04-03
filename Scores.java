@@ -12,7 +12,9 @@ public class Scores implements Serializable{
 
         public boolean add(String name,int score){
             int i=0;
+            System.out.println(this.size());
             if(this.size()==0) return super.add(new Pair<>(name,score));
+            System.out.println("yoyo");
             Pair<String,Integer> pair;
             int val;
             while(i<this.size()){
@@ -20,7 +22,7 @@ public class Scores implements Serializable{
                 val=pair.getValue();
                 if(score<val){
                      super.add(i,new Pair<>(name,score));
-                     return true;
+                     break;
 
                 }
                 if(this.size()<10){
@@ -44,6 +46,12 @@ public class Scores implements Serializable{
         public String toString(){
             String scores="";
             for(Pair<String,Integer> p: this) scores+=p.getKey()+"-"+MazeInterface.getT(p.getValue())+"\r\n";
+            return scores;
+        }
+
+        public String toStringR(){
+            String scores="";
+            for(Pair<String,Integer> p: this) if(p.getKey()!=current.getKey() && p.getValue()!=current.getValue()) scores+=p.getKey()+"-"+MazeInterface.getT(p.getValue())+"\r\n";
             return scores;
         }
 

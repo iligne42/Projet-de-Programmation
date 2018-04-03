@@ -1,3 +1,5 @@
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -30,7 +32,38 @@ public class Menu extends Application {
     View view;
     boolean[] supp;
     int selected;
+    IntegerProperty value;
     //Parent previous;
+
+    protected class Counter extends VBox{
+
+        protected Label val;
+        protected Button plus,minus;
+
+        public Counter(){
+            value=new SimpleIntegerProperty(1);
+            val=new Label();
+            val.setId("cl");
+            //val.setMinSize(20,12);
+            val.textProperty().bind(value.asString());
+            plus=new Button("+");
+            minus=new Button("-");
+            plus.getStyleClass().add("counter");
+            minus.getStyleClass().add("counter");
+            plus.setOnMouseClicked(e->{
+                value.set(value.get()+1);
+            });
+            minus.setOnMouseClicked(e->{
+                if(value.get()>1) value.set(value.get()-1);
+            });
+            this.getChildren().addAll(plus,minus);
+            this.getStyleClass().add("countbox");
+        }
+
+        public Label getLabel(){
+            return val;
+        }
+    }
 
 
     @Override
@@ -46,7 +79,6 @@ public class Menu extends Application {
         VBox menu = new VBox();
         menu.setPrefSize(500.0, 500.0);
         menu.getStyleClass().add("vbox");
-
 
         VBox mode = new VBox();
         mode.setPrefSize(600.0, 500.0);
@@ -118,6 +150,20 @@ public class Menu extends Application {
         cont.setPromptText("Continue a previous game");
         cont.setOnAction(e -> {
             String ser = cont.getSelectionModel().getSelectedItem().toString();
+            try {
+                GameVersion g = MazeInterface.load(ser);
+                view = new SingleView(g);
+                Stage st = new Stage();
+                //sc.getStylesheets().add("");
+                st.setScene(view);
+                //view.setScene(sc);
+                st.setFullScreen(true);
+                st.show();
+
+            }
+            catch(Exception ex){
+
+            }
         });
      /* cont.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
           @Override
@@ -219,6 +265,13 @@ public class Menu extends Application {
             c.setOnMouseClicked(new OptionAction(i));
             option.getChildren().add(c);
         }
+        HBox floors=new HBox();
+        floors.setId("ffl");
+        Label fl=new Label("Floors");
+        fl.setId("fl");
+        Counter co=new Counter();
+        floors.getChildren().addAll(co,fl,co.val);
+        option.getChildren().add(floors);
 
         option.getStyleClass().add("v2");
         option.setVisible(false);
@@ -269,7 +322,7 @@ public class Menu extends Application {
             if(gType.equals("Multiplayer In Network")){
                         try {
                         name = MazeInterface.readInput("What's your name ?");
-                        mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif),0,supp,MazeInterface.nbExtra(dif));
+                        mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif),value.get(),0,supp,MazeInterface.nbExtra(dif));
                         hostmenu.initHost(name,mazeM);
                        changePanel(stack, hostmenu);
                     } catch (Exception exception) {
@@ -278,7 +331,7 @@ public class Menu extends Application {
             }
             else {
                 try {
-                    mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif),MazeInterface.typeBonus(gType),supp,MazeInterface.nbExtra(dif));
+                    mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif),value.get(),MazeInterface.typeBonus(gType),supp,MazeInterface.nbExtra(dif));
                     view = MazeInterface.getView(mazeM, gType,MazeInterface.getTime(dif));
                     Stage st = new Stage();
                     //sc.getStylesheets().add("");
@@ -371,6 +424,7 @@ public class Menu extends Application {
             configureFileChooser(fileChooser);
             File file = fileChooser.showOpenDialog(stage);
             String gType = ((RadioButton) typeG.getSelectedToggle()).getText();
+            if(dif==null)dif = ((RadioButton) difficulty.getSelectedToggle()).getText();
             if (file != null) {
                 try {
                     mazeM = new MazeFloors(new Maze(file));

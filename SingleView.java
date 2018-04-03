@@ -26,6 +26,7 @@ public class SingleView extends View{
         public void whenIsFinished(){
             //game.stop();
             timePane.stop();
+            gameTimer.stop();
             SingleView.this.setOnKeyPressed(null);
             game.addToScoresFile();
            displayScores(game.scores());

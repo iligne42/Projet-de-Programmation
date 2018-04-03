@@ -17,6 +17,7 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.Shape3D;
+import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Screen;
 import javafx.util.Duration;
@@ -186,6 +187,7 @@ public class View extends Scene {
 
 
     protected class MazePane extends Group {
+        protected Group world;
         protected final LinkedList<Maze> floors =game.floors();
         protected PerspectiveCamera camera;
         protected AmbientLight light;
@@ -199,7 +201,7 @@ public class View extends Scene {
         protected PhongMaterial COLOR_ENTRY = new PhongMaterial(Color.RED);
         protected PhongMaterial COLOR_END = new PhongMaterial(Color.LIGHTGOLDENRODYELLOW);
         protected PhongMaterial COLOR_DOOR= new PhongMaterial();
-        protected PhongMaterial COLOR_STAIRS=new PhongMaterial(Color.BLUE);
+        protected PhongMaterial COLOR_STAIRS=new PhongMaterial(Color.WHITESMOKE);
         protected DoubleProperty x=new SimpleDoubleProperty(0);
         protected DoubleProperty z=new SimpleDoubleProperty(0);
         protected DoubleProperty y=new SimpleDoubleProperty(0);
@@ -220,6 +222,7 @@ public class View extends Scene {
 
 
         public void initMaze() throws IOException{
+            Group world=new Group();
             Group floor = new Group();
             Group first=floor;
             Point before = null;
@@ -292,11 +295,18 @@ public class View extends Scene {
               //  if(firstS!=null)squareCoor.add(new Vector3D(square.getTranslateX(),square.getTranslateY(),square.getTranslateZ()).subtract(new Vector3D(firstS.getTranslateX(),firstS.getTranslateY(),firstS.getTranslateZ())).multiply(1/400));
                 //if(i>0) coordSwitch[i-1]=squareCoor;
                 if(i<coordSwitch.length-1) coordSwitch[i+1]=coordSwitch[i];
-                this.getChildren().add(floor);
+                world.getChildren().add(floor);
                 floor = new Group();
                 i+=2;
 
             }
+           /* Sphere sphere=new Sphere();
+            sphere.setTranslateX(world.getTranslateX());
+            sphere.setTranslateY(world.getTranslateY());
+            sphere.setTranslateZ(world.getTranslateY());
+            sphere.setRadius(coordSwitch[coordSwitch.length-1].norm()*SIZE_BOX);
+            sphere.setMaterial(new PhongMaterial(Color.DARKBLUE));*/
+            this.getChildren().add (world);
             buildCamera(this);
             for(int a=0;a<coordSwitch.length;a++) System.out.println(coordSwitch[a]);
             System.out.println("end");
@@ -435,7 +445,7 @@ public class View extends Scene {
 
         public void drawStair(int dir,Group root,int i,int j,Maze maze,int floor){
             Box step;
-            int nbStep=12;
+            int nbStep=8;
             Group stairs = new Group();
             int size=SIZE_BOX/nbStep,a=0;
             while(nbStep!=a){
@@ -583,9 +593,9 @@ public class View extends Scene {
         }
 
         public void printMaze(){
-            Maze m=game.floors().get(1);
+            Maze m=game.floors().get(0);
             for(int i=0;i<m.getHeight();i++){
-                for(int j=0;j<m.getWidth();i++) System.out.println(m.getCase(i,j));
+                for(int j=0;j<m.getWidth();j++) System.out.print(m.getCase(i,j)+" ");
                 System.out.println();
             }
         }
@@ -598,12 +608,13 @@ public class View extends Scene {
             //cameraLight.setTranslateY(0);
             Point2D position = game.player().getPosition();
             double yPos=game.player.getY();
+            int floor=game.floor();
             System.out.println(yPos);
             System.out.println(position);
-            /*x = new SimpleDoubleProperty(position.getX() * SIZE_BOX-SIZE_BOX/2);
+            x = new SimpleDoubleProperty((position.getX()+coordSwitch[floor].x()) * SIZE_BOX-SIZE_BOX/2);
             y=new SimpleDoubleProperty(-yPos*SIZE_BOX);
-            z = new SimpleDoubleProperty(position.getY() * SIZE_BOX-SIZE_BOX/2);
-            angle = new SimpleDoubleProperty(90 - game.player().orientation());*/
+            z = new SimpleDoubleProperty((position.getY() +coordSwitch[floor].z())* SIZE_BOX-SIZE_BOX/2);
+            angle = new SimpleDoubleProperty(90 - game.player().orientation());
             camera.translateXProperty().bind(x);
             camera.translateYProperty().bind(y);
             camera.translateZProperty().bind(z);
@@ -612,7 +623,7 @@ public class View extends Scene {
             rotateX=new Rotate();
             rotateX.setAxis(Rotate.X_AXIS);
             camera.getTransforms().add(rotateX);
-           // printMaze();
+           printMaze();
         }
 
         public void reset() {
@@ -656,21 +667,33 @@ public class View extends Scene {
             gameTimer=new AnimationTimer() {
                 @Override
                 public void handle(long now) {
-                    if(lastUpdate.get()>0) {
-                        double elapsedTime = (now - lastUpdate.get()) / 1000000000.0;
-                        game.update(elapsedTime);
-                        Point2D pos=game.player().getPosition();
-                        double yPos=game.player().getY();
-                        int floor=game.floor();
-                        //System.out.println(pos);
-                        mazePane.x.set((pos.getX()+mazePane.coordSwitch[floor].x())*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
-                        mazePane.z.set((pos.getY()+mazePane.coordSwitch[floor].z())* mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
-                        mazePane.y.set(-yPos*mazePane.SIZE_BOX);
-                        mazePane.angle.set(90-game.player().orientation());
-                        // timeSeconds.set(game.getElapsed());
-                    }
-                    lastUpdate.set(now);
+                    if (game.gameOver()) {
+                        whenIsFinished();
+                    } else if (game.player.state() == Player.PlayerState.DEAD) {
+                        //mettre screen ecran cassé et you died of hnger ou you fell
+                    } else if (timePane.timeOver()) {
+                        //timePane.setVisible(false);
+                        //Print you loose dumbass
+                    } else {
+                        if (lastUpdate.get() > 0) {
+                            double elapsedTime = (now - lastUpdate.get()) / 1000000000.0;
+                            game.update(elapsedTime);
+                            Point2D pos = game.player().getPosition();
+                            double yPos = game.player().getY();
+                            int floor = game.floor();
+                            //System.out.println(pos);
+                            mazePane.x.set((pos.getX() + mazePane.coordSwitch[floor].x()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
+                            mazePane.z.set((pos.getY() + mazePane.coordSwitch[floor].z()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
+                            mazePane.y.set(-yPos * mazePane.SIZE_BOX);
+                            mazePane.angle.set(90 - game.player().orientation());
+                            // timeSeconds.set(game.getElapsed());
+                            if (floor == 2)
+                                System.out.println(((mazeScene.getCamera().getTranslateX() / 400) + 0.5) + "     " + (((mazeScene.getCamera().getTranslateY()) / (-400))) + "   " + (((mazeScene.getCamera().getTranslateZ()) / 400) + 0.5));
 
+                        }
+                        lastUpdate.set(now);
+
+                    }
                 }
             };
             handleAction();
@@ -731,41 +754,35 @@ public class View extends Scene {
                             timePane.play();
                         }
                     }
-                    else if(!pocket){
-                        switch (e.getCode()) {
-                        case UP:
-                            game.player.up(true);
-                            break;
-                        case RIGHT:
-                            game.player.right(true);
-                            break;
-                        case DOWN:
-                            game.player.down(true);
-                            break;
-                        case LEFT:
-                            game.player.left(true);
-                            break;
-                        case SPACE:
-                            game.player.jump(true);
-                            break;
-                        case SHIFT:
-                            if(e.isControlDown()) mazePane.rotateX.setAngle(mazePane.rotateX.getAngle()-0.5);
-                            else mazePane.rotateX.setAngle(mazePane.rotateX.getAngle()+0.5);
-                            break;
+                    else if(!pocket) {
+                        if (game.player.state() != Player.PlayerState.FALLING && game.player.state() != Player.PlayerState.JUMPING) {
+                            switch (e.getCode()) {
+                                case UP:
+                                    game.player.up(true);
+                                    break;
+                                case RIGHT:
+                                    if (game.player.state() != Player.PlayerState.STAIRSDOWN && game.player.state() != Player.PlayerState.STAIRSUP)
+                                        game.player.right(true);
+                                    break;
+                                case DOWN:
+                                    game.player.down(true);
+                                    break;
+                                case LEFT:
+                                    if (game.player.state() != Player.PlayerState.STAIRSDOWN && game.player.state() != Player.PlayerState.STAIRSUP)
+                                        game.player.left(true);
+                                    break;
+                                case SPACE:
+                                    if (game.player.state() != Player.PlayerState.STAIRSDOWN && game.player.state() != Player.PlayerState.STAIRSUP)
+                                    game.player.jump(true);
+                                    break;
+                                case SHIFT:
+                                    if (e.isControlDown()) mazePane.rotateX.setAngle(mazePane.rotateX.getAngle() - 0.5);
+                                    else mazePane.rotateX.setAngle(mazePane.rotateX.getAngle() + 0.5);
+                                    break;
+                            }
                         }
                     }
 
-                //System.out.println(((mazeScene.getCamera().getTranslateX()/400)+0.5) + "     " + (((mazeScene.getCamera().getTranslateZ())/400)+0.5) + "   " + (((mazeScene.getCamera().getTranslateZ())/400)+0.5));
-                if(game.gameOver()){
-                    whenIsFinished();
-                }
-                else if(game.player.state()==Player.PlayerState.DEAD){
-
-                }
-                else if (timePane.timeOver()) {
-                    //timePane.setVisible(false);
-                    //Print you loose dumbass
-                }
             });
             View.this.setOnKeyReleased(e->{
                 switch(e.getCode()){
@@ -799,10 +816,12 @@ public class View extends Scene {
                 }
 
             });
+
         }
 
 
         public abstract void whenIsFinished();
+
         public void updateInventory(){
             inventory.getChildren().clear();
             String style="-fx-text-fill: crimson;-fx-font: oblique 15pt cursive; -fx-text-alignment: center";
@@ -836,6 +855,7 @@ public class View extends Scene {
                 inventory.getChildren().add(nothing);
             }
         }
+
         public void configLabel(Label txt,String path,String style,VBox pan){
             Image img = new Image(getClass().getResourceAsStream(path));
             txt.setGraphic(new ImageView(img));

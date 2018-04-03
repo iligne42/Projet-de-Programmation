@@ -128,7 +128,7 @@ public interface MazeInterface {
         return new Maze(L,l);
     }
 
-    static MazeFloors getMaze(int L,int l,int typeB,boolean[] sup,int extras) throws FormatNotSupported{
+    static MazeFloors getMaze(int L,int l,int f,int typeB,boolean[] sup,int extras) throws FormatNotSupported{
        int[] extra=new int[sup.length];
        int nb=getSelected(sup);
        for(int i=0;i<extra.length;i++){
@@ -144,7 +144,7 @@ public interface MazeInterface {
             l=readInt("Choose the width");
             //find a way to orevent from checking everyhting you want
         }
-        return new MazeFloors(L,l,readInt("How many floors do you want?"),extra[0],extra[2],extra[3],extra[1],extra[4],typeB);
+        return new MazeFloors(L,l,f,extra[0],extra[2],extra[3],extra[1],extra[4],typeB);
     }
 
     static int getSelected(boolean[] s){
