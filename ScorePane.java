@@ -1,10 +1,12 @@
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.util.Pair;
 
 import java.util.Scanner;
@@ -23,11 +25,13 @@ public class ScorePane extends Pane {
         messages=new VBox();
         String sc="Scores";
         Label l=new Label(sc);
-        l.getStyleClass().add("label");
+        l.getStyleClass().add("l");
         messages.getChildren().add(l);
 
         //messages.getStyleClass().add("messages");
-        messages.setPrefSize(500,500);
+        Rectangle2D r= Screen.getPrimary().getBounds();
+        messages.setPrefSize(r.getWidth(),r.getHeight());
+        messages.getStyleClass().add("mes");
         this.getChildren().add(messages);
         //messages.setAlignment(Pos.CENTER);
         getStylesheets().add("chat.css");
@@ -54,9 +58,9 @@ public class ScorePane extends Pane {
             Scanner sc=new Scanner(score.toString());
             while(sc.hasNextLine())
                 styleMessage(sc.nextLine());
-            String scoreC="Votre score est :"+score.getCurrentScore();
+            String scoreC="Votre score est : "+score.getCurrentScore();
             Label la=new Label(scoreC);
-            la.getStyleClass().add("label");
+            la.getStyleClass().add("la");
             messages.getChildren().add(la);
     }
 

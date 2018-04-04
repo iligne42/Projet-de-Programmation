@@ -24,7 +24,7 @@ public class chatPane extends BorderPane{
 		getStyleClass().add("root");
 		messages=new VBox();
 		text=new TextField();
-		text.getStyleClass().add("text");
+		text.getStyleClass().add("tofill");
 		send = new Button();
 		send.setText("Send");
 		chat = new chat(this);

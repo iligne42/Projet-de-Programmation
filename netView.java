@@ -1,4 +1,7 @@
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Camera;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -123,6 +126,12 @@ public class netView extends View{
             Player p=players.get(i);
             MeshView player = p.initPlayer();
             int g=p.getGround();
+            /*x=new SimpleDoubleProperty(p.getPosition().getX()+mazePane.coordSwitch[g].x()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
+            z=new SimpleDoubleProperty(p.getPosition().getY()+mazePane.coordSwitch[g].z()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
+            y=new SimpleDoubleProperty(-p.getY()*mazePane.SIZE_BOX);
+            player.translateXProperty().bind(x);
+            player.translateYProperty().bind(y);
+            player.translateZProperty().bind(z);*/
             player.setTranslateX(p.getPosition().getX()+mazePane.coordSwitch[g].x()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateZ(p.getPosition().getY()+mazePane.coordSwitch[g].z()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateY(-p.getY()*mazePane.SIZE_BOX);
