@@ -75,7 +75,7 @@ public class Player implements Serializable {
 	public Point2D getPosition(){
 		return new Point2D.Double(posX,posZ);
 	}
-
+    public int getGround(){return ground;}
 
     public PlayerState state() {
         return state;
@@ -266,7 +266,7 @@ public class Player implements Serializable {
 
     public MeshView initPlayer() throws IOException{
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(this.getClass().getResource("teleport.fxml"));
+        fxmlLoader.setLocation(this.getClass().getResource("User.fxml"));
         PhongMaterial mat = new PhongMaterial();
         mat.setSpecularColor(Color.HOTPINK);
         mat.setDiffuseColor(Color.PURPLE);

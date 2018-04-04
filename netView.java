@@ -92,6 +92,7 @@ public class netView extends View{
                         if(tmp instanceof ArrayList){
                             if(((ArrayList)tmp).get(0) instanceof Player){
                                 players = (ArrayList<Player>)tmp;
+                                drawPlayer(mazePane);
                             }
                         }
                     }catch(Exception e){}
@@ -115,9 +116,10 @@ public class netView extends View{
         for(int i=0; i<players.size(); i++) {
             Player p=players.get(i);
             MeshView player = p.initPlayer();
-            player.setTranslateX(p.getPosition().getX());
-            player.setTranslateZ(p.getPosition().getY());
-            player.setTranslateY(p.getY());
+            int g=p.getGround();
+            player.setTranslateX(p.getPosition().getX()+mazePane.coordSwitch[g].x()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
+            player.setTranslateZ(p.getPosition().getY()+mazePane.coordSwitch[g].z()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
+            player.setTranslateY(-p.getY()*mazePane.SIZE_BOX);
             player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX/10);
             player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX/10);
             player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX/10);
