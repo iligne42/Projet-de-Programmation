@@ -1,14 +1,19 @@
 
 import javafx.scene.Camera;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.MeshView;
 
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 
 import java.net.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class netView extends View{
     ArrayList<Player> players=new ArrayList<Player>();
@@ -104,5 +109,19 @@ public class netView extends View{
         System.out.println("Les joueurs ayant fini sont :");
         for(String str:list)
             System.out.println("  - "+str);
+    }
+
+    public void drawPlayer(Group root) throws IOException{
+        for(int i=0; i<players.size(); i++) {
+            Player p=players.get(i);
+            MeshView player = p.initPlayer();
+            player.setTranslateX(p.getPosition().getX());
+            player.setTranslateZ(p.getPosition().getY());
+            player.setTranslateY(p.getY());
+            player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX/10);
+            player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX/10);
+            player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX/10);
+            root.getChildren().add(player);
+        }
     }
 }

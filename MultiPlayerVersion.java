@@ -2,6 +2,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
+import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -9,6 +10,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -59,4 +61,7 @@ public class MultiPlayerVersion implements Serializable {
         game = new SoloVersion(game.maze(), players.pop(), scores);
     }
 
+    public Stack<Player> getPlayers() {
+        return players;
+    }
 }

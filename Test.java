@@ -387,8 +387,6 @@ public class Test extends Application{
       teleport.setTranslateX(j * SIZE_BOX);
       teleport.setTranslateZ(i * SIZE_BOX);
       teleport.setTranslateY((-floor) * SIZE_BOX + SIZE_BOX/4);
-      teleport.setRotationAxis(Rotate.X_AXIS);
-      teleport.setRotate(teleport.getRotate()-90);
       teleport.setScaleX(teleport.getScaleX()* SIZE_BOX/4);
       teleport.setScaleZ(teleport.getScaleZ()* SIZE_BOX/4);
       teleport.setScaleY(teleport.getScaleY()* SIZE_BOX/4);

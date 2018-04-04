@@ -1,7 +1,12 @@
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point3D;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.MeshView;
 
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.LinkedList;
 
@@ -259,7 +264,16 @@ public class Player implements Serializable {
         for(int a=0;a<i;i++) bonus.remove();
     }
 
-
+    public MeshView initPlayer() throws IOException{
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(this.getClass().getResource("teleport.fxml"));
+        PhongMaterial mat = new PhongMaterial();
+        mat.setSpecularColor(Color.HOTPINK);
+        mat.setDiffuseColor(Color.PURPLE);
+        MeshView player = fxmlLoader.<MeshView>load();
+        player.setMaterial(mat);
+        return player;
+    }
 
 
 

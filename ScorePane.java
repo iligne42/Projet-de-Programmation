@@ -11,16 +11,21 @@ import java.util.Scanner;
 
 public class ScorePane extends Pane {
     private Scores score;
-    private Label affichage;
+    //private Label affichage;
     private VBox messages;
 
     public ScorePane(Scores s){
         super();
         getStyleClass().add("root");
-        setPrefSize(500,500);
+        //setMinSize(500,500);
         score=s;
-        affichage=new Label();
+        //affichage=new Label();
         messages=new VBox();
+        String sc="Scores";
+        Label l=new Label(sc);
+        l.getStyleClass().add("label");
+        messages.getChildren().add(l);
+
         //messages.getStyleClass().add("messages");
         messages.setPrefSize(500,500);
         this.getChildren().add(messages);
@@ -46,14 +51,13 @@ public class ScorePane extends Pane {
             align.getChildren().addAll(deb,end);
             messages.getChildren().add(align);
             }*/
-            String debut="Tableau des scores";
-            Label deb=new Label(debut);
-            deb.getStyleClass().add("deb");
-            messages.getChildren().add(deb);
             Scanner sc=new Scanner(score.toString());
             while(sc.hasNextLine())
                 styleMessage(sc.nextLine());
-
+            String scoreC="Votre score est :"+score.getCurrentScore();
+            Label la=new Label(scoreC);
+            la.getStyleClass().add("label");
+            messages.getChildren().add(la);
     }
 
     public void styleMessage(String str){

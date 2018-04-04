@@ -45,3 +45,10 @@
     -fx-alignment:center;
 }
 
+.label{
+    -fx-alignment:center;
+    -fx-font-weight:bold;
+    -fx-text-fill: white;
+    -fx-font-size:20px;
+}
+
