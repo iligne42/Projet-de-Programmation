@@ -268,8 +268,8 @@ public class Player implements Serializable {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(this.getClass().getResource("User.fxml"));
         PhongMaterial mat = new PhongMaterial();
-        mat.setSpecularColor(Color.HOTPINK);
-        mat.setDiffuseColor(Color.PURPLE);
+        mat.setSpecularColor(Color.SNOW);
+        mat.setDiffuseColor(Color.YELLOW);
         MeshView player = fxmlLoader.<MeshView>load();
         player.setMaterial(mat);
         return player;
