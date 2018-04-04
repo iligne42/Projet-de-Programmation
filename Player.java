@@ -20,7 +20,7 @@ public class Player implements Serializable {
 	//représenter la pente de l'escalier par un vecteur et ajouter peu à peu au joueur, enfin à sa vitesse je crois
 
 	private float maxSpeed,accConstant,angularVelocity,gravity,friction,orientationSpeed,orientation;
-	private Circle shape;
+	private float radius;
 	private boolean up,down,left,right,space;
 	private LinkedList<Bonus> bonus;
 	private LinkedList<Key> keys;
@@ -44,13 +44,13 @@ public class Player implements Serializable {
 		orientationSpeed=2;
 		bonus=new LinkedList<>();
 		keys=new LinkedList<>();
-		shape=new Circle(0.15);
+		radius=0.15F;
 		//body=new Cylinder()
 		//shape.setFill(Color.BLUE);
 	}
 
 	public float radius(){
-		return (float)shape.getRadius();
+		return radius;
 	}
 
 	public void setPosition(Point2D position, double y,float ori){
@@ -58,8 +58,6 @@ public class Player implements Serializable {
 		posY=y;
 		posZ=position.getY();
 		this.orientation=ori;
-		shape.setCenterX(posX);
-		shape.setCenterY(posZ);
 	}
 
 

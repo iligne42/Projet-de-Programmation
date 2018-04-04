@@ -17,6 +17,7 @@ import java.util.LinkedList;
 
 public class netView extends View{
     ArrayList<Player> players=new ArrayList<Player>();
+    private static boolean debug = true;
 
     public netView(GameVersion game, Socket me) throws IOException{
         super(new StackPane(), game);
@@ -40,22 +41,14 @@ public class netView extends View{
             Scores sc = game.scores();
             timePane.stop();
             sp.arret();
-            gp.arret();
             netView.this.setOnKeyPressed(null);
             game.addToScoresList();
             
             try{
-                System.out.println("ERRORRRRRR -----------------------------");
-                System.out.println(me);
-                System.out.println(sc);
-                System.out.println("FIN ERRORRRRRR -------------------------");
                 netFunc.sendObject(me,sc);
+                if(debug)
+                    System.out.println("J'envoie le score");
             }catch(IOException e){}
-            while(true){
-                    Object tmp = netFunc.readObject(me);
-                    if(tmp instanceof Scores)
-                        System.out.println((Scores) tmp);
-            }
         }
 
         private class sendPos extends Thread{
@@ -66,10 +59,19 @@ public class netView extends View{
             }
 
             public void run(){
+                if(debug)
+                    System.out.println("Je peux aller la");
                 while(!end){
                     try{
                         netFunc.sendObject(me,game.player());
-                    }catch(IOException e){}
+                        if(debug)
+                            System.out.println("Voici ma position");
+                        Thread.sleep(1000);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                        if(debug)
+                            System.out.println("Je peux pas envoyer ma pos");
+                    }
                 }
             }
     
@@ -91,10 +93,14 @@ public class netView extends View{
                         Object tmp=netFunc.readObject(me);
                         if(tmp instanceof ArrayList){
                             if(((ArrayList)tmp).get(0) instanceof Player){
+                                if(debug)
+                                    System.out.println("Je recois une list de pos");
                                 players = (ArrayList<Player>)tmp;
-                                drawPlayer(mazePane);
+                                if(debug)
+                                    drawPlayer(mazePane);
                             }
-                        }
+                        }else if(tmp instanceof Scores)
+                            displayScores((Scores) tmp);
                     }catch(Exception e){}
                 }
             }
