@@ -1,7 +1,6 @@
 .root{
     -fx-background-image:url("lab.jpg");
     -fx-alignment:center;
-    -fx-border-color:red;
     -fx-padding:20,20,20,20;
 }
 
@@ -36,13 +35,13 @@
     -fx-font-style: italic;
     -fx-text-fill: white;
     -fx-font-family:"Palatino Linotype", "Book Antiqua", Palatino,serif;
-    -fx-font-size:25px;
+    -fx-font-size:15px;
 }
 
 .end{
     -fx-text-fill: white;
     -fx-font-family:"Palatino Linotype", "Book Antiqua", Palatino,sans-serif;
-    -fx-font-size:25px;
+    -fx-font-size:15px;
 }
 
 .align{

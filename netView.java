@@ -135,9 +135,9 @@ public class netView extends View{
             player.setTranslateX(p.getPosition().getX()+mazePane.coordSwitch[g].x()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateZ(p.getPosition().getY()+mazePane.coordSwitch[g].z()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateY(-p.getY()*mazePane.SIZE_BOX);
-            player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX/10);
-            player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX/10);
-            player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX/10);
+            player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX);
+            player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX);
+            player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX);
             root.getChildren().add(player);
         }
     }
