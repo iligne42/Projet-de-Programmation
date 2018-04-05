@@ -97,7 +97,7 @@ public class netView extends View{
                         if(tmp instanceof ArrayList){
                             if(((ArrayList)tmp).get(0) instanceof Player){
                                 if(debug)
-                                    System.out.println("Je recois une list de pos");
+                                    System.out.println("Je recois une list de pos.");
                                 players = (ArrayList<Player>)tmp;
                                 if(debug)
                                     drawPlayer(mazePane);
