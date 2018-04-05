@@ -1,4 +1,6 @@
 import javafx.animation.*;
+import java.time.LocalDate;
+import javafx.stage.Stage;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
@@ -8,6 +10,8 @@ import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.ToolBar;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -28,14 +32,16 @@ import java.util.LinkedList;
 
 public class View extends Scene {
     protected StackPane main;
-    //protected ToolBar tool;
-    protected VBox inventory;
+    protected Stage st;
+    protected ToolBar tool;
+    protected VBox inventory,paneHelp;
     protected GameVersion game;
     protected TimePane timePane;
     protected MazePane mazePane;
     protected GameControl control;
     protected SubScene mazeScene;
     protected Label timeLabel;
+    protected Button save,inv,quit,help;
 
     public View(StackPane root, GameVersion game) {
         super(root);
@@ -52,6 +58,10 @@ public class View extends Scene {
         else if (game instanceof TimeTrialVersion) timePane = new TimeTrialPane(((TimeTrialVersion) game).timeLimit);
         main.getChildren().add(mazeScene);
 
+    }
+
+    public void setStage(Stage stage){
+      st=stage;
     }
 
    /* public View(BorderPane root, GameVersion game) {
@@ -217,10 +227,56 @@ public class View extends Scene {
             inventory.setStyle("-fx-background-color: rgba(0, 0, 0, 0); -fx-background-radius: 10;");
             inventory.setAlignment(Pos.CENTER);
             inventory.setSpacing(20.0);
+            paneHelp=new VBox();
+            paneHelp.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4); -fx-background-radius: 10;");
+            paneHelp.setAlignment(Pos.CENTER);
+            paneHelp.setSpacing(30.0);
         }
 
-
-
+        public void setToolBar(){
+          String style="-fx-background-color:linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%),linear-gradient(#020b02, #3a3a3a),linear-gradient(#9d9e9d 0%, #6b6a6b 20%, #343534 80%, #242424 100%),linear-gradient(#8a8a8a 0%, #6b6a6b 20%, #343534 80%, #262626 100%),linear-gradient(#777777 0%, #606060 50%, #505250 51%, #2a2b2a 100%);-fx-background-insets: 0,1,4,5,6;-fx-background-radius: 9,8,5,4,3;-fx-padding: 15 30 15 30;-fx-font-size: 18px;-fx-font-weight: bold;-fx-text-fill: white;-fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);";
+          quit = new Button("Quit");
+          quit.setOnMouseClicked(e->{
+            st.close();
+          });
+          save = new Button("Save");
+          save.setOnMouseClicked(e->{
+              LocalDate now = LocalDate.now();
+              String date[] = now.toString().split("-");
+              System.out.println(now);
+              try{game.save(date[2]+"/"+date[1]+"/"+date[0].charAt(2)+""+date[0].charAt(3)+"/"+game.player().getName());}
+              catch (Exception exc) {}
+          });
+          inv = new Button("Pocket");
+          inv.setOnMousePressed(e->{
+            timePane.pause();
+            boolean pocket = main.getChildren().contains(inventory);
+            if(!pocket)main.getChildren().add(inventory);
+            control.updateInventory();
+          });
+          inv.setOnMouseReleased(e->{
+            timePane.play();
+            main.getChildren().remove(inventory);
+          });
+          help = new Button("Help");
+          help.setOnMousePressed(e->{
+            timePane.pause();
+            boolean aide = main.getChildren().contains(paneHelp);
+            if(!aide)main.getChildren().add(paneHelp);
+            control.displayHelp();
+          });
+          help.setOnMouseReleased(e->{
+            timePane.play();
+            main.getChildren().remove(paneHelp);
+          });
+          Region rg = new Region();
+          HBox.setHgrow(rg,Priority.SOMETIMES);
+          tool = new ToolBar(rg,help,inv,save,quit);
+          for (Node a : tool.getItems()) {
+            if(a instanceof Button) a.setStyle(style);
+          }
+          tool.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
+        }
         public void initMaze() throws IOException{
             Group world=new Group();
             Group floor = new Group();
@@ -671,8 +727,6 @@ public class View extends Scene {
         protected double mouseYOld;
         protected LongProperty lastUpdate;
         protected AnimationTimer gameTimer;
-
-
         public GameControl() throws IOException{
             lastUpdate=new SimpleLongProperty();
             gameTimer=new AnimationTimer() {
@@ -751,7 +805,10 @@ public class View extends Scene {
             gameTimer.start();
             mazePane.initMaze();
             main.getChildren().add(timePane);
+            mazePane.setToolBar();
+            main.getChildren().add(tool);
             StackPane.setAlignment(timePane,Pos.TOP_LEFT);
+            StackPane.setAlignment(tool,Pos.TOP_CENTER);
             View.this.setOnKeyPressed(e -> {
                 boolean pocket = main.getChildren().contains(inventory);
                     if(e.getCode()==KeyCode.M){
@@ -832,10 +889,33 @@ public class View extends Scene {
 
 
         public abstract void whenIsFinished();
-
+        public void displayHelp(){
+          paneHelp.getChildren().clear();
+          String style="-fx-text-fill: crimson;-fx-font: oblique 15pt cursive; -fx-text-alignment: center";
+          String key = " Pour ouvrir les portes, vous devez rechercher la clef associée";
+          Label cle = new Label(key);
+          configLabel(cle,"key.png",style);
+          String time = "Les sabliers servent à ralentir le temps";
+          Label hour = new Label(time);
+          configLabel(hour,"hourglass.png",style);
+          String coin = "Les pièces récoltées vous serviront à afficher un plan du labyrinthe";
+          Label piece = new Label(coin);
+          configLabel(piece,"coin.png",style);
+          String inv = "Tous ces objets sont disponibles depuis le bouton pocket ou alt+M";
+          Label pock = new Label(inv);
+          pock.setStyle(style);
+          String keys = "Usez le pavé directionel pour vous mouvoir";
+          Label touch = new Label(keys);
+          touch.setStyle(style);
+          String sortie = "La sortie sera de case rouge, l'entrée est bleue";
+          Label end = new Label(sortie);
+          end.setStyle(style);
+          paneHelp.getChildren().addAll(cle,hour,piece,pock,touch,end);
+        }
         public void updateInventory(){
             inventory.getChildren().clear();
             String style="-fx-text-fill: crimson;-fx-font: oblique 15pt cursive; -fx-text-alignment: center";
+            String styleB= "-fx-background-color:#090a0c,linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),linear-gradient(#20262b, #191d22),radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));-fx-text-fill:white;";
             int time=0,coin=0;
             int key = 7;//game.player().keys().size();
             int bonus = 4;//game.player().getBonus().size();
@@ -848,16 +928,41 @@ public class View extends Scene {
                     coin=4;time=3;
                     if(coin!=0){
                         Label piece = new Label("Vous avez "+""+coin+" pièce.s");
-                        configLabel(piece,"coin.png",style,inventory);
+                        configLabel(piece,"coin.png",style);
+                        Button usePiece = new Button("Use");
+                        usePiece.setOnMouseClicked(e->{
+                          updateInventory();
+                        });
+                        usePiece.setStyle(styleB);
+                        HBox panePiece = new HBox(piece,usePiece);
+                        panePiece.setAlignment(Pos.CENTER);
+                        inventory.getChildren().add(panePiece);
                     }
                     if(time!=0){
                         Label hourglass = new Label("Vous avez "+""+time+" sablier.s");
-                        configLabel(hourglass,"hourglass.png",style,inventory);
+                        configLabel(hourglass,"hourglass.png",style);
+                        Button useTime = new Button("Use");
+                        useTime.setOnMouseClicked(e->{
+                          updateInventory();
+                        });
+                        useTime.setStyle(styleB);
+                        HBox paneHour = new HBox(hourglass,useTime);
+                        paneHour.setAlignment(Pos.CENTER);
+                        inventory.getChildren().add(paneHour);
                     }
                 }
                 if(key!=0){
-                    Label keys = new Label("Vous avez "+""+key+" clé.s");
-                    configLabel(keys,"key.png",style,inventory);
+                  Label keys = new Label("Vous avez "+""+key+" clé.s");
+                  configLabel(keys,"key.png",style);
+                  inventory.getChildren().remove(keys);
+                  Button useKey = new Button("Use");
+                  useKey.setStyle(styleB);
+                  useKey.setOnMouseClicked(e->{
+                    updateInventory();
+                  });
+                  HBox paneKey= new HBox(keys,useKey);
+                  paneKey.setAlignment(Pos.CENTER);
+                  inventory.getChildren().add(paneKey);
                 }
             }
             else{
@@ -867,12 +972,11 @@ public class View extends Scene {
             }
         }
 
-        public void configLabel(Label txt,String path,String style,VBox pan){
+        public void configLabel(Label txt,String path,String style){
             Image img = new Image(getClass().getResourceAsStream(path));
             txt.setGraphic(new ImageView(img));
             txt.setContentDisplay(ContentDisplay.RIGHT);
             txt.setStyle(style);
-            pan.getChildren().add(txt);
         }
 
 
