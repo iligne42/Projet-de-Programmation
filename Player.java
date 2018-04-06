@@ -263,6 +263,7 @@ public class Player implements Serializable {
     }
 
     public MeshView initPlayer() throws IOException{
+	    System.out.println("Je suis dans initPlayer().");
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(this.getClass().getResource("User.fxml"));
         PhongMaterial mat = new PhongMaterial();
@@ -270,6 +271,7 @@ public class Player implements Serializable {
         mat.setDiffuseColor(Color.YELLOW);
         MeshView player = fxmlLoader.<MeshView>load();
         player.setMaterial(mat);
+        System.out.println("Fait!!");
         return player;
     }
 
