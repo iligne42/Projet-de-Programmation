@@ -7,6 +7,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.geometry.Pos;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ContentDisplay;
@@ -18,10 +20,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Box;
-import javafx.scene.shape.MeshView;
-import javafx.scene.shape.Shape3D;
-import javafx.scene.shape.Sphere;
+import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Screen;
 import javafx.util.Duration;
@@ -42,6 +41,7 @@ public class View extends Scene {
     protected SubScene mazeScene;
     protected Label timeLabel;
     protected Button save,inv,quit,help;
+    protected Group map;
 
     public View(StackPane root, GameVersion game) {
         super(root);
@@ -57,7 +57,6 @@ public class View extends Scene {
         if (game instanceof SoloVersion) timePane = new SoloTimePane();
         else if (game instanceof TimeTrialVersion) timePane = new TimeTrialPane(((TimeTrialVersion) game).timeLimit);
         main.getChildren().add(mazeScene);
-
     }
 
     public void setStage(Stage stage){
@@ -277,6 +276,9 @@ public class View extends Scene {
           }
           tool.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
         }
+        public boolean test(int a,int b,int c,int d){
+          return ((a==b)&&(b==c||b==d));
+        }
         public void initMaze() throws IOException{
             Group world=new Group();
             Group floor = new Group();
@@ -304,7 +306,7 @@ public class View extends Scene {
                     floor.setTranslateZ((posFz-aposz)*SIZE_BOX);
                     posFx=(int) a.ending().getX()+(posFx-aposx);
                     posFz=(int) a.ending().getY()+(posFz-aposz);
-                    if(before.getX()!=aposx && before.getY()!=aposz){
+                    if(!test(aposx,(int)before.getX(),MAZE_WIDTH-1,0) && !test(aposz,(int)before.getY(),MAZE_LENGTH-1,0)){
                         setUp(aposx,aposz,MAZE_LENGTH,MAZE_WIDTH,floor,1);
                         setUp((int)before.getX(),(int)before.getY(),MAZE_LENGTH,MAZE_WIDTH,floor,-1);
                         square=new Box(SIZE_BOX,0,SIZE_BOX);
@@ -315,24 +317,19 @@ public class View extends Scene {
                         else if(aposz==0) square.setTranslateZ(square.getTranslateZ()-SIZE_BOX);
                         else if(aposz==MAZE_WIDTH-1) square.setTranslateZ(square.getTranslateZ()+SIZE_BOX);
                     }
-                     else if(before.getX()==aposx){
-                        System.out.println("same x");
-                        int coeff=(aposx==0)?1:-1;
-                        System.out.println(coeff);
-                        floor.setTranslateZ(floor.getTranslateZ()+SIZE_BOX*coeff);
-                        square = new Box(SIZE_BOX,0,2*SIZE_BOX);
-                        square.setTranslateX((aposx-coeff)*SIZE_BOX);
-                        square.setTranslateZ(aposz*SIZE_BOX-(coeff*SIZE_BOX/2));
-                        posFz+=coeff;
+                     else if(test(aposx,(int)before.getX(),MAZE_WIDTH-1,0)){
+                          floor.setTranslateZ(floor.getTranslateZ()-SIZE_BOX);
+                          square = new Box(SIZE_BOX,0,2*SIZE_BOX);
+                          square.setTranslateX((aposx+1)*SIZE_BOX);
+                          square.setTranslateZ(aposz*SIZE_BOX+SIZE_BOX/2);
+                          posFz--;
                     }
                     else {
-                        System.out.println(aposz+" / "+before.getY());
-                        int coeff=(aposz==0)?1:-1;
-                        floor.setTranslateX(floor.getTranslateX()+SIZE_BOX*coeff);
+                        floor.setTranslateX(floor.getTranslateX()-SIZE_BOX);
                         square = new Box(2*SIZE_BOX,0,SIZE_BOX);
-                        square.setTranslateX(aposx*SIZE_BOX-(coeff*SIZE_BOX/2));
-                        square.setTranslateZ((aposz-coeff)*SIZE_BOX);
-                        posFx+=coeff;
+                        square.setTranslateX(aposx*SIZE_BOX+SIZE_BOX/2);
+                        square.setTranslateZ((aposz+1)*SIZE_BOX);
+                        posFx--;
                     }
                     square.setMaterial(new PhongMaterial(Color.MAROON));
                     square.setTranslateY((-i+1)*SIZE_BOX+SIZE_BOX/2);
@@ -809,6 +806,12 @@ public class View extends Scene {
             main.getChildren().add(tool);
             StackPane.setAlignment(timePane,Pos.TOP_LEFT);
             StackPane.setAlignment(tool,Pos.TOP_CENTER);
+            map = new Group();
+            setUpMap(15);
+            Circle player = new Circle(5.0,Color.WHITESMOKE);
+            player.setRotationAxis(Rotate.Z_AXIS);
+            moveMap(15,player);
+            map.getChildren().add(player);
             View.this.setOnKeyPressed(e -> {
                 boolean pocket = main.getChildren().contains(inventory);
                     if(e.getCode()==KeyCode.M){
@@ -847,6 +850,9 @@ public class View extends Scene {
                                     if (e.isControlDown()) mazePane.rotateX.setAngle(mazePane.rotateX.getAngle() - 0.5);
                                     else mazePane.rotateX.setAngle(mazePane.rotateX.getAngle() + 0.5);
                                     break;
+                                case J:
+                                  System.out.println("oau");
+                                  map.setRotate(map.getRotate()+5.0);break;
                             }
                         }
                     }
@@ -870,6 +876,7 @@ public class View extends Scene {
                         game.player.jump(false);
                         break;
                 }
+                moveMap(15,player);
             });
             View.this.addEventHandler(MouseEvent.ANY, evt->{
                 if(evt.getEventType()==MouseEvent.MOUSE_DRAGGED || evt.getEventType()==MouseEvent.MOUSE_PRESSED){
@@ -911,6 +918,40 @@ public class View extends Scene {
           Label end = new Label(sortie);
           end.setStyle(style);
           paneHelp.getChildren().addAll(cle,hour,piece,pock,touch,end);
+        }
+        public void moveMap(int size,Circle player){
+          player.centerXProperty().set(game.player().getPosition().getX()*size);
+          player.centerYProperty().set(game.player().getPosition().getY()*size);
+        }
+        public void setUpMap(int size){
+          Canvas mapDraw = new Canvas(600,800);
+          GraphicsContext gc = mapDraw.getGraphicsContext2D();
+          int x=0,y=0;
+          Maze maze = game.current();
+          for (int i = 0 ; i< maze.getHeight();i++ ) {
+            for(int j = 0; j<maze.getWidth();j++){
+              switch (maze.getCase(i,j)) {
+                case Maze.WAY: gc.setFill(Color.TRANSPARENT);break;
+                case Maze.START: gc.setFill(Color.BLUE);break;
+                case Maze.END: gc.setFill(Color.RED);break;
+                case Maze.WALL: gc.setFill(Color.LIGHTGREY);break;
+                /*case Maze.STAIRSUP: tmp=RED+"SU"+Normal;break;
+                case Maze.STAIRSDOWN: tmp=RED+"SD"+Normal;break;*/
+                case Maze.OBSTACLE: gc.setFill(Color.GREY);break;
+                case Maze.MONSTRE: gc.setFill(Color.WHITE);break;
+                case Maze.TELEPORT: gc.setFill(Color.PURPLE);break;
+                case Maze.DOOR: gc.setFill(Color.LIGHTBLUE);break;
+                case Maze.KEY: gc.setFill(Color.YELLOW);break;
+                case Maze.BONUS :gc.setFill(Color.GREEN);break;
+              }
+              gc.fillRect(x,y,size,size);
+              x+=size;
+            }
+            y+=size;x=0;
+          }
+          map.getChildren().add(mapDraw);
+          main.getChildren().add(map);
+          StackPane.setAlignment(map,Pos.BOTTOM_LEFT);
         }
         public void updateInventory(){
             inventory.getChildren().clear();
