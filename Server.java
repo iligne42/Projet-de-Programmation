@@ -8,6 +8,7 @@ public class Server{
 	private ArrayList<Socket> sockets;
 	private Scores score;
 	private ArrayList<Triplet> arrivedList;
+	private final boolean debug = true;
 
 	public Server(ServerSocket socServ, ArrayList<String> names, ArrayList<Socket> sockets){
 		this.socServ=socServ;
@@ -22,7 +23,8 @@ public class Server{
 			waitScore ws= new waitScore(sockets.get(i),players.get(i));
 			ws.start();
 		}
-		System.out.println("Server en marche");
+		if(debug)
+			System.out.println("Server en marche");
 		sendPos sp2=new sendPos();
 		sp2.start();
 	}
@@ -71,24 +73,34 @@ public class Server{
 		}
 
 		public void run() {
-			Object tmp = netFunc.readObject(soc);
-			if (tmp == null) {
-				//netFunc.closeSocket(soc);
-			} else if (tmp instanceof Scores) {
-				System.out.println(player.getName() + " est arrivé.");
-				Triplet t = new Triplet(soc, (Scores) tmp, player);
-				score.add((Scores) tmp);
-				arrivedList.add(t);
-				players.remove(player);
-				sockets.remove(soc);
-				sendScoreFinished();
-			} else if (tmp instanceof Player) {
-				Player p = (Player) tmp;
-				player.setPosition(p.getPosition(), p.orientation());
-				System.out.println("J'ai recu info Position de "+p.getName());
+			while(true) {
+				Object tmp = netFunc.readObject(soc);
+				if (debug)
+					System.out.println("Je recois un objet");
+				if (tmp == null) {
+					//netFunc.closeSocket(soc);
+				} else if (tmp instanceof Scores) {
+					if (debug)
+						System.out.println(player.getName() + " est arrivé.");
+					Triplet t = new Triplet(soc, (Scores) tmp, player);
+					score.add((Scores) tmp);
+					arrivedList.add(t);
+					players.remove(player);
+					sockets.remove(soc);
+					sendScoreFinished();
+				} else if (tmp instanceof Player) {
+					Player p = (Player) tmp;
+					player.setPosition(p.getPosition(), p.orientation());
+					if (debug) {
+						System.out.println("--------------------------------------------");
+						System.out.println("J'ai recu info Position de " + p.getName());
+						System.out.println(p.getPosition());
+						System.out.println(player.getPosition());
+					}
+				}
+				if (sockets.isEmpty())
+					sendEnd();
 			}
-			if (sockets.isEmpty())
-				sendEnd();
 		}
 	}
 
@@ -99,7 +111,8 @@ public class Server{
 			public void run(){
 			while(true){
 				sendPosPlayers();
-				printPlayer();
+				if(debug)
+					printPlayer();
 				try {
 					Thread.sleep(200);
 				}catch(InterruptedException e){
