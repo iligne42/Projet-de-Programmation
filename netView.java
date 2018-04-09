@@ -20,7 +20,7 @@ import java.util.LinkedList;
 
 public class netView extends View{
     ArrayList<Player> players=new ArrayList<Player>();
-    private static boolean debug = true;
+    private static boolean debug = false;
 
     public netView(GameVersion game, Socket me) throws IOException{
         super(new StackPane(), game);
@@ -67,9 +67,9 @@ public class netView extends View{
                 while(!end){
                     try{
                         netFunc.sendObject(me,game.player());
-                        if(debug)
+                        if(true)
                             System.out.println("Voici ma position");
-                        Thread.sleep(1000);
+                        Thread.sleep(200);
                     }catch(Exception e){
                         e.printStackTrace();
                         if(debug)
@@ -79,7 +79,9 @@ public class netView extends View{
             }
     
             public void arret(){
-               end =true;
+                if(debug)
+                    System.out.println("Je modifie end");
+                end =true;
            }
         }
 
@@ -97,7 +99,7 @@ public class netView extends View{
                         if(tmp instanceof ArrayList){
                             if(((ArrayList)tmp).get(0) instanceof Player){
                                 if(debug)
-                                    System.out.println("Je recois une list de pos.");
+                                    System.out.println("Je recois une list de pos");
                                 players = (ArrayList<Player>)tmp;
                                 if(debug)
                                     drawPlayer(mazePane);
