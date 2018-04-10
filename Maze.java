@@ -513,12 +513,10 @@ public class Maze implements Serializable,Cloneable{
         while(nb!=0) {
             Teleporteur t1 = new Teleporteur(this);
             while(existTeleport(t1)){ t1=new Teleporteur(this);}
-            Teleporteur t2 = new Teleporteur(this, t1.getStart(), t1.getEnd());
+            Teleporteur t2 = new Teleporteur(this,t1.getStart(),t1.getEnd());
             teleport.add(new Pair<>(t1, t2));
             fill(TELEPORT, t1.getStart());
-            //System.out.println(t1.getStart().getY()+" "+t1.getStart().getX());
             fill(TELEPORT, t1.getEnd());
-            //System.out.println(t1.getEnd().getY()+" "+t1.getEnd().getX());
             nb--;
         }
     }
@@ -576,11 +574,11 @@ public class Maze implements Serializable,Cloneable{
     public static void main(String[] args){
         try{
             File fic = new File("labiTest.txt");
-            Maze m = new Maze(fic);
+            /*Maze m = new Maze(fic);
+            m.print();*/
+            Maze m = new Maze(30,30,0,0,1,0,0,0);
             m.print();
-            /*Maze m = new Maze(30,30,0,1,0,0,0,0);
-            m.print();
-            LinkedList<Monstres> monstres=m.getMonstres();
+            /*LinkedList<Monstres> monstres=m.getMonstres();
             System.out.println(monstres.getFirst().getPosition());
             int bouge=30;
             while(bouge!=0) {

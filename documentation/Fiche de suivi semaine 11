@@ -1,0 +1,18 @@
+Fiche de suivi semaine 11
+
+Objectifs atteints:
+- customisation de l'affichage des scores en fin de partie
+- barre de menu
+- correction de certains problèmes (étages, escaliers, collision)
+- interactions bonus/modèle
+
+Objectifs à atteindre:
+- affichage de la carte
+- réussir à afficher les joueurs en multijoueurs
+- régler les problèmes multijoueurs
+- "animation" du joueur
+- améliorer la lumière
+
+Difficultés rencontrées:
+- affichage des autres joueurs en multijoueurs
+- problèmes de modèle multijoueurs

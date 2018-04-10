@@ -13,13 +13,12 @@ import java.lang.Double;
 public class Teleporteur extends Divers{
     //private Maze maze;
     //private static Point2D start; p==start
-    private static Point2D end;
+    private final Point2D end;
     private Circle circleS;
     private Circle circleE;
 
     public Teleporteur(Maze m){
         super(m);
-        //start=new Point2D.Double();
         end=new Point2D.Double();
         put();
         put(end);
@@ -31,10 +30,9 @@ public class Teleporteur extends Divers{
         doCircle(p,end);
     }
 
-    public Teleporteur(Maze m, Point2D start, Point2D end){
-        super(m);
-        this.p=end;
-        this.end=start;
+    public Teleporteur(Maze m, Point2D s, Point2D e){
+        super(m,e);
+        end=s;
     }
 
     public Point2D getStart() {
@@ -45,7 +43,7 @@ public class Teleporteur extends Divers{
         return end;
     }
 
-    private void put(Point2D p){
+    private void put(Point2D point){
         Random rand=new Random();
         int i=0; int j=0;
         while(maze.getCase(i,j)!=Maze.WAY) {
@@ -54,7 +52,7 @@ public class Teleporteur extends Divers{
         }
         double k=centrer(i);
         double l=centrer(j);
-        p.setLocation(l,k);
+        point.setLocation(l,k);
     }
 
     private void doCircle(Point2D s, Point2D e){
