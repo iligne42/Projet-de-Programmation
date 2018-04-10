@@ -58,7 +58,7 @@ public class ScorePane extends Pane {
             Scanner sc=new Scanner(score.toString());
             while(sc.hasNextLine())
                 styleMessage(sc.nextLine());
-            String scoreC="Votre score est : "+score.getCurrentScore();
+            String scoreC="Your score is : "+score.getCurrentScore();
             Label la=new Label(scoreC);
             la.getStyleClass().add("la");
             messages.getChildren().add(la);
