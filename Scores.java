@@ -10,28 +10,27 @@ public class Scores implements Serializable{
 
     private class ScoreList extends ArrayList<Pair<String,Integer>>{
 
-        public boolean add(String name,int score){
-            int i=0;
+        public boolean add(String name,int score) {
+            int i = 0;
             System.out.println(this.size());
-            if(this.size()==0) return super.add(new Pair<>(name,score));
+            if (this.size() == 0) return super.add(new Pair<>(name, score));
             System.out.println("yoyo");
-            Pair<String,Integer> pair;
+            Pair<String, Integer> pair;
             int val;
-            while(i<this.size()){
-                pair=this.get(i);
-                val=pair.getValue();
-                if(score<val){
-                     super.add(i,new Pair<>(name,score));
-                     break;
-
-                }
-                if(this.size()<10){
-                    super.add(new Pair<>(name,score));
-                    return true;
+            while (i < this.size()) {
+                pair = this.get(i);
+                val = pair.getValue();
+                if (score < val) {
+                    super.add(i, new Pair<>(name, score));
+                    break;
                 }
                 i++;
             }
-            if(this.size()>10) this.remove(this.size()-1);
+            if(this.size()<10){
+                super.add(new Pair<>(name,score));
+                return true;
+            }
+            if (this.size() > 10) this.remove(this.size() - 1);
             return true;
         }
 

@@ -2,7 +2,7 @@ import java.io.*;
 import java.text.Normalizer;
 import java.util.*;
 import java.awt.*;
-public class MazeFloors implements Serializable{
+public class MazeFloors implements Serializable,Cloneable{
     private LinkedList<Maze> mazes;
     private int nbFloors;
 
@@ -18,6 +18,10 @@ public class MazeFloors implements Serializable{
 
     public LinkedList<Maze>getFloor(){
       return mazes;
+    }
+    public MazeFloors(LinkedList<Maze> m){
+        mazes=m;
+        nbFloors=m.size();
     }
     public MazeFloors(int L, int l, int nb, int nbObstacles, int nbMonstres,int nbTeleport,int nbDoors,int nbBonus, int typeBonus) throws FormatNotSupported{
         if(nb==0) throw new FormatNotSupported("You must put a number of floors, min 1");
@@ -38,6 +42,12 @@ public class MazeFloors implements Serializable{
                 }
             }
         }
+    }
+
+    public MazeFloors clone() throws CloneNotSupportedException{
+      LinkedList<Maze> m=new LinkedList<>();
+      for(Maze ma:this.mazes) m.add(ma.clone());
+      return new MazeFloors(m);
     }
 
     public void print(){ //affiche le labyrinthe dans le terminal

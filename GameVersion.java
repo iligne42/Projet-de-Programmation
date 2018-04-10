@@ -27,6 +27,7 @@ public abstract class GameVersion implements Serializable {
     protected Maze current;
     protected Scores scores;
     protected int elapsed = 0;
+    protected boolean debug=false;
 
 
 
@@ -71,6 +72,7 @@ public abstract class GameVersion implements Serializable {
     public LinkedList<Maze> floors() {
         return floors;
     }
+
 
     /*public GameVersion(int length, int width, String name, Scores score) throws FormatNotSupported {
         player = new Player(name);
@@ -142,17 +144,29 @@ public abstract class GameVersion implements Serializable {
         oos.close();
     }
 
-
-    //Initialisation de la position et de l'orientation du joueur
-    public void start() {
-        startInFloor(current.beginning());
+    public void reset(){
+        startInFloor(floors.getFirst().beginning(),0);
 
     }
 
-    public void startInFloor(Point b){
+
+    //Initialisation de la position et de l'orientation du joueur
+
+    public void start(){
+        startF(0);
+    }
+    public void startF(int i) {
+        if(i==0)startInFloor(current.beginning(),0);
+        else if(i==1)startInFloor(current.beginning(),1);
+        else startInFloor(current.ending(),2);
+
+    }
+
+
+    public void startInFloor(Point b, int i){
         Point2D begin = new Point2D.Double(b.getX(), b.getY());
         int orient=orientPlayer(b);
-        begin =(floor==0)?new Point2D.Double(begin.getX() + 0.5, begin.getY() + 0.5):firstPosition(b);
+        begin =(i==0)?new Point2D.Double(begin.getX() + 0.5, begin.getY() + 0.5):firstPosition(b);
         player.setPosition(begin,orientPlayer(b));
         player.setAcceleration();
 
@@ -188,10 +202,12 @@ public abstract class GameVersion implements Serializable {
     public void next(){
         current=floors.get((++floor)/2);
         player.setGround(floor);
-        start();
+        player.setMaze(floor/2);
+        if(debug) System.out.println(floor);
+        startF(1);
        /* Point2D real=firstPosition(player.getPosition());
         Point2D relative=firstPosition(current.beginning());
-        coordinateSystem=new Vector3D(real).subtract(new Vector3D(relative));*/
+        coordinateif(debug) System=new Vector3D(real).subtract(new Vector3D(relative));*/
     }
 
     public int floor(){
@@ -201,14 +217,15 @@ public abstract class GameVersion implements Serializable {
     public void prev(){
        current=floors.get((--floor)/2);
         player.setGround(floor);
-        start();
+        player.setMaze(floor/2);
+        startF(2);
         /*Point2D real=firstPosition(player.getPosition());
         Point2D relative=firstPosition(current.beginning());
-        coordinateSystem=new Vector3D(real).subtract(new Vector3D(relative));*/
+        coordinateif(debug) System=new Vector3D(real).subtract(new Vector3D(relative));*/
     }
 
     public boolean gameOver() {
-        return current.equals(floors.getLast()) && current.getCase(player.getPosition()) == Maze.END ;
+        return current.equals(floors.getLast()) && isInBounds(player.getPosition(),current) && current.getCase(player.getPosition()) == Maze.END ;
     }
 
     public boolean isInBounds(Point2D p,Maze current) {
@@ -222,30 +239,29 @@ public abstract class GameVersion implements Serializable {
             float angle = player.orientation();
             double y = player.getY();
             player.updatePosition(timeElapsed);
-            this.handleMove(p, y, angle);
+            this.handleMove(p, y, angle,timeElapsed);
         }
     }
 
 
-    public void handleMove(Point2D start,double yPos1,float angle1) {
+    public void handleMove(Point2D start,double yPos1,float angle1,double timeElapsed) {
         Point2D goal = player.getPosition();
         double yPos = player.getY();
         float angle = player.orientation();
         float radius = player.radius();
         if(start.getX() != goal.getX() || start.getY() != goal.getY()) {
-            System.out.println();
-            System.out.println("Start : " + start);
-            System.out.println("Goal : " + goal);
-            System.out.println(yPos);
-            System.out.println(player.state());
+            if(debug) System.out.println();
+            if(debug) System.out.println("Start : " + start);
+            if(debug) System.out.println("Goal : " + goal);
+            if(debug) System.out.println(yPos);
+            if(debug) System.out.println(player.state());
         }
 
             if (player.state() == Player.PlayerState.BETWEEN) inBetween(goal, start, angle);
             else if (player.state() == Player.PlayerState.STAIRSUP) {
-                if ((int) yPos >  floor) {
-                    System.out.println(player.previousState());
+                if (Math.floor(yPos) >  floor) {
+                    if(debug) System.out.println(player.previousState());
                     if(floor%2==1){
-                        System.out.println("Yaya");
                         player.changeState(Player.PlayerState.GROUND);
                         next();
                     }
@@ -254,8 +270,6 @@ public abstract class GameVersion implements Serializable {
                         floor++;
                         player.setGround(floor);
                     }
-
-                    player.setGround(floor);
                 }
                 else if(Math.ceil(yPos)==floor){
                     if(floor%2==0) player.changeState(Player.PlayerState.GROUND);
@@ -279,18 +293,19 @@ public abstract class GameVersion implements Serializable {
 
                     } else if (player.previousState() == Player.PlayerState.GROUND)*/
                 }
-                else if((int)yPos==floor){
+                else if(Math.floor(yPos)==floor){
                     if(floor%2==0) player.changeState(Player.PlayerState.GROUND);
                     else player.changeState(Player.PlayerState.BETWEEN);
                 }
                 else if(player.orientation()!=angle1) player.setPosition(start,angle1);
+                if(player.state()!=Player.PlayerState.STAIRSDOWN)System.out.println(player.state());
             }
-
             else if (player.state() == Player.PlayerState.GROUND) {
                 if (start.getX() != goal.getX() || start.getY() != goal.getY()) {
-                    if (!isInBounds(goal, current)) player.setPosition(start, angle);
+                    if (!isInBounds(goal, current))player.setPosition(start, angle);
                     else {
-                        System.out.println(current.getCase(goal));
+                        current.updateGame(timeElapsed);
+                        if(debug) System.out.println(current.getCase(goal));
                         ArrayList<Pair<Integer, Object>> near = closestStuff(goal);
                         Point2D wallB = checkCollision(goal, radius, closestWalls(near), 1, 1);
                         Point2D doorB = checkCollision(goal, radius, closestDoors(near), 1, 1);
@@ -328,9 +343,13 @@ public abstract class GameVersion implements Serializable {
                                         }
                                     }
                                     break;
+                                case Maze.MONSTRE:
+                                    this.start();
+                                    break;
+
                                 case Maze.BONUS:
                                     pickBonus(x, y);
-                                    System.out.println(player.getBonus().size());
+                                     System.out.println("Bonus :"+player.getBonus().size());
                                     break;
                                 case Maze.KEY:
                                     pickKey(x, y);
@@ -349,9 +368,6 @@ public abstract class GameVersion implements Serializable {
                         }
                     }
                 }
-            }
-            else{
-
             }
         }
 
@@ -381,13 +397,13 @@ public abstract class GameVersion implements Serializable {
         for (int i = 0; i < closestWalls.size(); i++) {
             Point2D wallB = closestWalls.get(i);
             float d=distanceR(center,wallB,width,height);
-            //System.out.println(wallBeginning);
+            //if(debug) System.out.println(wallBeginning);
             if(circleRectangleCollision(d,radius) && d<dist){
                 dist=d;
                 wallBeginning=wallB;
             }
         }
-         System.out.println("Colliding wall " + wallBeginning);
+         if(debug) System.out.println("Colliding wall " + wallBeginning);
         return wallBeginning;
     }*/
 
@@ -395,13 +411,13 @@ public abstract class GameVersion implements Serializable {
         Point2D wallBeginning = null;
         for (int i = 0; i < closestWalls.size(); i++) {
             wallBeginning = closestWalls.get(i);
-            //System.out.println(wallBeginning);
+            //if(debug) System.out.println(wallBeginning);
             if(circleRectangleCollision(center,wallBeginning,radius,width,height)){
-                System.out.println("Colliding wall " + wallBeginning);
+                if(debug) System.out.println("Colliding wall " + wallBeginning);
                 return wallBeginning;
             }
         }
-        System.out.println("No collision");
+        if(debug) System.out.println("No collision");
         return null;
     }
 
@@ -411,7 +427,7 @@ public abstract class GameVersion implements Serializable {
             Pair<Integer, Object> p = it.next();
             if (p.getKey() == Maze.WALL) {
                 neighbours.add((Point2D) p.getValue());
-                //System.out.println("Point:::"+p);
+                //if(debug) System.out.println("Point:::"+p);
                 it.remove();
             }
         }
@@ -437,9 +453,9 @@ public abstract class GameVersion implements Serializable {
 
     public void slide(Point2D start,Point2D goal,Point2D wallB,float radius,float angle){
         Line2D wallLine = wallSegment(start, wallB, goal, radius,1,1);
-        System.out.println(wallLine.getP1() + "    " + wallLine.getP2());
+        if(debug) System.out.println(wallLine.getP1() + "    " + wallLine.getP2());
         Point2D collide = getCollisionCenter(wallLine, start, goal, radius);
-        System.out.println("Center :" + collide);
+        if(debug) System.out.println("Center :" + collide);
            /* Vector3D mvt=new Vector3D(goal).subtract(new Vector3D(collide));
             Vector3D wallDir=new Vector3D(wallLine.getP2()).subtract(new Vector3D(wallLine.getP1())).normalize();
             Vector3D correctionVector=wallDir.multiply(wallDir.dotProduct(mvt));
@@ -447,21 +463,21 @@ public abstract class GameVersion implements Serializable {
 */
         Vector3D mvt = new Vector3D(collide).subtract(new Vector3D(goal));
         Vector3D wallNormal = wallNormal(collide, wallLine);
-        System.out.println("WallNormal: " + wallNormal.x() + "   " + wallNormal.y() + "   " + wallNormal.z());
+        if(debug) System.out.println("WallNormal: " + wallNormal.x() + "   " + wallNormal.y() + "   " + wallNormal.z());
         double correctionLength = mvt.dotProduct(wallNormal);
-        System.out.println("Push out of:" + correctionLength);
+        if(debug) System.out.println("Push out of:" + correctionLength);
         double slideX = goal.getX() + correctionLength * wallNormal.x();
         double slideY = goal.getY() + correctionLength * wallNormal.z();
         player.setPosition(new Point2D.Double(slideX, slideY), angle);
-        System.out.println("New position: " + player.getPosition());
+        if(debug) System.out.println("New position: " + player.getPosition());
         if (checkCollision(player.getPosition(), radius,closestWalls(closestStuff(player.getPosition())),1,1)!=null) {
             //player.setPosition(start, angle);
             player.setPosition(collide, angle);
-            System.out.println(collide);
+            if(debug) System.out.println(collide);
             if (checkCollision(player.getPosition(), radius,closestWalls(closestStuff(player.getPosition())),1,1)!=null) {
-                System.out.println("Problem");
+                if(debug) System.out.println("Problem");
             }
-            System.out.println("New position2: " + player.getPosition());
+            if(debug) System.out.println("New position2: " + player.getPosition());
         }
     }
 
@@ -469,6 +485,7 @@ public abstract class GameVersion implements Serializable {
         Vector3D radiusMvt=new Vector3D(goal).subtract(new Vector3D(start)).negColinear(radius);
         Vector3D interMvt=new Vector3D(intersection).subtract(new Vector3D(goal));
         Vector3D pDepth=radiusMvt.add(interMvt);
+        if(debug) System.out.println(pDepth.x()+"  "+pDepth.y());
         player.setPosition(new Point2D.Double(goal.getX()+pDepth.x(),goal.getY()+pDepth.z()),ori);
         //player.setPosition(new Point2D.Double(2*intersection.getX()-goal.getX(),2*intersection.getY()-goal.getY()),ori);
     }
@@ -489,7 +506,9 @@ public abstract class GameVersion implements Serializable {
     }
 
     public boolean monsterInFront(Monstres monster, Point2D start, Point2D goal,float angle) {
-        return monster.getDirec().get()==(angle+180)%360 && new Vector3D(goal).subtract(new Vector3D(start)).dotProduct(new Vector3D(monster.getPosition()).subtract(new Vector3D(start)))>0;
+        int mons=monster.getDirec().get();
+        double product=new Vector3D(goal).subtract(new Vector3D(start)).dotProduct(new Vector3D(monster.getPosition()).subtract(new Vector3D(start)));
+        return angle>=(mons+175)%360 && angle<=(mons+185)%360 && product>0;
     }
 
 
@@ -512,15 +531,16 @@ public abstract class GameVersion implements Serializable {
 
     public void teleport(int x, int y){
         Teleporteur t=current.getTeleport(x,y);
+        System.out.println(t.getStart()+"   "+t.getEnd());
         player.setPosition(t.getEnd(),player.orientation());
 
     }
 
     public void goUpStairs(Point2D start, Point2D goal,double y,float angle) {
-        System.out.println(angle);
+        if(debug) System.out.println(angle);
         Point upS = current.ending();
         int orient1 = orientPlayerReverse(upS);
-        if ((int) angle != orient1) player.setPosition(start, angle);
+         if ((int) angle != orient1)  player.setAnimation(player.new TurningTo(orient1));
         else player.changeState(Player.PlayerState.STAIRSUP);
     }
 
@@ -528,10 +548,10 @@ public abstract class GameVersion implements Serializable {
 
 
     public void goDownStairs(Point2D start, Point2D goal,double y,float angle) {
-        System.out.println(angle);
+        if(debug) System.out.println(angle);
         Point downS = current.beginning();
         int orient1 = orientPlayerReverse(downS);
-        if ((int) angle != orient1) player.setPosition(start, angle);
+        if (Math.floor(angle) != orient1) player.setAnimation(player.new TurningTo(orient1));
         else player.changeState(Player.PlayerState.STAIRSDOWN);
     }
 
@@ -540,6 +560,7 @@ public abstract class GameVersion implements Serializable {
     public void inBetween(Point2D goal,Point2D start,float angle) {
         Player.PlayerState s = player.previousState();
         Point beg=null;
+        boolean middle=false;
         int orient=0, orientR=0;
         if (s == Player.PlayerState.STAIRSDOWN) {
             beg = current.beginning();
@@ -550,12 +571,16 @@ public abstract class GameVersion implements Serializable {
             orient = orientPlayerReverse(beg);
             orientR = orientPlayer(beg);
         }
-        if ((int) goal.getX() == (int) beg.getX() && (int) goal.getY() == (int) beg.getY()) {
-            if ((int) angle == orientR){
+        if (Math.floor(goal.getX()) == Math.floor(beg.getX()) && Math.floor(goal.getY()) == Math.floor(beg.getY())) {
+            if(debug) System.out.println("Sur un bord");
+            if ((int)angle == orientR){
                 if(s==Player.PlayerState.STAIRSDOWN){
                     floor++;
                 }
-                else floor--;
+                else {
+                    floor--;
+                    if(debug) System.out.println("Dans l'autre sens, je descends.");
+                }
                 player.reverseState(s);
             }
             else if((int)angle==orient){
@@ -563,30 +588,50 @@ public abstract class GameVersion implements Serializable {
                 else if(s== Player.PlayerState.STAIRSDOWN) floor++;
                 player.changeState(s);
                 player.setGround(floor);
+                if(debug) System.out.println("Dans le sens d'arrivée, je remonte.");
             }
             else player.setPosition(start, angle);
         } else {
             Point nextStair=null;
-            Point2D way, wayEnd;
+            Point2D wayEnd;
             if (s == Player.PlayerState.STAIRSUP) nextStair = floors.get((floor + 1) / 2).beginning();
             else if (s == Player.PlayerState.STAIRSDOWN) nextStair = floors.get((floor - 1) / 2).ending();
             int orient2 = orientPlayer(nextStair), orient3=0;
+            Point2D way = new Point2D.Double(beg.getX() + (int)Math.cos(Math.toRadians(orient)), beg.getY() + (int)Math.sin(Math.toRadians(orient)));
             if (orient == (orient2 + 180) % 360) {
-                if (s == Player.PlayerState.STAIRSDOWN) orient3 = (orient - 90) % 180;
-                else if (s == Player.PlayerState.STAIRSUP) orient3 = (orient + 90) % 180;
-                way = beg;
+                if(debug) System.out.println("Les escaliers sont opposés, cas bizarre.");
+                if (s == Player.PlayerState.STAIRSDOWN) orient3 = (orient + 90) % 180;
+                else if (s == Player.PlayerState.STAIRSUP) orient3 = (180+(orient +90) % 180)%360;
+                Point2D mid=new Point2D.Double(way.getX()+(int)Math.cos(Math.toRadians(orient3)),way.getY()+(int)Math.sin(Math.toRadians(orient3)));
+                if(debug) System.out.println(Math.floor(mid.getX())+"  "+Math.floor(mid.getY()));
+                if(Math.floor(goal.getX())==Math.floor(mid.getX()) && Math.floor(goal.getY())==Math.floor(mid.getY())) middle=true;
+                wayEnd=new Point2D.Double(beg.getX()+Math.cos(Math.toRadians(orient3)),beg.getY()+Math.sin(Math.toRadians(orient3)));
             } else {
-                orient3 = orient2;
-                way = new Point2D.Double(beg.getX() + Math.cos(Math.toRadians(orient)), beg.getY() + Math.sin(Math.toRadians(orient)));
+                wayEnd = new Point2D.Double(way.getX() + (int)Math.cos(Math.toRadians(orient2)), way.getY() + (int)Math.sin(Math.toRadians(orient2)));
             }
-            wayEnd = new Point2D.Double(way.getX() + Math.cos(Math.toRadians(orient3)), way.getY() + Math.sin(Math.toRadians(orient3)));
-            if (((int) goal.getX() == (int)wayEnd.getX() && (int) goal.getY() == (int) wayEnd.getY())) {
-                System.out.println(angle);
-                if ((int) angle == orient2) player.changeState(s);
-                else player.setPosition(start, angle);
-            } else if ((int) goal.getX() != (int) start.getX() || (int) goal.getY() != (int) start.getY())
-                player.changeState(Player.PlayerState.FALLING);
+           if (Math.floor(goal.getX()) == Math.floor(wayEnd.getX()) && Math.floor(goal.getY()) == Math.floor(wayEnd.getY())) {
+                if(debug) System.out.println(angle);
+                if(debug) System.out.println("J'ai traversé le bord pour monter le 2e escalier.");
+                if((int)angle!=orient2 && player.animation()==null){
+                    if(debug) System.out.println("Je n'étais pas dans la bonne orientation, je tourne .");
+                    player.setAnimation(player.new TurningTo(orient2));
+                }
+                else {
+                    if(debug) System.out.println("J'étais dans la bonne orientation, je monte");
+                    player.changeState(s);
+                }
+               /* if ((int) angle == orient2)
+                else player.setPosition(start, angle);*/
+            } else if ((Math.floor(goal.getX())!=Math.floor(way.getX()) || Math.floor(goal.getY())!=Math.floor(way.getY())) && !middle) {
+                if(debug) System.out.println("J'ai traversé un mauvais côté, je tombe.");
+                player.setAnimation(player.new Falling());
+            }
+            if(debug) System.out.println(orient+"   Pour sortir:"+orientR+"  Pour entrer dans le deuxième:"+orient2+"    "+orient3);
+            if(debug) System.out.println(Math.floor(beg.getX())+"  "+Math.floor(beg.getY()));
+            if(debug) System.out.println(Math.floor(way.getX())+"  "+Math.floor(way.getY()));
+            if(debug) System.out.println(Math.floor(wayEnd.getX())+"  "+Math.floor(wayEnd.getY()));
         }
+        if(debug) System.out.println("Okay");
     }
 
 
@@ -609,16 +654,16 @@ public abstract class GameVersion implements Serializable {
     //Renvoie le centre de la hitbox au moment exact de la collision avec le mur
     public Point2D getCollisionCenter(Line2D wall, Point2D start, Point2D goal, float radius) {
         Point2D intersection = segmentIntersection(wall, start, goal);
-        System.out.println("Intersection :" + intersection);
+        if(debug) System.out.println("Intersection :" + intersection);
         Vector3D interDirection = new Vector3D(start).subtract(new Vector3D(intersection));
-        System.out.println(start + "      " + intersection);
-        System.out.println("PS " + interDirection.x() + "   " + interDirection.y() + "   " + interDirection.z());
+        if(debug) System.out.println(start + "      " + intersection);
+        if(debug) System.out.println("PS " + interDirection.x() + "   " + interDirection.y() + "   " + interDirection.z());
         Vector3D lineD = new Vector3D(wall.getP2()).subtract(new Vector3D(wall.getP1())).normalize();
         Vector3D interWall = lineD.posColinear(interDirection.dotProduct(lineD));
-        System.out.println("PA " + interWall.x() + "  " + interWall.y() + "   " + interWall.z());
+        if(debug) System.out.println("PA " + interWall.x() + "  " + interWall.y() + "   " + interWall.z());
         double sinInvAngle = (interWall.norm() * interDirection.norm()) / interWall.crossProduct(interDirection).norm();
         double length = radius * ((java.lang.Double.isNaN(sinInvAngle)) ? 1 : sinInvAngle);
-        System.out.println("Center to wall :" + length);
+        if(debug) System.out.println("Center to wall :" + length);
         Vector3D collision = new Vector3D(start).subtract(new Vector3D(intersection)).normalize().posColinear(length);
         return new Point2D.Double(intersection.getX() + collision.x(), intersection.getY() + collision.z());
 
@@ -720,7 +765,7 @@ public abstract class GameVersion implements Serializable {
     public boolean circleRectangleCollision(Point2D center,Point2D rBeginning,float radius,float width,float height){
         double deltaX = center.getX() - Math.max(rBeginning.getX(), Math.min(center.getX(), rBeginning.getX() + width));
         double deltaY = center.getY() - Math.max(rBeginning.getY(), Math.min(center.getY(), rBeginning.getY() + height));
-        System.out.println("Where : "+((float) (deltaX * deltaX + deltaY * deltaY))+"  Radius : "+(radius * radius));
+        if(debug) System.out.println("Where : "+((float) (deltaX * deltaX + deltaY * deltaY))+"  Radius : "+(radius * radius));
         return (((float) (deltaX * deltaX + deltaY * deltaY)) < (radius * radius));
     }
 
@@ -740,7 +785,7 @@ public abstract class GameVersion implements Serializable {
         Vector3D pDepth = center.subtract(lineD.multiply(project));
         if (project < 0) pDepth =center;
         if (project > line.norm()) pDepth = new Vector3D(circle).subtract(new Vector3D(wall2));
-        System.out.println("Norm: "+pDepth.norm());
+        if(debug) System.out.println("Norm: "+pDepth.norm());
         return (float) pDepth.norm() < radius;
     }
 
@@ -820,8 +865,8 @@ public abstract class GameVersion implements Serializable {
             else {
                 Point nextStair = floors.get((floor + 1) / 2).beginning();
                 int orient2 = orientPlayer(nextStair);
-                Point2D way = new Point2D.Double(end.getX() + Math.cos(Math.toRadians(orient)), end.getY() + Math.sin(Math.toRadians(orient)));System.out.println(way);
-                Point2D wayEnd = new Point2D.Double(way.getX() + Math.cos(Math.toRadians(orient2)), way.getY() + Math.sin(Math.toRadians(orient2)));System.out.println(wayEnd);
+                Point2D way = new Point2D.Double(end.getX() + Math.cos(Math.toRadians(orient)), end.getY() + Math.sin(Math.toRadians(orient)));if(debug) System.out.println(way);
+                Point2D wayEnd = new Point2D.Double(way.getX() + Math.cos(Math.toRadians(orient2)), way.getY() + Math.sin(Math.toRadians(orient2)));if(debug) System.out.println(wayEnd);
                 if(orient==(orient2+180)%360) wayEnd=new Point2D.Double(end.getX()+Math.cos(Math.toRadians((orient+90)%180)),end.getY()+Math.sin(Math.toRadians((orient+90)%180)));
                 if (((int) goal.getX() == wayEnd.getX() && (int) goal.getY() == (int) wayEnd.getY() || (int) goal.getX() == way.getX() && (int) goal.getY() == (int) way.getY())){
                     if((int)angle==orient2)  player.changeState(Player.PlayerState.STAIRSUP);

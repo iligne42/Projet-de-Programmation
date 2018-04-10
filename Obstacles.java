@@ -13,13 +13,15 @@ import java.util.Random;
 
 public class Obstacles extends Divers{
     private Shape s;
+    private int orientation;
 
     public Obstacles(Maze m, String type){
         super(m);
         if(type.equals("Rectangle")){
-            s=new Rectangle(0.5,0.5);
+           // s=new Rectangle(0.5,0.5);
+            s=new Rectangle(0.7,0.1);
         }else{
-            s=new Circle(0.5);
+            s=new Circle(0.35);
         }
         put();
     }

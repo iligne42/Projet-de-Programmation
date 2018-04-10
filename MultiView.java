@@ -6,8 +6,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Pane;
 
+import java.awt.*;
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Stack;
 
 public class MultiView extends View {

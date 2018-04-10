@@ -5,7 +5,7 @@ import java.text.Normalizer;
 import java.util.*;
 import java.awt.*;
 import javafx.util.*;
-public class Maze implements Serializable{
+public class Maze implements Serializable,Cloneable{
     private int[][] maze;
     private LinkedList<Obstacles> obstacles;
     private LinkedList<Monstres> monstres;
@@ -123,6 +123,10 @@ public class Maze implements Serializable{
             t.add(teleport.get(i).getKey());
         }
         return t;
+    }
+
+    public Maze clone() throws CloneNotSupportedException{
+        return (Maze)super.clone();
     }
     public void free(int i, int j){ maze[i][j]=WAY;}
 
@@ -467,6 +471,10 @@ public class Maze implements Serializable{
         return null;
     }
 
+    public void updateGame(double elapsedSeconds){
+       if(monstres!=null && monstres.size()!=0) for(Monstres m:monstres) m.move(elapsedSeconds);
+    }
+
     public void fill(int value, Point2D p){
         maze[(int)p.getY()][(int)p.getX()]=value;
     }
@@ -551,6 +559,7 @@ public class Maze implements Serializable{
 
     private void addBonus(int nb, int type){
         while(nb!=0){
+            //if(type==-1)type=new Random().nextInt(2);
             if(type==1){
                 TimeBonus tb=new TimeBonus(this);
                 bonus.add(tb);

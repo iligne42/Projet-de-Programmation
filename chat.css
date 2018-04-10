@@ -1,5 +1,7 @@
 .root{
     -fx-background-image:url("lab.jpg");
+    -fx-alignment:center;
+    -fx-padding:20,20,20,20;
 }
 
 .button{
@@ -20,7 +22,7 @@
             -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 2, 0.0 , 0 , 1);
 }
 
-.text{
+.tofill{
     -fx-pref-width:400px;
     -fx-pref-height:50px;
     -fx-font-size:15px;
@@ -30,6 +32,7 @@
 
 .deb{
     -fx-font-weight:bold;
+    -fx-font-style: italic;
     -fx-text-fill: white;
     -fx-font-family:"Palatino Linotype", "Book Antiqua", Palatino,serif;
     -fx-font-size:15px;
@@ -45,3 +48,21 @@
     -fx-alignment:center;
 }
 
+.mes{
+    -fx-alignment:center;
+    -fx-border-color:black;
+}
+
+.l{
+    -fx-font-size:50px;
+    -fx-font-weight:bold;
+    -fx-text-fill: white;
+    -fx-padding: 40 40 40 40;
+    -fx-underline:true;
+}
+ .la{
+    -fx-font-size:30px;
+    -fx-font-weight:bold;
+    -fx-text-fill: white;
+    -fx-padding: 40 40 40 40;
+ }

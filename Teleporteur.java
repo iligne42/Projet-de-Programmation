@@ -74,7 +74,10 @@ public class Teleporteur extends Divers{
         mat.setDiffuseColor(Color.PURPLE);
         MeshView teleport = fxmlLoader.<MeshView>load();
         teleport.setMaterial(mat);
-        teleport.setRotationAxis(Rotate.Z_AXIS);
+        Rotate r=new Rotate();
+        r.setAxis(Rotate.X_AXIS);
+        r.setAngle(r.getAngle()-90);
+        teleport.getTransforms().add(r);
         return teleport;
     }
 }

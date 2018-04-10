@@ -23,6 +23,8 @@ public class Server{
 			ws.start();
 		}
 		System.out.println("Server en marche");
+		sendPos sp2=new sendPos();
+		sp2.start();
 	}
 
 	private void sendScoreFinished(){
@@ -52,35 +54,58 @@ public class Server{
 		}
 	}
 
-	class waitScore extends Thread{
+	private void printPlayer(){
+		for(Player p:players){
+			System.out.println(p.getName()+" :"+p.getPosition().toString());
+		}
+	}
+
+	class waitScore extends Thread {
 		private Socket soc;
 		private Player player;
 
-		public waitScore(Socket s, Player p){
+		public waitScore(Socket s, Player p) {
 			super();
-			soc=s;
-			player=p;
+			soc = s;
+			player = p;
 		}
 
-		public void run(){
-			Object tmp=netFunc.readObject(soc);
-			if(tmp==null){
-				netFunc.closeSocket(soc);
-			}else if(tmp instanceof Scores){
-				System.out.println(player.getName()+" est arrivé.");
-				Triplet t=new Triplet(soc,(Scores)tmp,player);
-				score.add((Scores)tmp);
+		public void run() {
+			Object tmp = netFunc.readObject(soc);
+			if (tmp == null) {
+				//netFunc.closeSocket(soc);
+			} else if (tmp instanceof Scores) {
+				System.out.println(player.getName() + " est arrivé.");
+				Triplet t = new Triplet(soc, (Scores) tmp, player);
+				score.add((Scores) tmp);
 				arrivedList.add(t);
 				players.remove(player);
 				sockets.remove(soc);
 				sendScoreFinished();
-			}else if(tmp instanceof Player){
-				Player p=(Player)tmp;
-				player.setPosition(p.getPosition(),p.orientation());
-				sendPosPlayers();
+			} else if (tmp instanceof Player) {
+				Player p = (Player) tmp;
+				player.setPosition(p.getPosition(), p.orientation());
+				System.out.println("J'ai recu info Position de "+p.getName());
 			}
-			if(sockets.isEmpty())
+			if (sockets.isEmpty())
 				sendEnd();
+		}
+	}
+
+	public class sendPos extends Thread{
+		public sendPos(){
+			super();
+		}
+			public void run(){
+			while(true){
+				sendPosPlayers();
+				printPlayer();
+				try {
+					Thread.sleep(200);
+				}catch(InterruptedException e){
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 

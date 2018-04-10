@@ -65,7 +65,52 @@ public class Menu extends Application {
         }
     }
 
-
+    public void setButton(Button button, int a, VBox pan, String path,StackPane stack,VBox menu){
+      	button.setOnMouseClicked(e->{
+      		pan.getChildren().clear();
+                try{
+                    Scores sco = new Scores(path,a);
+                    String [] sc = (sco.getScores()).split("\n");
+                    System.out.println(sc.length);
+                    for(String sct : sc){
+                        Label res = new Label(sct);
+                        System.out.println(sct);
+                        pan.getChildren().add(res);
+                    }
+                    Button prev = new Button("Back");
+                    prev.setOnMouseClicked(evt->{
+                            changePanel(stack,menu);
+                            pan.getChildren().clear();
+                            initRank(stack,pan,menu);
+			});
+                    pan.getChildren().add(prev);
+                }
+                catch(Exception exc){}
+    	});
+    }
+    public void config(VBox ranking,String path,StackPane stack,VBox menu){
+        ranking.getChildren().clear();
+        Button fac = new Button("Easy");
+        Button norm = new Button("Normal");
+        Button diff = new Button("Hard");
+        Button hdiff = new Button("Super Hard");
+        setButton(fac,0,ranking,path,stack,menu);
+        setButton(norm,1,ranking,path,stack,menu);
+        setButton(diff,2,ranking,path,stack,menu);
+        setButton(hdiff,3,ranking,path,stack,menu);
+        ranking.getChildren().addAll(fac,norm,diff,hdiff);
+    }
+    public void initRank(StackPane stack,VBox ranking,VBox menu){
+      Button solos = new Button("Solo");
+      solos.setOnMouseClicked(e->{
+              config(ranking,"bestSolos.txt",stack,menu);
+          });
+      Button trial = new Button("Against the clock");
+      trial.setOnMouseClicked(e->{
+              config(ranking,"bestRaces.txt",stack,menu);
+          });
+      ranking.getChildren().addAll(solos,trial);
+    }
     @Override
     public void start(Stage stage) throws FormatNotSupported, IOException {
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -99,24 +144,29 @@ public class Menu extends Application {
         settings2.setPrefSize(500, 500);
         settings2.getStyleClass().add("vbox");
 
+        VBox ranking = new VBox();
+        ranking.setPrefSize(500,500);
+        ranking.getStyleClass().add("vbox");
+
         final hostMenu hostmenu = new hostMenu();
 
 
         StackPane stack = new StackPane();
-        stack.getChildren().addAll(settings2, mode, maze, game, hostmenu, menu);
+        stack.getChildren().addAll(settings2, mode, maze, game, hostmenu,ranking, menu);
 
        /* Button back=new Button("Back");
         back.setOnMouseClicked(e->{
             changePanel(stack,previous);
         });*/
 
-
+        initRank(stack,ranking,menu);
         /*Panneau pour le réseau*/
         Button go=new Button("Go !");
         go.setOnMouseClicked(e->{
             try {
-                view = MazeInterface.getView(mazeM,gType,name,MazeInterface.getTime(dif));
                 Stage st = new Stage();
+                view = MazeInterface.getView(mazeM,gType,name,MazeInterface.getTime(dif));
+                view.setStage(st);
                 //sc.getStylesheets().add("");
                 st.setScene(view);
                 //view.setScene(sc);
@@ -154,6 +204,7 @@ public class Menu extends Application {
                 GameVersion g = MazeInterface.load(ser);
                 view = new SingleView(g);
                 Stage st = new Stage();
+                view.setStage(st);
                 //sc.getStylesheets().add("");
                 st.setScene(view);
                 //view.setScene(sc);
@@ -334,6 +385,7 @@ public class Menu extends Application {
                     mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif),value.get(),MazeInterface.typeBonus(gType),supp,MazeInterface.nbExtra(dif));
                     view = MazeInterface.getView(mazeM, gType,MazeInterface.getTime(dif));
                     Stage st = new Stage();
+                    view.setStage(st);
                     //sc.getStylesheets().add("");
                     st.setScene(view);
                     //view.setScene(sc);
@@ -437,6 +489,7 @@ public class Menu extends Application {
                             //sc.getStylesheets().add("");
                             Stage st = new Stage();
                             st.setScene(view);
+                            view.setStage(st);
                             //view.setScene(sc);
                             st.setFullScreen(true);
                             st.show();
@@ -497,8 +550,7 @@ public class Menu extends Application {
 
         Button rank = new Button("RANKING");
         rank.setOnMouseClicked(e -> {
-            //previous=rank.getParent();
-
+            changePanel(stack,ranking);
         });
 
 
@@ -509,6 +561,7 @@ public class Menu extends Application {
         maze.setVisible(false);
         settings2.setVisible(false);
         hostmenu.setVisible(false);
+        ranking.setVisible(false);
         Scene scene = new Scene(stack);
         scene.getStylesheets().add("menu.css");
         stage.setScene(scene);
@@ -553,7 +606,9 @@ public class Menu extends Application {
 
 
     public static void main(String[] args) {
+        System.out.println((0+(int)Math.sin(Math.toRadians(270))));
         launch(args);
+
     }
 
     private static void configureFileChooser(final FileChooser fileChooser) {
