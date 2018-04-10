@@ -137,9 +137,9 @@ public class netView extends View{
                 MeshView player = p.initPlayer();
                 int g = p.getMazeIndex();
                 System.out.println("Je suis au sol");
-                t[i][0] = new SimpleDoubleProperty(p.getPosition().getX() + mazePane.coordSwitch[g].x() * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
-                t[i][1] = new SimpleDoubleProperty(p.getPosition().getY() + mazePane.coordSwitch[g].z() * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
-                t[i][2] = new SimpleDoubleProperty(-p.getY() * mazePane.SIZE_BOX);
+                t[i][0] = new SimpleDoubleProperty((p.getPosition().getX() + mazePane.coordSwitch[g].x()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
+                t[i][1] = new SimpleDoubleProperty((p.getPosition().getY() + mazePane.coordSwitch[g].z()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
+                t[i][2] = new SimpleDoubleProperty(-p.getY() * mazePane.SIZE_BOX +mazePane.SIZE_BOX/8);
             /*x=new SimpleDoubleProperty(p.getPosition().getX()+mazePane.coordSwitch[g].x()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             z=new SimpleDoubleProperty(p.getPosition().getY()+mazePane.coordSwitch[g].z()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             y=new SimpleDoubleProperty(-p.getY()*mazePane.SIZE_BOX);*/
@@ -150,9 +150,9 @@ public class netView extends View{
             /*player.setTranslateX(p.getPosition().getX()+mazePane.coordSwitch[g].x()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateZ(p.getPosition().getY()+mazePane.coordSwitch[g].z()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateY(-p.getY()*mazePane.SIZE_BOX);*/
-            player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX/2);
-            player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX/2);
-            player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX/2);
+            player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX/8);
+            player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX/8);
+            player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX/8);
                 System.out.println("J'ai fait les modifs");
                 root.getChildren().add(player);
             }catch(IOException e){
@@ -167,9 +167,10 @@ public class netView extends View{
             System.out.println("Je met à jour le joueur numéro " + i);
             Player p = players.get(i);
             int g = p.getMazeIndex();
-            t[i][0].set(p.getPosition().getX() + mazePane.coordSwitch[g].x() * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
-            t[i][1].set(p.getPosition().getY() + mazePane.coordSwitch[g].z() * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
+            t[i][0].set((p.getPosition().getX() + mazePane.coordSwitch[g].x()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
+            t[i][1].set((p.getPosition().getY() + mazePane.coordSwitch[g].z()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
             t[i][2].set(-p.getY() * mazePane.SIZE_BOX);
+            System.out.println(t[i][0].get()+" "+t[i][1].get()+" "+t[i][2].get());
             System.out.println("Je suis encore au "+i);
         }
     }
