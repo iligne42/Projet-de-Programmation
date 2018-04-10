@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.MeshView;
+import javafx.scene.transform.Rotate;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
@@ -289,7 +290,7 @@ public class Player implements Serializable {
         posX+=velocity.x()*elapsedSeconds;
         posY+=velocity.y()*elapsedSeconds;
         posZ+=velocity.z()*elapsedSeconds;
-        System.out.println(posY);
+        //System.out.println(posY);
         if (posY < ground) {
             posY = ground;
             velocity.setTo(0, 0, 0);
@@ -423,6 +424,10 @@ public class Player implements Serializable {
         mat.setDiffuseColor(Color.YELLOW);
         MeshView player = fxmlLoader.<MeshView>load();
         player.setMaterial(mat);
+        Rotate r=new Rotate();
+        r.setAxis(Rotate.X_AXIS);
+        r.setAngle(r.getAngle()-90);
+        player.getTransforms().add(r);
         return player;
     }
 

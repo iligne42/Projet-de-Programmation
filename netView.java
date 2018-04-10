@@ -104,7 +104,7 @@ public class netView extends View{
                                     players = (ArrayList<Player>)tmp;
                                     if(premierTour){
                                         t=new DoubleProperty[players.size()][3];
-                                        Platform.runLater(() -> drawPlayer(mazePane.floorGroups[0])); //à changer
+                                        Platform.runLater(() -> drawPlayer(mazePane)); //à changer
                                         premierTour=false;
                                     }
                                     else updatePlayer();
@@ -146,13 +146,13 @@ public class netView extends View{
                 System.out.println("Je suis entre les deux");
                 player.translateXProperty().bind(t[i][0]);
                 player.translateYProperty().bind(t[i][2]);
-            /*    player.translateZProperty().bind(t[i][1]);
-            player.setTranslateX(p.getPosition().getX()+mazePane.coordSwitch[g].x()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
+                player.translateZProperty().bind(t[i][1]);
+            /*player.setTranslateX(p.getPosition().getX()+mazePane.coordSwitch[g].x()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateZ(p.getPosition().getY()+mazePane.coordSwitch[g].z()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateY(-p.getY()*mazePane.SIZE_BOX);*/
-            player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX);
-            player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX);
-            player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX);
+            player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX/2);
+            player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX/2);
+            player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX/2);
                 System.out.println("J'ai fait les modifs");
                 root.getChildren().add(player);
             }catch(IOException e){
