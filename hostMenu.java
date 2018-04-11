@@ -144,12 +144,7 @@ public class hostMenu extends VBox{
 
 	public void sendMaze(){
 		for (Socket tmp : sockets) {
-			try{
 				netFunc.sendObject(tmp,maze);
-			}catch(IOException e){
-				names.remove(sockets.indexOf(tmp));
-				System.out.println("erreur de connexion avec une socket.");
-			}
 		}
 	}
 
@@ -194,12 +189,7 @@ public class hostMenu extends VBox{
 						names.add(str);
 						System.out.println("Un nouveau client a été ajouté.");
 						for(Socket soc:sockets){
-							try{
 								netFunc.sendObject(soc,names);
-							}catch(IOException e){
-								names.remove(sockets.indexOf(soc));
-								System.out.println("erreur de connexion avec une socket.");
-							}
 						}
 						System.out.println("J'envoie les listes");
 					}else

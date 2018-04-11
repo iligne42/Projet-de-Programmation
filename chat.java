@@ -65,9 +65,7 @@ public class chat{
 	}
 
 	public void sendMessage(String str){
-		try{
 			netFunc.sendString(me,myName+" : "+str);
-		}catch(IOException e){}
 	}
 
 	private class waitClients extends Thread{
@@ -109,12 +107,7 @@ public class chat{
 				if(isHote){
 					System.out.println("Je suis hote et j'envoie un msg");
 					for(Socket tmp:sockets){
-						try{
 							netFunc.sendString(tmp,str);
-						}catch(IOException e){
-							netFunc.closeSocket(tmp);
-							sockets.remove(tmp);
-						}
 
 					}
 				}else{
