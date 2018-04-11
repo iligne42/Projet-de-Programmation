@@ -606,7 +606,6 @@ public class Menu extends Application {
 
 
     public static void main(String[] args) {
-        System.out.println((0+(int)Math.sin(Math.toRadians(270))));
         launch(args);
 
     }

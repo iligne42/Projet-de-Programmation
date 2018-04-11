@@ -12,9 +12,8 @@ public class Scores implements Serializable{
 
         public boolean add(String name,int score) {
             int i = 0;
-            System.out.println(this.size());
+            boolean added=false;
             if (this.size() == 0) return super.add(new Pair<>(name, score));
-            System.out.println("yoyo");
             Pair<String, Integer> pair;
             int val;
             while (i < this.size()) {
@@ -22,11 +21,12 @@ public class Scores implements Serializable{
                 val = pair.getValue();
                 if (score < val) {
                     super.add(i, new Pair<>(name, score));
+                    added=true;
                     break;
                 }
                 i++;
             }
-            if(this.size()<10){
+            if(this.size()<10 && !added){
                 super.add(new Pair<>(name,score));
                 return true;
             }
@@ -63,7 +63,7 @@ public class Scores implements Serializable{
     }
 
     public Scores(String path,int dif) throws IOException{
-        lists=new ScoreList[5];
+        lists=new ScoreList[4];
         for(int i=0;i<lists.length;i++) lists[i]=new ScoreList();
         this.dif=dif;
         file=new File(path);

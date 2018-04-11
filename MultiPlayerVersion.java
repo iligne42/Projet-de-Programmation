@@ -45,19 +45,14 @@ public class MultiPlayerVersion implements Serializable {
   }*/
 
     public void save(String file) throws IOException {
-        FileOutputStream fos = new FileOutputStream(file + ".ser");
+        File f=new File(file);
+        if(!f.exists()) f.createNewFile();
+        FileOutputStream fos = new FileOutputStream(f);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(this);
         oos.close();
     }
 
-    public MultiPlayerVersion load(String file) throws IOException, ClassNotFoundException {
-        FileInputStream fis = new FileInputStream(file);
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        MultiPlayerVersion g = (MultiPlayerVersion) ois.readObject();
-        ois.close();
-        return g;
-    }
 
     public boolean gameOver() {
         return players.isEmpty();

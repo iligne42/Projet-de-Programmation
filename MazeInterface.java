@@ -114,6 +114,14 @@ public interface MazeInterface {
         return g;
     }
 
+    static MultiPlayerVersion loadM(String file) throws IOException, ClassNotFoundException {
+        FileInputStream fis = new FileInputStream(file);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        MultiPlayerVersion g = (MultiPlayerVersion) ois.readObject();
+        ois.close();
+        return g;
+    }
+
     static int nbPlayer() {
         int res = 0;
         TextInputDialog dialog = new TextInputDialog("2");
@@ -146,19 +154,36 @@ public interface MazeInterface {
     static MazeFloors getMaze(int L,int l,int f,int typeB,boolean[] sup,int extras) throws FormatNotSupported{
        int[] extra=new int[sup.length];
        int nb=getSelected(sup);
-       for(int i=0;i<extra.length;i++){
-           extra[i]=0;
-           if(sup[i]){
-               extra[i]=extras/nb;
-               extras-=extra[i];
-               nb--;
-           }
-       }
         if(l==-1){
             L=readInt("Choose the length");
             l=readInt("Choose the width");
+            int val=getDifficulty(L,l);
+            String s="";
+            switch(val){
+                case 0:s="Easy";
+                break;
+                case 1:s="Normal";
+                break;
+                case 2:s="Hard";
+                break;
+                case 3:s="Super Hard";
+                break;
+            }
+            extras=nbExtra(s);
             //find a way to orevent from checking everyhting you want
         }
+       for(int i=0;i<extra.length;i++){
+           extra[i]=0;
+           if(sup[i] ){
+               if(i!=4) {
+                   extra[i] = extras / nb;
+                   extras -= extra[i];
+                   nb--;
+               }
+               else extra[i]=(typeB==0)?(L*l)/5:(L*l)/10;
+           }
+       }
+
         return new MazeFloors(L,l,f,extra[0],extra[2],extra[3],extra[1],extra[4],typeB);
     }
 
@@ -234,11 +259,12 @@ public interface MazeInterface {
     }
 
     static int getDifficulty(int length,int width){
-        if(length>=10 && length<20 && width>=10 && width<20) return 0;
+        if(length>=6 && length<20 && width>=6 && width<20) return 0;
         if(length>=20 && length<30 && width>=20 && width<30) return 1;
-        if(length>=30 && length<=50 && width>=30 && width<=50) return 2;
-        if(length==100 && width==100) return 3;
-        else return 4;
+        if(length>=30 && length<=99 && width>=30 && width<=99) return 2;
+        else return 3;
+        /*if(length==100 && width==100) return 3;
+        else return 4;*/
     }
 
     static int typeBonus(String ty){
@@ -247,7 +273,7 @@ public interface MazeInterface {
     }
 
     static int nbExtra(String s){
-        int nb=1;
+        int nb=0;
         switch(s){
             case "Easy":
                 nb=3;

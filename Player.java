@@ -68,13 +68,11 @@ public class Player implements Serializable {
 	        this.destination=destination;
             orientationSpeed=1;
             velocity.setTo(0,0,0);
-            System.out.println("Destination: "+destination);
+           // System.out.println("Destination: "+destination);
         }
 
         public void animate(double elapsedSeconds){
-	        System.out.println(orientation);
 	        if(destination>orientation && Math.abs(destination-orientation)<=180){
-	            System.out.println("hmmm");
 	            turnLeft(elapsedSeconds);
             }
 	        else turnRight(elapsedSeconds);
@@ -92,11 +90,9 @@ public class Player implements Serializable {
 	    public LookingTo(int destination){
             this.destination=destination;
             velocity.setTo(0,0,0);
-            System.out.println("Destination: "+destination);
         }
 
         public void animate(double elapsedSeconds){
-            System.out.println(orientationX);
             if(destination>orientationX && Math.abs(destination-orientationX)<=180) lookUp(elapsedSeconds);
             else lookDown(elapsedSeconds);
         }
@@ -136,7 +132,7 @@ public class Player implements Serializable {
 		accConstant=5;
 		gravity=1.5f;
 		friction=3;
-		orientationSpeed=1.5f;
+		orientationSpeed=2f;
 		bonus=new LinkedList<>();
 		keys=new LinkedList<>();
 		radius=0.15f;
@@ -256,24 +252,30 @@ public class Player implements Serializable {
                 if (up) moveForward(elapsedSeconds);
                 else if (down) moveBackward(elapsedSeconds);
             } else if (up) {
-                if (space) jump();
+               if (space && state!=PlayerState.JUMPING){
+                    jump();
+                    changeState(PlayerState.JUMPING);
+                }
                 else if (left) turnLeft(elapsedSeconds);
                 else if (right) turnRight(elapsedSeconds);
                 moveForward(elapsedSeconds);
 
             } else if (down) {
-                if (space) jump();
+                if (space && state!=PlayerState.JUMPING){
+                    jump();
+                    changeState(PlayerState.JUMPING);
+                }
                 else if (left) turnLeft(elapsedSeconds);
                 else if (right) turnRight(elapsedSeconds);
                 moveBackward(elapsedSeconds);
-            } else if (space && state!=PlayerState.JUMPING) {
+            }
+            else if (space && state!=PlayerState.JUMPING) {
                 jump();
                 changeState(PlayerState.JUMPING);
-            } else {
+            }
+            else {
                 if (state != PlayerState.STAIRSUP && state != PlayerState.STAIRSDOWN) {
                     applyGravity(elapsedSeconds);
-                    velocity = velocity.add(new Vector3D(0, -gravity, 0).multiply(elapsedSeconds));
-
                    /* else if(posY>ground+1){
                         posY=ground+1;
                     }*/
@@ -294,13 +296,13 @@ public class Player implements Serializable {
 
         posX+=velocity.x()*elapsedSeconds;
         posY+=velocity.y()*elapsedSeconds;
-        posZ+=velocity.z()*elapsedSeconds;
-        if (posY < ground) {
-            posY = ground;
+        if (posY < ground && state!=PlayerState.STAIRSDOWN && state!=PlayerState.STAIRSUP ) {
+            posY=ground;
             velocity.setTo(0, 0, 0);
-
+            if(state==PlayerState.JUMPING) changeState(previousState);
             //posY=position du sol
         }
+        posZ+=velocity.z()*elapsedSeconds;
 
     }
 
@@ -308,9 +310,7 @@ public class Player implements Serializable {
     public void turnLeft(double elapsedSeconds){
         angularVelocity+=(float)(orientationSpeed*elapsedSeconds);
         if(angularVelocity>orientationSpeed)angularVelocity=(float)(orientationSpeed);
-        //orientation=(orientation+angularVelocity*elapsedSeconds)%360;
-        orientation=(float)(orientation+orientationSpeed)%360;
-        System.out.println("Angle :"+orientation);
+        orientation=(orientation+angularVelocity)%360;
         setAcceleration();
     }
 
@@ -318,7 +318,6 @@ public class Player implements Serializable {
         angularVelocity+=(float)(orientationSpeed*elapsedSeconds);
         if(angularVelocity>orientationSpeed)angularVelocity=(float)(orientationSpeed);
         orientation=(orientation+(360-angularVelocity))%360;
-        System.out.println("Angle :"+orientation);
         setAcceleration();
     }
 
@@ -344,7 +343,7 @@ public class Player implements Serializable {
 
 
     public void jump(){
-	    velocity=new Vector3D(0,jumpVelocity,0);
+	    velocity=velocity.add(new Vector3D(0,jumpVelocity,0));
     }
 
     public float jumpVelocity(float jumpHeight){
@@ -353,19 +352,13 @@ public class Player implements Serializable {
 
     public void applyGravity(double elapsedSeconds){
         velocity = velocity.add(new Vector3D(0, -gravity, 0).multiply(elapsedSeconds));
-        posY+=velocity.y()*elapsedSeconds;
-        if (posY < ground) {
-            posY=ground;
-            velocity.setTo(0, 0, 0);
-            if(state==PlayerState.JUMPING) changeState(previousState);
-            //posY=position du sol
-        }
     }
 
 
     public void changeState(PlayerState s){
         if(state!=PlayerState.JUMPING) previousState=state;
         state=s;
+        System.out.println(s);
         setAcceleration();
     }
 
