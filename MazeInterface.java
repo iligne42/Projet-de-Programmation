@@ -1,6 +1,8 @@
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
+import javafx.stage.Modality;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,6 +42,19 @@ public interface MazeInterface {
             res[i] = readInput("Name of the player " + (i + 1) + ": ");
         }
         return res;
+    }
+
+    static boolean confirm(String input){
+        Alert alert=new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("You need to confirm ...");
+        alert.setContentText(input);
+        ButtonType bYes=new ButtonType("YES"),bNo=new ButtonType("NO");
+        alert.getButtonTypes().setAll(bYes,bNo);
+        Menu.addCss(alert);
+        //Platform.runLater(alert::showAndWait);
+        Optional<ButtonType> result=alert.showAndWait();
+        if(result.get()==bYes) return true;
+        else return false;
     }
 
     static String readInput(String input) throws FormatNotSupported {
@@ -232,22 +247,22 @@ public interface MazeInterface {
     }
 
     static int nbExtra(String s){
-        int nb=0;
+        int nb=1;
         switch(s){
             case "Easy":
                 nb=3;
                 break;
 
             case "Normal":
-                nb=6;
+                nb=12;
                 break;
 
             case "Hard":
-                nb=9;
+                nb=18;
                 break;
 
             case "Super Hard":
-                nb=15;
+                nb=30;
                 break;
         }
         return nb;

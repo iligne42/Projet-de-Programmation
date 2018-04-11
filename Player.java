@@ -24,7 +24,7 @@ public class Player implements Serializable {
 
 	private float maxSpeed,accConstant,angularVelocity,gravity,friction,orientationSpeed,orientation,jumpVelocity,orientationX;
 	private float radius;
-	private boolean up,down,left,right,space,pickedUp;
+	private boolean up,down,left,right,space,pickedUp,underTeleport;
 	private LinkedList<Bonus> bonus;
 	private LinkedList<Key> keys;
 
@@ -43,7 +43,6 @@ public class Player implements Serializable {
 	    public Falling(){
             setGround(0);
             state=null;
-            System.out.println("Pb");
 
         }
 
@@ -240,6 +239,12 @@ public class Player implements Serializable {
 	    return pickedUp;
     }
 
+    public void teleport(boolean b){underTeleport=b;}
+
+    public boolean isUnderTeleport(){
+        return underTeleport;
+    }
+
     public void updatePosition(double elapsedSeconds){
 	    if(animation==null) {
             if (left) {
@@ -251,13 +256,13 @@ public class Player implements Serializable {
                 if (up) moveForward(elapsedSeconds);
                 else if (down) moveBackward(elapsedSeconds);
             } else if (up) {
-                if (space) jump(elapsedSeconds);
+                if (space) jump();
                 else if (left) turnLeft(elapsedSeconds);
                 else if (right) turnRight(elapsedSeconds);
                 moveForward(elapsedSeconds);
 
             } else if (down) {
-                if (space) jump(elapsedSeconds);
+                if (space) jump();
                 else if (left) turnLeft(elapsedSeconds);
                 else if (right) turnRight(elapsedSeconds);
                 moveBackward(elapsedSeconds);
@@ -290,7 +295,6 @@ public class Player implements Serializable {
         posX+=velocity.x()*elapsedSeconds;
         posY+=velocity.y()*elapsedSeconds;
         posZ+=velocity.z()*elapsedSeconds;
-        //System.out.println(posY);
         if (posY < ground) {
             posY = ground;
             velocity.setTo(0, 0, 0);
@@ -338,9 +342,6 @@ public class Player implements Serializable {
         if(velocity.norm()>maxSpeed) velocity=velocity.posColinear(maxSpeed);
     }
 
-    public void jump(double elapsedSeconds){
-        velocity=velocity.add(new Vector3D(0,accConstant,0).multiply(elapsedSeconds));
-    }
 
     public void jump(){
 	    velocity=new Vector3D(0,jumpVelocity,0);
@@ -429,6 +430,10 @@ public class Player implements Serializable {
         r.setAngle(r.getAngle()-90);
         player.getTransforms().add(r);
         return player;
+    }
+
+    public void useBonus(){
+        bonus.remove();
     }
 
 

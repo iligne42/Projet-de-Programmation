@@ -337,6 +337,7 @@ public class View extends Scene {
                     posFx=(int) a.ending().getX()+(posFx-aposx);
                     posFz=(int) a.ending().getY()+(posFz-aposz);
                     if(!test(aposx,(int)before.getX(),MAZE_WIDTH-1,0) && !test(aposz,(int)before.getY(),MAZE_LENGTH-1,0)){
+                        System.out.println("normal");
                         setUp(aposx,aposz,MAZE_LENGTH,MAZE_WIDTH,floor,1);
                         setUp((int)before.getX(),(int)before.getY(),MAZE_LENGTH,MAZE_WIDTH,floor,-1);
                         square=new Box(SIZE_BOX,0,SIZE_BOX);
@@ -348,17 +349,23 @@ public class View extends Scene {
                         else if(aposz==MAZE_WIDTH-1) square.setTranslateZ(square.getTranslateZ()+SIZE_BOX);
                     }
                      else if(test(aposx,(int)before.getX(),MAZE_WIDTH-1,0)){
+                        System.out.println("same x");
+                          if(aposx==0)System.out.println("0");
+                          else System.out.println("taille");
                           floor.setTranslateZ(floor.getTranslateZ()-SIZE_BOX);
                           square = new Box(SIZE_BOX,0,2*SIZE_BOX);
-                          square.setTranslateX((aposx+1)*SIZE_BOX);
+                          square.setTranslateX((aposx-1)*SIZE_BOX);
                           square.setTranslateZ(aposz*SIZE_BOX+SIZE_BOX/2);
                           posFz--;
                     }
                     else {
+                        System.out.println("same z");
+                        if(aposz==0)System.out.println("0");
+                        else System.out.println("taille");
                         floor.setTranslateX(floor.getTranslateX()-SIZE_BOX);
                         square = new Box(2*SIZE_BOX,0,SIZE_BOX);
                         square.setTranslateX(aposx*SIZE_BOX+SIZE_BOX/2);
-                        square.setTranslateZ((aposz+1)*SIZE_BOX);
+                        square.setTranslateZ((aposz-1)*SIZE_BOX);
                         posFx--;
                     }
                     square.setMaterial(new PhongMaterial(Color.MAROON));
@@ -368,6 +375,7 @@ public class View extends Scene {
                 else {
                     posFx = (int) a.ending().getX();
                     posFz = (int) a.ending().getY();
+                    System.out.println("second");
                 }
                 before=a.ending();
                 print(first);
@@ -621,15 +629,17 @@ public class View extends Scene {
 
         public void drawObstacle(Group root,int i, int j,int floor,Maze maze) throws IOException{
             FXMLLoader fxmlLoader = new FXMLLoader();
-            float scale = 0,posy;
+            float scale = 0,scaleY,scaleZ,posy;
             if(maze.getTypeObstacle().equals("Cercle")) {
                 fxmlLoader.setLocation(this.getClass().getResource("Spider.fxml"));
-                scale = 1.5f;
+                scale = scaleY=scaleZ =1.5f;
                 posy = SIZE_BOX/10;
             }
             else {
                 fxmlLoader.setLocation(this.getClass().getResource("gate.fxml"));
                 scale = 2.7f;
+                scaleY=5;
+                scaleZ=3;
                 posy = SIZE_BOX / 20;
             }
             Group obs = fxmlLoader.load();
@@ -642,11 +652,9 @@ public class View extends Scene {
                     ((Shape3D)n).setTranslateZ(i*SIZE_BOX);
                     ((Shape3D)n).setMaterial(mat);
                     ((Shape3D)n).setScaleX(((Shape3D)n).getScaleX()*scale);
-                    ((Shape3D)n).setScaleY(((Shape3D)n).getScaleY()*5);
-                    ((Shape3D)n).setScaleZ(((Shape3D)n).getScaleZ()*3);
+                    ((Shape3D)n).setScaleY(((Shape3D)n).getScaleY()*scaleY);
+                    ((Shape3D)n).setScaleZ(((Shape3D)n).getScaleZ()*scaleZ);
                     ((Shape3D)n).setTranslateY(SIZE_BOX/2-posy-(floor*SIZE_BOX));
-                   /* c.setRotationAxis(Rotate.Z_AXIS);
-                    c.setRotate(c.getRotate()+180);*/
                 }
             }
             root.getChildren().add(obs);
@@ -800,6 +808,13 @@ public class View extends Scene {
                     if (game.gameOver()) {
                         whenIsFinished();
                     } else if (game.player.state() == Player.PlayerState.DEAD) {
+                        timePane.stop();
+                        final ImageView imv=new ImageView();
+                        final Image img=new Image(View.class.getResourceAsStream("glass.png"));
+                        imv.setImage(img);
+                        main.getChildren().add(imv);
+                        View.this.setOnKeyPressed(null);
+                        gameTimer.stop();
                         //mettre screen ecran cassé et you died of hnger ou you fell
                     } else if (timePane.timeOver()) {
                         //timePane.setVisible(false);
@@ -822,13 +837,9 @@ public class View extends Scene {
                                 mazePane.remove(mazePane.floorGroups[floor],(int)pos.getX(),(int)pos.getY());
                                 game.player.pick(false);
                             }
-                           /* else if(game.player.underTeleport()){
-                                //addInput Alert, if yes, in MazeInterface, teleport
-                            }*/
-                            // timeSeconds.set(game.getElapsed());
-                            if (floor == 2)
-                                System.out.println(((mazeScene.getCamera().getTranslateX() / 400) + 0.5) + "     " + (((mazeScene.getCamera().getTranslateY()) / (-400))) + "   " + (((mazeScene.getCamera().getTranslateZ()) / 400) + 0.5));
-
+                            else if(game.player.isUnderTeleport()){
+                                //if(MazeInterface.confirm("Do you wish to teleport ?")) game.teleport((int)pos.getX(),(int)pos.getY());
+                            }
                         }
                         lastUpdate.set(now);
 
@@ -896,7 +907,6 @@ public class View extends Scene {
                             switch (e.getCode()) {
                                 case UP:
                                     game.player.up(true);
-                                    System.out.println("test");
                                     break;
                                 case RIGHT:
                                     if (game.player.state() != Player.PlayerState.STAIRSDOWN && game.player.state() != Player.PlayerState.STAIRSUP)

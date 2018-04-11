@@ -27,7 +27,7 @@ public abstract class GameVersion implements Serializable {
     protected Maze current;
     protected Scores scores;
     protected int elapsed = 0;
-    protected boolean debug=false;
+    protected boolean debug=true;
 
 
 
@@ -326,11 +326,15 @@ public abstract class GameVersion implements Serializable {
                                 case Maze.OBSTACLE:
                                     Obstacles o = current.getObstacle(x, y);
                                     Point2D pos = o.getPosition();
-                                    if (o.equals("Cercle")) {
+                                    if (o.getShape().equals("Cercle")) {
                                         Circle c = (Circle) o.shape();
                                         if (circleCircleCollision(goal, o.getPosition(), radius, (float) c.getRadius())) {
-                                            Point2D obIntersection = circleIntersection(goal, pos, radius, (float) c.getRadius());
-                                            retreat(start, goal, obIntersection, angle, radius);
+                                            if(yPos<=player.getGround()){
+                                                System.out.println("testR");
+                                                player.setPosition(start,yPos1,angle);
+                                            }
+                                            /*Point2D obIntersection = circleIntersection(goal, pos, radius, (float) c.getRadius());
+                                            retreat(start, goal, obIntersection, angle, radius);*/
                                         }
                                     } else {
                                         Rectangle r = (Rectangle) o.shape();
@@ -338,8 +342,9 @@ public abstract class GameVersion implements Serializable {
                                         float height = (float) r.getHeight();
                                         Point2D oBegin = new Point2D.Double(pos.getX() - width / 2, pos.getY() - width / 2);
                                         if (circleRectangleCollision(goal, oBegin, radius, width, height)) {
-                                            Point2D obIntersection = segmentIntersection(wallSegment(start, oBegin, goal, radius, width, height), start, goal);
-                                            retreat(start, goal, obIntersection, angle, radius);
+                                            /*Point2D obIntersection = segmentIntersection(wallSegment(start, oBegin, goal, radius, width, height), start, goal);
+                                            retreat(start, goal, obIntersection, angle, radius);*/
+                                            player.setPosition(start,yPos1,angle);
                                         }
                                     }
                                     break;
@@ -355,7 +360,8 @@ public abstract class GameVersion implements Serializable {
                                     pickKey(x, y);
                                     break;
                                 case Maze.TELEPORT:
-                                    teleport(x, y);
+                                    player.teleport(true);
+                                  //  teleport(x, y);
                                     break;
                                 case Maze.STAIRSUP:
                                     goUpStairs(start, goal, yPos, angle);
@@ -500,8 +506,9 @@ public abstract class GameVersion implements Serializable {
                     return;
                 }
             }
-            Point2D doorIntersection=segmentIntersection(wallSegment(start,c,goal,radius,1,1),start,goal);
-            retreat(start,goal,doorIntersection,angle,radius);
+            player.setPosition(start,angle);
+            /*Point2D doorIntersection=segmentIntersection(wallSegment(start,c,goal,radius,1,1),start,goal);
+            retreat(start,goal,doorIntersection,angle,radius);*/
         }
     }
 
@@ -531,7 +538,7 @@ public abstract class GameVersion implements Serializable {
 
     public void teleport(int x, int y){
         Teleporteur t=current.getTeleport(x,y);
-        System.out.println(t.getStart()+"   "+t.getEnd());
+        if(debug) System.out.println(t.getStart()+"   "+t.getEnd());
         player.setPosition(t.getEnd(),player.orientation());
 
     }

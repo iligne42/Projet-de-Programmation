@@ -15,7 +15,7 @@ import java.io.IOException;
 public class Monstres extends Divers{
     //public Maze maze;
     //public Point2D position;
-    private DoubleProperty x,y;
+    private DoubleProperty x,y,rX,rY;
     private IntegerProperty orientation;
    // private MonsterAnimation animation;
     private final float speed=2f;
@@ -25,12 +25,18 @@ public class Monstres extends Divers{
         super(m);
         put();
         orientation= new SimpleIntegerProperty(0);
+        x=new SimpleDoubleProperty(p.getX());
+        y=new SimpleDoubleProperty(p.getY());
+        rX=new SimpleDoubleProperty(p.getX()*400);
+        rY=new SimpleDoubleProperty(p.getY()*400);
     }
 
     public Monstres(Maze m, Point2D position){
         super(m,position);
         x=new SimpleDoubleProperty(position.getX());
         y=new SimpleDoubleProperty(position.getY());
+        rX=new SimpleDoubleProperty(position.getX()*400);
+        rY=new SimpleDoubleProperty(position.getY()*400);
         //this.position=position;
         orientation= new SimpleIntegerProperty(0);
     }
@@ -62,6 +68,8 @@ public class Monstres extends Divers{
     public void change(){
       x.set(p.getX());
       y.set(p.getY());
+      rX.set(p.getX()*400);
+      rY.set(p.getY()*400);
     }
 
     public void move(double elapsedSeconds){
@@ -188,6 +196,7 @@ public class Monstres extends Divers{
         else if(o==3) orientation.set(270);
     }*/
 
+
     public MeshView initMonster() throws IOException{
       FXMLLoader fxmlLoader = new FXMLLoader();
       fxmlLoader.setLocation(this.getClass().getResource("ghost.fxml"));
@@ -197,6 +206,9 @@ public class Monstres extends Divers{
       mat.setDiffuseColor(Color.WHITE);
       ghost.setMaterial(mat);
       ghost.setRotationAxis(Rotate.Y_AXIS);
+      ghost.translateXProperty().bind(rX);
+      ghost.translateZProperty().bind(rY);
+      ghost.rotateProperty().bind(orientation);
       return ghost;
     }
 }

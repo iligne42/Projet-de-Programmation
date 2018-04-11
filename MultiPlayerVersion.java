@@ -19,7 +19,6 @@ import java.util.Stack;
 public class MultiPlayerVersion implements Serializable {
     protected MazeFloors originalMaze;
     protected GameVersion game;
-    protected IntegerProperty timeToBeat;
     protected Scores scores;
     protected Stack<Player> players;
 
@@ -27,9 +26,9 @@ public class MultiPlayerVersion implements Serializable {
         players = new Stack<>();
         scores = new Scores();
         for (int i = names.length - 1; i >= 0; i--) players.push(new Player(names[i]));
-        game = new SoloVersion(maze, players.pop(), scores);
         try{
-            originalMaze=maze.clone();
+        game = new SoloVersion(maze.clone(), players.pop(), scores);
+            originalMaze=maze;
         }
         catch(CloneNotSupportedException e){
 
@@ -64,8 +63,8 @@ public class MultiPlayerVersion implements Serializable {
         return players.isEmpty();
     }
 
-    public void next() throws IOException, FormatNotSupported {
-        game = new SoloVersion(originalMaze, players.pop(), scores);
+    public void next() throws IOException, FormatNotSupported,CloneNotSupportedException {
+        game = new SoloVersion(originalMaze.clone(), players.pop(), scores);
     }
 
     public Stack<Player> getPlayers() {

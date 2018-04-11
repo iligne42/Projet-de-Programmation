@@ -54,6 +54,9 @@ public class MultiView extends View {
                 } catch (FormatNotSupported formatNotSupported) {
                     formatNotSupported.printStackTrace();
                 }
+                catch(CloneNotSupportedException e){
+                    e.printStackTrace();
+                }
                 mazePane.reset();
                 //game.tStart();
                 timePane = new SoloTimePane();
