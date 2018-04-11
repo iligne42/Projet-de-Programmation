@@ -48,12 +48,10 @@ public class netView extends View{
             sp.arret();
             netView.this.setOnKeyPressed(null);
             game.addToScoresList();
-            
-            try{
+
                 netFunc.sendObject(me,sc);
                 if(debug)
                     System.out.println("J'envoie le score");
-            }catch(IOException e){}
         }
 
         private class sendPos extends Thread{
@@ -107,7 +105,7 @@ public class netView extends View{
                                         Platform.runLater(() -> drawPlayer(mazePane)); //à changer
                                         premierTour=false;
                                     }
-                                    else updatePlayer();
+                                    else  Platform.runLater(() -> updatePlayer());
                             }
                         }else if(tmp instanceof Scores)
                             Platform.runLater(() -> displayScores((Scores) tmp));

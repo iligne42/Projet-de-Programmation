@@ -25,10 +25,15 @@ public class netFunc{
 		}
 	}
 
-	public static void sendString(Socket socket, String s) throws IOException{
-		PrintWriter tmp =new PrintWriter(socket.getOutputStream());
-		tmp.println(s);
-		tmp.flush();
+	public static boolean sendString(Socket socket, String s){
+		try {
+			PrintWriter tmp = new PrintWriter(socket.getOutputStream());
+			tmp.println(s);
+			tmp.flush();
+			return true;
+		}catch(IOException e){
+			return false;
+		}
 	}
 
 	public static Object readObject(Socket socket){
@@ -42,9 +47,14 @@ public class netFunc{
 		}
 	}
 
-	public static <K extends Serializable> void sendObject(Socket socket, K obj) throws IOException{
-		ObjectOutputStream tmp = new ObjectOutputStream(socket.getOutputStream());
-		tmp.writeObject(obj);
+	public static <K extends Serializable> boolean sendObject(Socket socket, K obj){
+		try {
+			ObjectOutputStream tmp = new ObjectOutputStream(socket.getOutputStream());
+			tmp.writeObject(obj);
+			return true;
+		}catch(IOException e){
+			return false;
+		}
 	}
 
 	public static boolean closeSocket(Socket soc){

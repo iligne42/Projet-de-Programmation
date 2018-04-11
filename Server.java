@@ -8,7 +8,7 @@ public class Server{
 	private ArrayList<Socket> sockets;
 	private Scores score;
 	private ArrayList<Triplet> arrivedList;
-	private final boolean debug = true;
+	private final boolean debug = false;
 
 	public Server(ServerSocket socServ, ArrayList<String> names, ArrayList<Socket> sockets){
 		this.socServ=socServ;
@@ -32,27 +32,17 @@ public class Server{
 	private void sendScoreFinished(){
 		ArrayList<String> tmp = new ArrayList<String>();
 		for(Triplet t:arrivedList)
-			try{
 				netFunc.sendObject(t.getSocket(),score);
-			}catch(IOException e){
-				arrivedList.remove(t);
-			}
 	}
 
 	private void sendEnd(){
 		for(Triplet t:arrivedList)
-			try{
 				netFunc.sendObject(t.getSocket(),false);
-			}catch(IOException e){
-				arrivedList.remove(t);
-			}
 	}
 
 	private void sendPosPlayers(){
 		for(Socket soc:sockets){
-			try{
 				netFunc.sendObject(soc,players);
-			}catch(IOException e){}
 		}
 	}
 
@@ -111,7 +101,7 @@ public class Server{
 			public void run(){
 			while(true){
 				sendPosPlayers();
-				if(debug)
+				if(true)
 					printPlayer();
 				try {
 					Thread.sleep(200);
