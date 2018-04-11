@@ -98,7 +98,7 @@ public class netView extends View{
                         if(tmp instanceof ArrayList){
                             if(((ArrayList)tmp).get(0) instanceof Player){
                                 if(debug)
-                                    System.out.println("Je recois une list de pos.");
+                                    //System.out.println("Je recois une list de pos.");
                                     players = (ArrayList<Player>)tmp;
                                     if(premierTour){
                                         t=new DoubleProperty[players.size()][3];
@@ -127,31 +127,31 @@ public class netView extends View{
     }
 
     public void drawPlayer(Group root){
-        System.out.println("Je suis dans drawPlayer() et il y a "+players.size());
+        //System.out.println("Je suis dans drawPlayer() et il y a "+players.size());
         for(int i=0; i<players.size(); i++) {
             try {
-                System.out.println("Je dessine le joueur numéro " + i);
+                //System.out.println("Je dessine le joueur numéro " + i);
                 Player p = players.get(i);
                 MeshView player = p.initPlayer();
                 int g = p.getMazeIndex();
-                System.out.println("Je suis au sol");
-                t[i][0] = new SimpleDoubleProperty((p.getPosition().getX() + mazePane.coordSwitch[g].x()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
-                t[i][1] = new SimpleDoubleProperty((p.getPosition().getY() + mazePane.coordSwitch[g].z()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
-                t[i][2] = new SimpleDoubleProperty(-p.getY() * mazePane.SIZE_BOX - mazePane.SIZE_BOX/2);
+                //System.out.println("Je suis au sol");
+                t[i][0] = new SimpleDoubleProperty((p.getPosition().getX() + mazePane.coordSwitch[g].x()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX /2);
+                t[i][1] = new SimpleDoubleProperty((p.getPosition().getY() + mazePane.coordSwitch[g].z()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX /2);
+                t[i][2] = new SimpleDoubleProperty(-p.getY() * mazePane.SIZE_BOX + mazePane.SIZE_BOX/4);
             /*x=new SimpleDoubleProperty(p.getPosition().getX()+mazePane.coordSwitch[g].x()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             z=new SimpleDoubleProperty(p.getPosition().getY()+mazePane.coordSwitch[g].z()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             y=new SimpleDoubleProperty(-p.getY()*mazePane.SIZE_BOX);*/
-                System.out.println("Je suis entre les deux");
+                //System.out.println("Je suis entre les deux");
                 player.translateXProperty().bind(t[i][0]);
                 player.translateYProperty().bind(t[i][2]);
                 player.translateZProperty().bind(t[i][1]);
             /*player.setTranslateX(p.getPosition().getX()+mazePane.coordSwitch[g].x()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateZ(p.getPosition().getY()+mazePane.coordSwitch[g].z()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateY(-p.getY()*mazePane.SIZE_BOX);*/
-            player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX/8);
-            player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX/8);
-            player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX/8);
-                System.out.println("J'ai fait les modifs");
+            player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX/20);
+            player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX/20);
+            player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX/10);
+                //System.out.println("J'ai fait les modifs");
                 root.getChildren().add(player);
             }catch(IOException e){
                 System.out.println("Impossible de créer le joueur "+i);
@@ -161,15 +161,15 @@ public class netView extends View{
 
     public void updatePlayer(){
         for(int i=0; i<players.size(); i++) {
-            System.out.println("J'ai un tab de tille "+players.size());
-            System.out.println("Je met à jour le joueur numéro " + i);
+            //System.out.println("J'ai un tab de tille "+players.size());
+            //System.out.println("Je met à jour le joueur numéro " + i);
             Player p = players.get(i);
             int g = p.getMazeIndex();
-            t[i][0].set((p.getPosition().getX() + mazePane.coordSwitch[g].x()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
-            t[i][1].set((p.getPosition().getY() + mazePane.coordSwitch[g].z()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
-            t[i][2].set(-p.getY() * mazePane.SIZE_BOX);
-            System.out.println(t[i][0].get()+" "+t[i][1].get()+" "+t[i][2].get());
-            System.out.println("Je suis encore au "+i);
+            t[i][0].set((p.getPosition().getX() + mazePane.coordSwitch[g].x()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX /2);
+            t[i][1].set((p.getPosition().getY() + mazePane.coordSwitch[g].z()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX /2);
+            t[i][2].set(-p.getY() * mazePane.SIZE_BOX + mazePane.SIZE_BOX/4);
+            //System.out.println(t[i][0].get()+" "+t[i][1].get()+" "+t[i][2].get());
+            //System.out.println("Je suis encore au "+i);
         }
     }
 }

@@ -729,7 +729,7 @@ public class View extends Scene {
             rotateX=new Rotate();
             rotateX.setAxis(Rotate.X_AXIS);
             camera.getTransforms().add(rotateX);
-            camera.setFieldOfView(100);
+            //camera.setFieldOfView(100);
             printMaze();
         }
 
