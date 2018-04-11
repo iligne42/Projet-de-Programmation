@@ -110,7 +110,7 @@ public class netView extends View{
                                     else updatePlayer();
                             }
                         }else if(tmp instanceof Scores)
-                            displayScores((Scores) tmp);
+                            Platform.runLater(() -> displayScores((Scores) tmp));
                     }catch(Exception e){if(debug) e.printStackTrace();}
                 }
             }
