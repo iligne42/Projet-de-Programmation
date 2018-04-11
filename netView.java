@@ -137,7 +137,7 @@ public class netView extends View{
                 System.out.println("Je suis au sol");
                 t[i][0] = new SimpleDoubleProperty((p.getPosition().getX() + mazePane.coordSwitch[g].x()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
                 t[i][1] = new SimpleDoubleProperty((p.getPosition().getY() + mazePane.coordSwitch[g].z()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
-                t[i][2] = new SimpleDoubleProperty(-p.getY() * mazePane.SIZE_BOX +mazePane.SIZE_BOX/8);
+                t[i][2] = new SimpleDoubleProperty(-p.getY() * mazePane.SIZE_BOX - mazePane.SIZE_BOX/2);
             /*x=new SimpleDoubleProperty(p.getPosition().getX()+mazePane.coordSwitch[g].x()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             z=new SimpleDoubleProperty(p.getPosition().getY()+mazePane.coordSwitch[g].z()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             y=new SimpleDoubleProperty(-p.getY()*mazePane.SIZE_BOX);*/
