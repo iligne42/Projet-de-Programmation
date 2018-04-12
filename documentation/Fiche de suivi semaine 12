@@ -1,0 +1,19 @@
+Fiche de suivi semaine 12
+
+Objectifs atteints:
+- correction des bugs concernant les escaliers, les bonus, les scores, les mouvement des joueurs et les problèmes multijoueurs
+- barre de menu dans le jeu
+- carte du labyrinthe
+- vu des joueurs en multijoueurs
+- début animations joueurs
+- saut au dessus des obstacles
+- intégration des pièces à l'objet score
+
+Objectifs à atteindre:
+- corriger les derniers problèmes
+- "nettoyer" le code
+- finir les différentes parties du projet
+
+Difficultés rencontrées:
+- question au joueur d'utilisation du téléporteur (pop up impossible)
+- vu des joueurs en multijoueurs (résolu)
