@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 public class netView extends View{
     ArrayList<Player> players=new ArrayList<Player>();
@@ -113,6 +114,8 @@ public class netView extends View{
                             }
                         }else if(tmp instanceof Scores) {
                             Scores sc = (Scores) tmp;
+                            Scanner scan = new Scanner(game.scores().toString());
+                            sc.setCurrent(scan.nextLine());
                             Platform.runLater(() -> displayScores(sc));
                         }
                     }catch(Exception e){if(debug) e.printStackTrace();}

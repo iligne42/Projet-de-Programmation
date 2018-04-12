@@ -192,8 +192,7 @@ public class hostMenu extends VBox{
 								netFunc.sendObject(soc,names);
 						}
 						System.out.println("J'envoie les listes");
-					}else
-					tmp.close();
+					}
 				}catch(Exception e){}
 			}
 		}

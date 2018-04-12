@@ -87,6 +87,11 @@ public class Scores implements Serializable{
         return  lists[dif].size();
     }
 
+    public void setCurrent(String str){
+        String[] tab = str.split("-");
+        current=new Pair<String,Integer>(tab[0], MazeInterface.getSeconds(tab[1]));
+    }
+
 
     public void fillList(){
         try{
