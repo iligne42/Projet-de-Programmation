@@ -23,6 +23,7 @@ public class netView extends View{
     ArrayList<Player> players=new ArrayList<Player>();
     private static boolean debug = true;
     private DoubleProperty[][]t;
+    private boolean finish=false;
 
     public netView(GameVersion game, Socket me) throws IOException{
         super(new StackPane(), game);
@@ -43,15 +44,18 @@ public class netView extends View{
         }
 
         public void whenIsFinished(){
-            Scores sc = game.scores();
-            timePane.stop();
-            sp.arret();
-            netView.this.setOnKeyPressed(null);
-            game.addToScoresList();
+            if(!finish) {
+                finish = true;
+                Scores sc = game.scores();
+                timePane.stop();
+                sp.arret();
+                netView.this.setOnKeyPressed(null);
+                game.addToScoresList();
 
-                netFunc.sendObject(me,sc);
-                if(debug)
+                netFunc.sendObject(me, sc);
+                if (debug)
                     System.out.println("J'envoie le score");
+            }
         }
 
         private class sendPos extends Thread{
@@ -107,8 +111,10 @@ public class netView extends View{
                                     }
                                     else  Platform.runLater(() -> updatePlayer());
                             }
-                        }else if(tmp instanceof Scores)
-                            Platform.runLater(() -> displayScores((Scores) tmp));
+                        }else if(tmp instanceof Scores) {
+                            Scores sc = (Scores) tmp;
+                            Platform.runLater(() -> displayScores(sc));
+                        }
                     }catch(Exception e){if(debug) e.printStackTrace();}
                 }
             }

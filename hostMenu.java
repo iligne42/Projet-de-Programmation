@@ -151,7 +151,7 @@ public class hostMenu extends VBox{
 	public void lancerLabi(MazeFloors tmp){
 		try{
 			Stage stage=new Stage();
-			SoloVersion sv=new SoloVersion(tmp,myName);
+			SoloVersion sv=new SoloVersion(tmp,myName,new Scores());
 			System.out.println("reussi 1");
 			netView NV=new netView(sv,me);
 			stage.setScene(NV);
