@@ -391,10 +391,8 @@ public class Menu extends Application {
                     //view.setScene(sc);
                    st.setFullScreen(true);
                     st.show();
-                } catch (FormatNotSupported formatNotSupported) {
+                } catch (Exception formatNotSupported) {
 
-                } catch (IOException e1) {
-                    e1.printStackTrace();
                 }
             }
 
@@ -496,12 +494,10 @@ public class Menu extends Application {
                             //sc.getStylesheets().add("");
                         }
                     }
-                    catch (FormatNotSupported formatNotSupported) {
+                    catch (Exception formatNotSupported) {
                             formatNotSupported.printStackTrace();
                         }
-                        catch (IOException e1) {
-                e1.printStackTrace();
-            }
+
 
 
                 }
@@ -532,7 +528,7 @@ public class Menu extends Application {
                     name = MazeInterface.readInput("What's your name ?");
                     hostmenu.initClient(name);
                     changePanel(stack, hostmenu);
-                } catch (FormatNotSupported exception) {
+                } catch (Exception exception) {
 
                 }
             });

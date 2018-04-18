@@ -8,32 +8,39 @@ import javafx.scene.transform.Rotate;
 
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Random;
 //import javafx.scene.shape.TriangleMesh;
 
 public class Obstacles extends Divers{
-    private Shape s;
-    private int orientation;
+    private String s;
+    //private Shape s;
 
     public Obstacles(Maze m, String type){
         super(m);
-        if(type.equals("Rectangle")){
+        s=type;
+       /* if(type.equals("Rectangle")){
            // s=new Rectangle(0.5,0.5);
             s=new Rectangle(0.7,0.1);
         }else{
             s=new Circle(0.35);
-        }
+        }*/
         put();
     }
 
-    public String getShape(){
+   /*public String getShape(){
         if(s instanceof Rectangle) return "Rectangle";
         else return "Cercle";
-    }
+    }*/
 
-    public Shape shape(){
+    public String getShape(){
         return s;
     }
+
+  /*  public Shape shape(){
+        return s;
+    }*/
+
 
     /*private void put(Point2D p){
         Random rand=new Random();

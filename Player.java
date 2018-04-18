@@ -89,6 +89,7 @@ public class Player implements Serializable {
 
 	    public LookingTo(int destination){
             this.destination=destination;
+            orientationSpeed=1;
             velocity.setTo(0,0,0);
         }
 
@@ -129,7 +130,7 @@ public class Player implements Serializable {
 		velocity=new Vector3D();
 		acceleration=new Vector3D();
 		maxSpeed=3f;
-		accConstant=5;
+		accConstant=3.5f;
 		gravity=1.5f;
 		friction=3;
 		orientationSpeed=2f;
@@ -137,8 +138,9 @@ public class Player implements Serializable {
 		keys=new LinkedList<>();
 		radius=0.15f;
 		currentMaze=0;
-		jumpVelocity=jumpVelocity(0.5f);
+		jumpVelocity=jumpVelocity(0.4f);
 		animation=null;
+		//orientationX=345;
 		//body=new Cylinder()
 		//shape.setFill(Color.BLUE);
 	}
@@ -243,45 +245,39 @@ public class Player implements Serializable {
 
     public void updatePosition(double elapsedSeconds){
 	    if(animation==null) {
-            if (left) {
-                turnLeft(elapsedSeconds);
-                if (up) moveForward(elapsedSeconds);
-                else if (down) moveBackward(elapsedSeconds);
-            } else if (right) {
-                turnRight(elapsedSeconds);
-                if (up) moveForward(elapsedSeconds);
-                else if (down) moveBackward(elapsedSeconds);
-            } else if (up) {
-               if (space && state!=PlayerState.JUMPING){
-                    jump();
-                    changeState(PlayerState.JUMPING);
-                }
-                else if (left) turnLeft(elapsedSeconds);
-                else if (right) turnRight(elapsedSeconds);
-                moveForward(elapsedSeconds);
+            if (state != PlayerState.JUMPING) {
+                if (left) {
+                    turnLeft(elapsedSeconds);
+                    if (up) moveForward(elapsedSeconds);
+                    else if (down) moveBackward(elapsedSeconds);
+                } else if (right) {
+                    turnRight(elapsedSeconds);
+                    if (up) moveForward(elapsedSeconds);
+                    else if (down) moveBackward(elapsedSeconds);
+                } else if (up) {
+                    if (space && state != PlayerState.JUMPING) {
+                        jump();
+                        changeState(PlayerState.JUMPING);
+                    } else if (left) turnLeft(elapsedSeconds);
+                    else if (right) turnRight(elapsedSeconds);
+                    moveForward(elapsedSeconds);
 
-            } else if (down) {
-                if (space && state!=PlayerState.JUMPING){
+                } else if (down) {
+                    if (space && state != PlayerState.JUMPING) {
+                        jump();
+                        changeState(PlayerState.JUMPING);
+                    } else if (left) turnLeft(elapsedSeconds);
+                    else if (right) turnRight(elapsedSeconds);
+                    moveBackward(elapsedSeconds);
+                } else if (space && state != PlayerState.JUMPING) {
                     jump();
                     changeState(PlayerState.JUMPING);
+                } else {
+                    velocity.setTo(0, 0, 0);
+                    angularVelocity = 0;
                 }
-                else if (left) turnLeft(elapsedSeconds);
-                else if (right) turnRight(elapsedSeconds);
-                moveBackward(elapsedSeconds);
-            }
-            else if (space && state!=PlayerState.JUMPING) {
-                jump();
-                changeState(PlayerState.JUMPING);
-            }
-            else {
-                if (state != PlayerState.STAIRSUP && state != PlayerState.STAIRSDOWN) {
-                    applyGravity(elapsedSeconds);
-                   /* else if(posY>ground+1){
-                        posY=ground+1;
-                    }*/
-                } else velocity.setTo(0, 0, 0);
-                angularVelocity = 0;
-            }
+
+            } else applyGravity(elapsedSeconds);
         }
         else{
 	        if(!animation.isOver()) animation.animate(elapsedSeconds);
@@ -293,7 +289,6 @@ public class Player implements Serializable {
             }
 
         }
-
         posX+=velocity.x()*elapsedSeconds;
         posY+=velocity.y()*elapsedSeconds;
         if (posY < ground && state!=PlayerState.STAIRSDOWN && state!=PlayerState.STAIRSUP ) {
@@ -322,11 +317,15 @@ public class Player implements Serializable {
     }
 
     public void lookUp(double elapsedSeconds){
-
+        angularVelocity+=(float)(orientationSpeed*elapsedSeconds);
+        if(angularVelocity>orientationSpeed)angularVelocity=(float)(orientationSpeed);
+        orientationX=(orientationX+angularVelocity)%360;
     }
 
     public void lookDown(double elapsedSeconds){
-
+        angularVelocity+=(float)(orientationSpeed*elapsedSeconds);
+        if(angularVelocity>orientationSpeed)angularVelocity=(float)(orientationSpeed);
+        orientationX=(orientationX+(360-angularVelocity))%360;
     }
 
 
@@ -344,6 +343,7 @@ public class Player implements Serializable {
 
     public void jump(){
 	    velocity=velocity.add(new Vector3D(0,jumpVelocity,0));
+        System.out.println(velocity);
     }
 
     public float jumpVelocity(float jumpHeight){
@@ -358,7 +358,6 @@ public class Player implements Serializable {
     public void changeState(PlayerState s){
         if(state!=PlayerState.JUMPING) previousState=state;
         state=s;
-        System.out.println(s);
         setAcceleration();
     }
 

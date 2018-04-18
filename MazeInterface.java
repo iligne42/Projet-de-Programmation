@@ -3,10 +3,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public interface MazeInterface {
@@ -44,8 +47,9 @@ public interface MazeInterface {
         return res;
     }
 
-    static boolean confirm(String input){
+    static boolean confirm(String input,Window stage){
         Alert alert=new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(stage);
         alert.setTitle("You need to confirm ...");
         alert.setContentText(input);
         ButtonType bYes=new ButtonType("YES"),bNo=new ButtonType("NO");
@@ -55,6 +59,14 @@ public interface MazeInterface {
         Optional<ButtonType> result=alert.showAndWait();
         if(result.get()==bYes) return true;
         else return false;
+    }
+
+    static void warning(String warn){
+        Alert alert=new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Hmmm ...");
+        alert.setContentText(warn);
+        Menu.addCss(alert);
+        alert.showAndWait();
     }
 
     static String readInput(String input) throws FormatNotSupported {
@@ -81,29 +93,11 @@ public interface MazeInterface {
             Alert error = new Alert(Alert.AlertType.ERROR);
             error.setTitle("Not a number");
             error.setContentText("Your input is not a number, try again");
-            Optional<ButtonType> button = error.showAndWait();
             Menu.addCss(error);
+            Optional<ButtonType> button = error.showAndWait();
             if (button.get() == ButtonType.OK) res = readInt(s);
         }
         return res;
-    }
-
-    static String askName(){
-
-        while(true){
-
-            try{
-
-                return readInput("What's your name ?");
-
-            }catch(FormatNotSupported e){
-
-                System.out.println("Entrée incorecte.");
-
-            }
-
-        }
-
     }
 
     static GameVersion load(String file) throws IOException, ClassNotFoundException {
@@ -151,9 +145,10 @@ public interface MazeInterface {
         return new Maze(L,l);
     }
 
-    static MazeFloors getMaze(int L,int l,int f,int typeB,boolean[] sup,int extras) throws FormatNotSupported{
+    static MazeFloors getMaze(int L,int l,int f,int typeB,boolean[] sup,int extras) throws Exception{
        int[] extra=new int[sup.length];
        int nb=getSelected(sup);
+       boolean no=false;
         if(l==-1){
             L=readInt("Choose the length");
             l=readInt("Choose the width");
@@ -161,17 +156,17 @@ public interface MazeInterface {
             String s="";
             switch(val){
                 case 0:s="Easy";
-                break;
+                    break;
                 case 1:s="Normal";
-                break;
+                    break;
                 case 2:s="Hard";
-                break;
+                    break;
                 case 3:s="Super Hard";
-                break;
+                    break;
             }
-            extras=nbExtra(s);
-            //find a way to orevent from checking everyhting you want
+             extras=nbExtra(s);
         }
+
        for(int i=0;i<extra.length;i++){
            extra[i]=0;
            if(sup[i] ){
@@ -179,11 +174,15 @@ public interface MazeInterface {
                    extra[i] = extras / nb;
                    extras -= extra[i];
                    nb--;
+                   if(extra[i]==0) no=true;
                }
-               else extra[i]=(typeB==0)?(L*l)/5:(L*l)/10;
+               else{
+                   extra[i]=(typeB==0)?(L*l)/5:(L*l)/10;
+                   nb --;
+               }
            }
        }
-
+        if(no) warning("Sorry, we couldn't put everything you requested :'(");
         return new MazeFloors(L,l,f,extra[0],extra[2],extra[3],extra[1],extra[4],typeB);
     }
 
@@ -259,7 +258,7 @@ public interface MazeInterface {
     }
 
     static int getDifficulty(int length,int width){
-        if(length>=6 && length<20 && width>=6 && width<20) return 0;
+        if(length>=5 && length<20 && width>=5 && width<20) return 0;
         if(length>=20 && length<30 && width>=20 && width<30) return 1;
         if(length>=30 && length<=99 && width>=30 && width<=99) return 2;
         else return 3;
@@ -276,7 +275,7 @@ public interface MazeInterface {
         int nb=0;
         switch(s){
             case "Easy":
-                nb=3;
+                nb=2;
                 break;
 
             case "Normal":
@@ -293,6 +292,7 @@ public interface MazeInterface {
         }
         return nb;
     }
+
 
     static int getTime(String s){
         int time=0;

@@ -44,7 +44,7 @@ public class Maze implements Serializable,Cloneable{
             randomMaze();
         }else {
             obstacles = new LinkedList<>();
-            randomMaze(nbObstacles, "Cercle");
+            randomMaze(nbObstacles, "Rectangle");
         }
         if(nbMonstres==0) monstres=null;
         else{

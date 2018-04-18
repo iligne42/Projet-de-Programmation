@@ -1,10 +1,12 @@
 
 import javafx.beans.property.IntegerProperty;
+import javafx.geometry.Pos;
 import javafx.scene.Camera;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -27,13 +29,18 @@ public class MultiView extends View {
     protected class MultiControl extends GameControl {
         //protected Scores scores;
         protected IntegerProperty timeToBeat;
+        protected Label nameLabel;
+        protected Label label;
 
         public MultiControl() throws IOException, FormatNotSupported {
             super();
-            Label label = new Label();
+            label = new Label();
+            nameLabel=new Label("Current Player : "+game.player().getName());
             timeToBeat = new TimeProperty(0);
             label.textProperty().bind(timeToBeat.asString());
-            label.setVisible(false);
+            main.getChildren().add(nameLabel);
+            StackPane.setAlignment(nameLabel, Pos.BOTTOM_CENTER);
+
             //timePane.getChildren().add(label);
 
         }
@@ -48,7 +55,12 @@ public class MultiView extends View {
             //Get to the next player and labyrinth
             if (!multi.gameOver()) {
                 try {
-                    multi.next();
+                    game=multi.next();
+                    mazePane.getChildren().clear();
+                    handleAction();
+                  /*  main.getChildren().add(label);
+                    nameLabel.setText(game.player().getName());
+                    StackPane.setAlignment(label, Pos.BOTTOM_LEFT);*/
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 } catch (FormatNotSupported formatNotSupported) {
@@ -57,12 +69,11 @@ public class MultiView extends View {
                 catch(CloneNotSupportedException e){
                     e.printStackTrace();
                 }
-                mazePane.reset();
-                //game.tStart();
-                timePane = new SoloTimePane();
+
                // timePane.setVisible(true);
             } else {
-                //displayScore(MultiView.this);
+                displayScores(game.scores());
+                //displayScores(MultiView.this);
             }
         }
     }

@@ -67,6 +67,7 @@ public class View extends Scene {
       st=stage;
     }
 
+
    /* public View(BorderPane root, GameVersion game) {
         super(root);
         this.game = game;
@@ -197,7 +198,7 @@ public class View extends Scene {
 
     protected class MazePane extends Group {
         protected Group world;
-        protected final LinkedList<Maze> floors =game.floors();
+        protected LinkedList<Maze> floors =game.floors();//work multiplayer
         protected PerspectiveCamera camera;
         protected AmbientLight light;
         protected final int MAZE_LENGTH =game.current().getHeight();
@@ -228,88 +229,114 @@ public class View extends Scene {
         }
 
         public void setToolBar(){
-          String style="-fx-background-color:linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%),linear-gradient(#020b02, #3a3a3a),linear-gradient(#9d9e9d 0%, #6b6a6b 20%, #343534 80%, #242424 100%),linear-gradient(#8a8a8a 0%, #6b6a6b 20%, #343534 80%, #262626 100%),linear-gradient(#777777 0%, #606060 50%, #505250 51%, #2a2b2a 100%);-fx-background-insets: 0,1,4,5,6;-fx-background-radius: 9,8,5,4,3;-fx-padding: 15 30 15 30;-fx-font-size: 18px;-fx-font-weight: bold;-fx-text-fill: white;-fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);";
-          quit = new Button("Quit");
-          quit.setOnMouseClicked(e->{
-            st.close();
-          });
-          plan = new Button("Map");
-          plan.setOnMouseClicked(e->{
-            if(!main.getChildren().contains(map)){
-              main.getChildren().add(map);
-              StackPane.setAlignment(map,Pos.BOTTOM_LEFT);
+            String style="-fx-background-color: rgba(0, 0, 0, 0);";
+            //String style="-fx-background-color: linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%), linear-gradient(#020b02, #3a3a3a),linear-gradient(#b9b9b9 0%, #c2c2c2 20%, #afafaf 80%, #c8c8c8 100%),  linear-gradient(#f5f5f5 0%, #dbdbdb 50%, #cacaca 51%, #d7d7d7 100%);";//"-fx-background-color:linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%),linear-gradient(#020b02, #3a3a3a),linear-gradient(#9d9e9d 0%, #6b6a6b 20%, #343534 80%, #242424 100%),linear-gradient(#8a8a8a 0%, #6b6a6b 20%, #343534 80%, #262626 100%),linear-gradient(#777777 0%, #606060 50%, #505250 51%, #2a2b2a 100%);-fx-background-insets: 0,1,4,5,6;-fx-background-radius: 9,8,5,4,3;-fx-padding: 15 30 15 30;";//-fx-font-size: 18px;-fx-font-weight: bold;-fx-text-fill: white;-fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);";
+            quit = new Button();
+            configButton("quit.png",quit);
+            quit.setOnMouseClicked(e->{
+                st.close();
+            });
+            System.out.println("efrgfthjk");
+            plan = new Button();
+            /*configButton("map.png",plan);
+            plan.setOnMouseClicked(e->{
+                if(!main.getChildren().contains(map)){
+                    main.getChildren().add(map);
+                    StackPane.setAlignment(map,Pos.BOTTOM_LEFT);
+                }
+                else{
+                    main.getChildren().remove(map);
+                }
+            });*/
+            System.out.println("1");
+            //plan.setDisable(true);
+            pause = new Button();
+            configButton("pause.png",pause);
+            pause.setOnMouseClicked(e->{
+                if(!main.getChildren().contains(display)){
+                    configButton("play.png",pause);
+                    timePane.pause();
+                    display.getChildren().clear();
+                    Label pau = new Label("PAUSE");
+                    pau.setStyle("-fx-effect: dropshadow(gaussian,rgba(0,0,0,0.75) , 4,0,0,1 );-fx-text-fill: lightgrey;-fx-font-size: 150px;-fx-font-weight:bold;");
+                    display.getChildren().add(pau);
+                    display.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4); -fx-background-radius: 10;");
+                    main.getChildren().add(display);
+                    tool.toFront();
+                }
+                else{
+                    configButton("pause.png",pause);
+                    timePane.play();
+                    main.getChildren().remove(display);
+                }
+                System.out.println("2");
+            });
+            save = new Button();
+            configButton("save.png",save);
+            save.setOnMouseClicked(e->{
+                LocalDate now = LocalDate.now();
+                String date[] = now.toString().split("-");
+                System.out.println(now);
+                try{game.save(date[2]+"/"+date[1]+"/"+date[0].charAt(2)+""+date[0].charAt(3)+"/"+game.player().getName());}
+                catch (Exception exc) {}
+            });
+            System.out.println("7");
+            inv = new Button();
+            configButton("inv.png",inv);
+            inv.setOnMousePressed(e->{
+                if(!main.getChildren().contains(display)){
+                    timePane.pause();
+                    main.getChildren().add(display);
+                    control.updateInventory();
+                    tool.toFront();
+                }
+                else{
+                    timePane.play();
+                    main.getChildren().remove(display);
+                }
+            });
+            System.out.println("6");
+            help = new Button();
+            configButton("help.png",help);
+            help.setOnMousePressed(e->{
+                timePane.pause();
+                boolean aide = main.getChildren().contains(display);
+                if(!aide)main.getChildren().add(display);
+                control.displayHelp();
+            });
+            help.setOnMouseReleased(e->{
+                timePane.play();
+                main.getChildren().remove(display);
+            });
+            System.out.println("9");
+            Region rg = new Region();
+            HBox.setHgrow(rg,Priority.SOMETIMES);
+            rg.setFocusTraversable(false);
+            tool = new ToolBar(rg,help,inv,save,pause,quit);
+            System.out.println("fin");
+            for (Node a : tool.getItems()) {
+                if(a instanceof Button){
+                    a.setStyle(style);
+                    a.setFocusTraversable(false);
+                }
             }
-            else{
-              main.getChildren().remove(map);
-            }
-          });
-          plan.setDisable(true);
-          pause = new Button("Pause");
-          pause.setOnMouseClicked(e->{
-            if(!main.getChildren().contains(display)){
-              timePane.pause();
-              display.getChildren().clear();
-              Label pau = new Label("PAUSE");
-              pau.setStyle("-fx-effect: dropshadow(gaussian,rgba(0,0,0,0.75) , 4,0,0,1 );-fx-text-fill: lightgrey;-fx-font-size: 150px;-fx-font-weight:bold;");
-              display.getChildren().add(pau);
-              display.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4); -fx-background-radius: 10;");
-              main.getChildren().add(display);
-              tool.toFront();
-            }
-            else{
-              timePane.play();
-              main.getChildren().remove(display);
-            }
+            tool.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
+            System.out.println("efrgfthjk");
+        }
 
-          });
-          save = new Button("Save");
-          save.setOnMouseClicked(e->{
-              LocalDate now = LocalDate.now();
-              String date[] = now.toString().split("-");
-              System.out.println(now);
-              try{game.save(date[2]+"/"+date[1]+"/"+date[0].charAt(2)+""+date[0].charAt(3)+"/"+game.player().getName());}
-              catch (Exception exc) {}
-          });
-          inv = new Button("Pocket");
-          inv.setOnMousePressed(e->{
-            if(!main.getChildren().contains(display)){
-              timePane.pause();
-              main.getChildren().add(display);
-              control.updateInventory();
-              tool.toFront();
-            }
-            else{
-              timePane.play();
-              main.getChildren().remove(display);
-            }
-          });
-          help = new Button("Help");
-          help.setOnMousePressed(e->{
-            timePane.pause();
-            boolean aide = main.getChildren().contains(display);
-            if(!aide)main.getChildren().add(display);
-            control.displayHelp();
-          });
-          help.setOnMouseReleased(e->{
-            timePane.play();
-            main.getChildren().remove(display);
-          });
-          Region rg = new Region();
-          HBox.setHgrow(rg,Priority.SOMETIMES);
-          rg.setFocusTraversable(false);
-          tool = new ToolBar(rg,help,inv,save,pause,plan,quit);
-          for (Node a : tool.getItems()) {
-            if(a instanceof Button){
-                a.setStyle(style);
-                a.setFocusTraversable(false);
-            }
-          }
-          tool.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
+        public void configButton(String path,Button button){
+            Image img = new Image(getClass().getResourceAsStream(path),50,50,false,false);
+          /*ImageView im = new ImageView(img);
+          im.setFitHeight(20);
+          im.setFitWidth(20);*/
+            button.setGraphic(new ImageView(img));
         }
         public boolean test(int a,int b,int c,int d){
           return ((a==b)&&(b==c||b==d));
         }
+
         public void initMaze() throws IOException{
+            System.out.println("ede");
             Group world=new Group();
             Group floor = new Group();
             Group first=floor;
@@ -337,7 +364,6 @@ public class View extends Scene {
                     posFx=(int) a.ending().getX()+(posFx-aposx);
                     posFz=(int) a.ending().getY()+(posFz-aposz);
                     if(!test(aposx,(int)before.getX(),MAZE_WIDTH-1,0) && !test(aposz,(int)before.getY(),MAZE_LENGTH-1,0)){
-                        System.out.println("normal");
                         setUp(aposx,aposz,MAZE_LENGTH,MAZE_WIDTH,floor,1);
                         setUp((int)before.getX(),(int)before.getY(),MAZE_LENGTH,MAZE_WIDTH,floor,-1);
                         square=new Box(SIZE_BOX,0,SIZE_BOX);
@@ -348,24 +374,20 @@ public class View extends Scene {
                         else if(aposz==0) square.setTranslateZ(square.getTranslateZ()-SIZE_BOX);
                         else if(aposz==MAZE_WIDTH-1) square.setTranslateZ(square.getTranslateZ()+SIZE_BOX);
                     }
-                     else if(test(aposx,(int)before.getX(),MAZE_WIDTH-1,0)){
-                        System.out.println("same x");
-                          if(aposx==0)System.out.println("0");
-                          else System.out.println("taille");
-                          floor.setTranslateZ(floor.getTranslateZ()-SIZE_BOX);
-                          square = new Box(SIZE_BOX,0,2*SIZE_BOX);
-                          square.setTranslateX((aposx-1)*SIZE_BOX);
-                          square.setTranslateZ(aposz*SIZE_BOX+SIZE_BOX/2);
-                          posFz--;
+                    else if(test(aposx,(int)before.getX(),MAZE_WIDTH-1,0)){
+                        int coeff=(aposx==0)?1:-1;
+                        floor.setTranslateZ(floor.getTranslateZ()+SIZE_BOX);
+                        square = new Box(SIZE_BOX,0,2*SIZE_BOX);
+                        square.setTranslateX((aposx-coeff)*SIZE_BOX);
+                        square.setTranslateZ(aposz*SIZE_BOX-SIZE_BOX/2);
+                        posFz++;
                     }
                     else {
-                        System.out.println("same z");
-                        if(aposz==0)System.out.println("0");
-                        else System.out.println("taille");
+                        int coeff=(aposz==0)?1:-1;
                         floor.setTranslateX(floor.getTranslateX()-SIZE_BOX);
                         square = new Box(2*SIZE_BOX,0,SIZE_BOX);
                         square.setTranslateX(aposx*SIZE_BOX+SIZE_BOX/2);
-                        square.setTranslateZ((aposz-1)*SIZE_BOX);
+                        square.setTranslateZ((aposz-coeff)*SIZE_BOX);
                         posFx--;
                     }
                     square.setMaterial(new PhongMaterial(Color.MAROON));
@@ -375,7 +397,6 @@ public class View extends Scene {
                 else {
                     posFx = (int) a.ending().getX();
                     posFz = (int) a.ending().getY();
-                    System.out.println("second");
                 }
                 before=a.ending();
                 print(first);
@@ -383,9 +404,9 @@ public class View extends Scene {
                 print(firstS);
                 print(square);
                 coordSwitch[i/2]=(new Vector3D(floor.getTranslateX(),floor.getTranslateY(),floor.getTranslateZ()).subtract(new Vector3D(first.getTranslateX(),first.getTranslateY(),first.getTranslateZ()))).multiply(1.0/400);
-              //  if(firstS!=null)squareCoor.add(new Vector3D(square.getTranslateX(),square.getTranslateY(),square.getTranslateZ()).subtract(new Vector3D(firstS.getTranslateX(),firstS.getTranslateY(),firstS.getTranslateZ())).multiply(1/400));
+                //  if(firstS!=null)squareCoor.add(new Vector3D(square.getTranslateX(),square.getTranslateY(),square.getTranslateZ()).subtract(new Vector3D(firstS.getTranslateX(),firstS.getTranslateY(),firstS.getTranslateZ())).multiply(1/400));
                 //if(i>0) coordSwitch[i-1]=squareCoor;
-               // if(i<coordSwitch.length-1) coordSwitch[i+1]=coordSwitch[i];
+                // if(i<coordSwitch.length-1) coordSwitch[i+1]=coordSwitch[i];
                 world.getChildren().add(floor);
                 floorGroups[i/2]=floor;
                 floor = new Group();
@@ -630,15 +651,18 @@ public class View extends Scene {
         public void drawObstacle(Group root,int i, int j,int floor,Maze maze) throws IOException{
             FXMLLoader fxmlLoader = new FXMLLoader();
             float scale = 0,scaleY,scaleZ,posy;
+            Box b=new Box(SIZE_BOX,0,0.1*SIZE_BOX);
+            b.setMaterial(COLOR_ENTRY);
             if(maze.getTypeObstacle().equals("Cercle")) {
                 fxmlLoader.setLocation(this.getClass().getResource("Spider.fxml"));
-                scale = scaleY=scaleZ =1.5f;
+                scale = scaleZ =3f;
+                scaleY =1.5f;
                 posy = SIZE_BOX/10;
             }
             else {
                 fxmlLoader.setLocation(this.getClass().getResource("gate.fxml"));
-                scale = 2.7f;
-                scaleY=5;
+                scale = 3.8f;
+                scaleY=6;
                 scaleZ=3;
                 posy = SIZE_BOX / 20;
             }
@@ -655,8 +679,12 @@ public class View extends Scene {
                     ((Shape3D)n).setScaleY(((Shape3D)n).getScaleY()*scaleY);
                     ((Shape3D)n).setScaleZ(((Shape3D)n).getScaleZ()*scaleZ);
                     ((Shape3D)n).setTranslateY(SIZE_BOX/2-posy-(floor*SIZE_BOX));
+                    b.setTranslateX(j*SIZE_BOX);
+                    b.setTranslateZ(i*SIZE_BOX);
+                    b.setTranslateY(SIZE_BOX/2);
                 }
             }
+            root.getChildren().add(b);
             root.getChildren().add(obs);
         }
 
@@ -733,7 +761,9 @@ public class View extends Scene {
             printMaze();
         }
 
-        public void reset() {
+        public void reset() throws IOException{
+            this.getChildren().clear();
+            initMaze();
 
         }
         public void moveMap(int size,Circle player){
@@ -798,6 +828,7 @@ public class View extends Scene {
     protected abstract class GameControl {
         protected double mouseXOld;
         protected double mouseYOld;
+        protected boolean action=false;
         protected LongProperty lastUpdate;
         protected AnimationTimer gameTimer;
         public GameControl() throws IOException{
@@ -822,10 +853,15 @@ public class View extends Scene {
                     } else {
                         if (lastUpdate.get() > 0) {
                             double elapsedTime = (now - lastUpdate.get()) / 1000000000.0;
+                            if(action){
+                                game.teleport((int)game.player.getPosition().getX(),(int)game.player.getPosition().getY());
+                                game.player.teleport(false);
+                                action=false;
+                            }
                             game.update(elapsedTime);
                             Point2D pos = game.player().getPosition();
                             double yPos = game.player().getY();
-                            int floor = mazePane.floors.indexOf(game.current());
+                            int floor = game.player().getMazeIndex();
                             //System.out.println(pos);
                             mazePane.x.set((pos.getX() + mazePane.coordSwitch[floor].x()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
                             mazePane.z.set((pos.getY() + mazePane.coordSwitch[floor].z()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
@@ -836,9 +872,6 @@ public class View extends Scene {
                                 System.out.println((int)pos.getX()+"  "+(int)pos.getY());
                                 mazePane.remove(mazePane.floorGroups[floor],(int)pos.getX(),(int)pos.getY());
                                 game.player.pick(false);
-                            }
-                            else if(game.player.isUnderTeleport()){
-                                //if(MazeInterface.confirm("Do you wish to teleport ?")) game.teleport((int)pos.getX(),(int)pos.getY());
                             }
                         }
                         lastUpdate.set(now);
@@ -885,8 +918,10 @@ public class View extends Scene {
         public void handleAction() throws IOException{
             game.start();
             mazePane.initMaze();
-            timePane.start();
+            System.out.println(mazePane.floors);
+            System.out.println(game.floors());
             gameTimer.start();
+            timePane.start();
             mazePane.setUpMap(10);
             Circle player = new Circle(4.0,Color.WHITESMOKE);
             mazePane.moveMap(10,player);
@@ -906,6 +941,7 @@ public class View extends Scene {
                         if (game.player.state() != Player.PlayerState.JUMPING) {
                             switch (e.getCode()) {
                                 case UP:
+                                   // if(game.player.isUnderTeleport()) action=MazeInterface.confirm("Do you wish to teleport ?",st);
                                     game.player.up(true);
                                     break;
                                 case RIGHT:
@@ -958,8 +994,15 @@ public class View extends Scene {
                     double mouseXNew=evt.getSceneX();
                     double mouseYNew=evt.getSceneY();
                     if(evt.getEventType()==MouseEvent.MOUSE_DRAGGED){
-                        //  double pitchRotate=mazePane.camera.getRotate()+()
+                        double pitchRotate=mazePane.rotateX.getAngle()+(mouseYNew-mouseYOld);
+                        //set min and max to prevent flipping
+                        //pitchRotate=pitchRotate>cam
+                        mazePane.rotateX.setAngle(pitchRotate);
+                        double yawRotate=mazePane.angle.get()-(mouseXNew-mouseXOld);
+                        mazePane.angle.set(yawRotate);
                     }
+                    mouseXOld=mouseXNew;
+                    mouseYOld=mouseYNew;
                 }
                 if(evt.getEventType()==MouseEvent.MOUSE_CLICKED){
 
@@ -967,6 +1010,12 @@ public class View extends Scene {
 
             });
 
+        }
+
+        public void recenterMouse(double x, double y){
+            Rectangle2D screen=Screen.getPrimary().getBounds();
+            x=screen.getWidth()/2;
+            y=screen.getHeight()/2;
         }
 
 
@@ -1003,15 +1052,14 @@ public class View extends Scene {
             String style="-fx-background-color:lightslategrey;-fx-text-fill: white;-fx-font:oblique 15pt cursive;-fx-text-alignment: center;-fx-font-weight:bold;-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.75),4,0,0,1);";
             String styleB= "-fx-background-color:#090a0c,linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),linear-gradient(#20262b, #191d22),radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));-fx-text-fill:white;";
             int time=0,coin=0;
-            int key = 7;//game.player().keys().size();
-            int bonus = 5;//game.player().getBonus().size();
+            int key = game.player().keys().size();
+            int bonus = game.player().getBonus().size();
             if(bonus+key !=0){
                 if(bonus!=0){
                     for (Bonus a : game.player().getBonus()) {
                         if(a instanceof TimeBonus)time++;
                         else coin++;
                     }
-                    coin=5;time=3;
                     if(coin!=0){
                         Label piece = new Label("Vous avez "+""+coin+" pièce.s");
                         configLabel(piece,"coin.png",style);
@@ -1024,18 +1072,6 @@ public class View extends Scene {
                         HBox panePiece = new HBox(piece,usePiece);
                         panePiece.setAlignment(Pos.CENTER);
                         display.getChildren().add(panePiece);
-                    }
-                    if(time!=0){
-                        Label hourglass = new Label("Vous avez "+""+time+" sablier.s");
-                        configLabel(hourglass,"hourglass.png",style);
-                        Button useTime = new Button("Use");
-                        useTime.setOnMouseClicked(e->{
-                          updateInventory();
-                        });
-                        useTime.setStyle(styleB);
-                        HBox paneHour = new HBox(hourglass,useTime);
-                        paneHour.setAlignment(Pos.CENTER);
-                        display.getChildren().add(paneHour);
                     }
                 }
                 if(key!=0){
