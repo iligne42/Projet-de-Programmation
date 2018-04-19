@@ -334,9 +334,35 @@ public class View extends Scene {
         public boolean test(int a,int b,int c,int d){
           return ((a==b)&&(b==c||b==d));
         }
-
-        public void initMaze() throws IOException{
-            System.out.println("ede");
+        public void setLight(){
+          DoubleProperty x = camera.translateXProperty();
+          DoubleProperty y = camera.translateYProperty();
+          DoubleProperty z = camera.translateZProperty();
+          PointLight light = new PointLight();
+          PointLight licht = new PointLight();
+          PointLight lum = new PointLight();
+          light.translateXProperty().bind(x);
+          light.translateYProperty().bind(y);
+          light.translateZProperty().bind(z);
+          licht.translateXProperty().bind(x.add(SIZE_BOX));
+          licht.translateZProperty().bind(z.add(SIZE_BOX));
+          licht.translateYProperty().bind(y);
+          lum.translateXProperty().bind(x.subtract(SIZE_BOX));
+          lum.translateZProperty().bind(z.subtract(SIZE_BOX));
+          lum.translateYProperty().bind(y);
+          Group groupLight = new Group(licht,lum);//,light,new AmbientLight(Color.BLACK));//,new AmbientLight(Color.BLACK),new AmbientLight(Color.BLACK));
+          this.getChildren().add(groupLight);
+          /*light = new Light.Point();
+          light.setColor(Color.LIGHTGOLDENRODYELLOW);
+          light.xProperty().bind(x);
+          light.yProperty().bind(y);
+          light.zProperty().bind(z);
+          Lighting lighting = new Lighting(light);
+          lighting.setSurfaceScale(8.0);
+          main.setEffect(lighting);*/
+          //cam.setEffect(lighting);
+        }
+        public void initMaze() throws IOException{            
             Group world=new Group();
             Group floor = new Group();
             Group first=floor;
@@ -357,43 +383,43 @@ public class View extends Scene {
                 createMaze(floor,a,i);
                 firstS=square;
                 if(before!=null){
-                    int aposx = (int) a.beginning().getX();
-                    int aposz = (int) a.beginning().getY();
-                    floor.setTranslateX((posFx-aposx)*SIZE_BOX);
-                    floor.setTranslateZ((posFz-aposz)*SIZE_BOX);
-                    posFx=(int) a.ending().getX()+(posFx-aposx);
-                    posFz=(int) a.ending().getY()+(posFz-aposz);
-                    if(!test(aposx,(int)before.getX(),MAZE_WIDTH-1,0) && !test(aposz,(int)before.getY(),MAZE_LENGTH-1,0)){
-                        setUp(aposx,aposz,MAZE_LENGTH,MAZE_WIDTH,floor,1);
-                        setUp((int)before.getX(),(int)before.getY(),MAZE_LENGTH,MAZE_WIDTH,floor,-1);
-                        square=new Box(SIZE_BOX,0,SIZE_BOX);
-                        square.setTranslateX(aposx*SIZE_BOX);
-                        square.setTranslateZ(aposz*SIZE_BOX);
-                        if(aposx==0)square.setTranslateX(square.getTranslateX()-SIZE_BOX);
-                        else if(aposx==MAZE_LENGTH-1) square.setTranslateX(square.getTranslateX()+SIZE_BOX);
-                        else if(aposz==0) square.setTranslateZ(square.getTranslateZ()-SIZE_BOX);
-                        else if(aposz==MAZE_WIDTH-1) square.setTranslateZ(square.getTranslateZ()+SIZE_BOX);
-                    }
+                   int aposx = (int) a.beginning().getX();
+                   int aposz = (int) a.beginning().getY();
+                   floor.setTranslateX((posFx-aposx)*SIZE_BOX);
+                   floor.setTranslateZ((posFz-aposz)*SIZE_BOX);
+                   posFx=(int) a.ending().getX()+(posFx-aposx);
+                   posFz=(int) a.ending().getY()+(posFz-aposz);
+                   if(!test(aposx,(int)before.getX(),MAZE_WIDTH-1,0) && !test(aposz,(int)before.getY(),MAZE_LENGTH-1,0)){
+                       setUp(aposx,aposz,MAZE_LENGTH,MAZE_WIDTH,floor,1);
+                       setUp((int)before.getX(),(int)before.getY(),MAZE_LENGTH,MAZE_WIDTH,floor,-1);
+                       square=new Box(SIZE_BOX,0,SIZE_BOX);
+                       square.setTranslateX(aposx*SIZE_BOX);
+                       square.setTranslateZ(aposz*SIZE_BOX);
+                       if(aposx==0)square.setTranslateX(square.getTranslateX()-SIZE_BOX);
+                       else if(aposx==MAZE_WIDTH-1)square.setTranslateX(square.getTranslateX()+SIZE_BOX);
+                       else if(aposz==0)square.setTranslateZ(square.getTranslateZ()-SIZE_BOX);
+                       else if(aposz==MAZE_LENGTH-1)square.setTranslateZ(square.getTranslateZ()+SIZE_BOX);
+                   }
                     else if(test(aposx,(int)before.getX(),MAZE_WIDTH-1,0)){
-                        int coeff=(aposx==0)?1:-1;
-                        floor.setTranslateZ(floor.getTranslateZ()+SIZE_BOX);
-                        square = new Box(SIZE_BOX,0,2*SIZE_BOX);
-                        square.setTranslateX((aposx-coeff)*SIZE_BOX);
-                        square.setTranslateZ(aposz*SIZE_BOX-SIZE_BOX/2);
-                        posFz++;
-                    }
-                    else {
-                        int coeff=(aposz==0)?1:-1;
-                        floor.setTranslateX(floor.getTranslateX()-SIZE_BOX);
-                        square = new Box(2*SIZE_BOX,0,SIZE_BOX);
-                        square.setTranslateX(aposx*SIZE_BOX+SIZE_BOX/2);
-                        square.setTranslateZ((aposz-coeff)*SIZE_BOX);
-                        posFx--;
-                    }
-                    square.setMaterial(new PhongMaterial(Color.MAROON));
-                    square.setTranslateY((-i+1)*SIZE_BOX+SIZE_BOX/2);
-                    floor.getChildren().add(square);
-                }
+                         int coeff=(aposx==0)?1:-1;
+                         floor.setTranslateZ(floor.getTranslateZ()-SIZE_BOX);
+                         square = new Box(SIZE_BOX,0,2*SIZE_BOX);
+                         square.setTranslateX((aposx-coeff)*SIZE_BOX);
+                         square.setTranslateZ(aposz*SIZE_BOX+SIZE_BOX/2);
+                         posFz--;
+                   }
+                   else {
+                       int coeff=(aposz==0)?1:-1;
+                       floor.setTranslateX(floor.getTranslateX()-SIZE_BOX);
+                       square = new Box(2*SIZE_BOX,0,SIZE_BOX);
+                       square.setTranslateX(aposx*SIZE_BOX+SIZE_BOX/2);
+                       square.setTranslateZ((aposz-coeff)*SIZE_BOX);
+                       posFx--;
+                   }
+                   square.setMaterial(new PhongMaterial(Color.MAROON));
+                   square.setTranslateY((-i+1)*SIZE_BOX+SIZE_BOX/2);
+                   floor.getChildren().add(square);
+               }
                 else {
                     posFx = (int) a.ending().getX();
                     posFz = (int) a.ending().getY();
@@ -403,6 +429,7 @@ public class View extends Scene {
                 print(floor);
                 print(firstS);
                 print(square);
+                a.print();
                 coordSwitch[i/2]=(new Vector3D(floor.getTranslateX(),floor.getTranslateY(),floor.getTranslateZ()).subtract(new Vector3D(first.getTranslateX(),first.getTranslateY(),first.getTranslateZ()))).multiply(1.0/400);
                 //  if(firstS!=null)squareCoor.add(new Vector3D(square.getTranslateX(),square.getTranslateY(),square.getTranslateZ()).subtract(new Vector3D(firstS.getTranslateX(),firstS.getTranslateY(),firstS.getTranslateZ())).multiply(1/400));
                 //if(i>0) coordSwitch[i-1]=squareCoor;
@@ -421,6 +448,7 @@ public class View extends Scene {
             sphere.setMaterial(new PhongMaterial(Color.DARKBLUE));*/
             this.getChildren().add (world);
             buildCamera(this);
+            setLight();
             for(int a=0;a<coordSwitch.length;a++) System.out.println(coordSwitch[a]);
             System.out.println("end");
         }
