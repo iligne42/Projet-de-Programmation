@@ -2,17 +2,38 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.media.AudioClip;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public interface MazeInterface {
+    ArrayList<AudioClip> sounds=new ArrayList<>();
+    //Sounds handling
+
+    static void initSounds() {
+        File folder = new File("sounds/");
+        for (File f : folder.listFiles()) {
+                System.out.println(f.toURI().toString());
+                AudioClip a = new AudioClip(f.toURI().toString());
+                a.setCycleCount(1);
+                sounds.add(a);
+            }
+    }
+
+    static AudioClip sounds(int index){
+        return sounds.get(index);
+    }
 
     static String getT(int t) {
         int minutes = t / 60;
@@ -101,7 +122,7 @@ public interface MazeInterface {
     }
 
     static GameVersion load(String file) throws IOException, ClassNotFoundException {
-        FileInputStream fis = new FileInputStream(file);
+        FileInputStream fis = new FileInputStream("savings/"+file);
         ObjectInputStream ois = new ObjectInputStream(fis);
         GameVersion g = (GameVersion) ois.readObject();
         ois.close();
@@ -109,14 +130,14 @@ public interface MazeInterface {
     }
 
     static MultiPlayerVersion loadM(String file) throws IOException, ClassNotFoundException {
-        FileInputStream fis = new FileInputStream(file);
+        FileInputStream fis = new FileInputStream("savings/"+file);
         ObjectInputStream ois = new ObjectInputStream(fis);
         MultiPlayerVersion g = (MultiPlayerVersion) ois.readObject();
         ois.close();
         return g;
     }
 
-    static int nbPlayer() {
+    static int nbPlayer() throws FormatNotSupported{
         int res = 0;
         TextInputDialog dialog = new TextInputDialog("2");
         dialog.setTitle("MultiPlayer initialisation");
@@ -124,18 +145,23 @@ public interface MazeInterface {
         dialog.setContentText("Please enter the number of players :");
         Menu.addCss(dialog);
         Optional<String> result = dialog.showAndWait();
-        try {
-            res = Integer.parseInt(result.get());
-        } catch (Exception e) {
-            Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setTitle("Not a number");
-            error.setContentText("Your input is not a number, try again");
-            Menu.addCss(error);
-            Optional<ButtonType> button = error.showAndWait();
-            if (button.get() == ButtonType.OK) return nbPlayer();
+        if (result.isPresent()) {
+            try {
+                res = Integer.parseInt(result.get());
+            }
+            catch(NumberFormatException e){
+                Alert error = new Alert(Alert.AlertType.ERROR);
+                error.setTitle("Not a number");
+                error.setContentText("Your input is not a number, try again");
+                Menu.addCss(error);
+                Optional<ButtonType> button = error.showAndWait();
+                if (button.get() == ButtonType.OK) res = nbPlayer();
+            }
+            return res;
         }
-        return res;
+       throw new FormatNotSupported("No value ");
     }
+
 
     static Maze getMaze(int L, int l ) throws FormatNotSupported,IOException{
         if(l==-1){
@@ -183,7 +209,7 @@ public interface MazeInterface {
            }
        }
         if(no) warning("Sorry, we couldn't put everything you requested :'(");
-        return new MazeFloors(L,l,f,extra[0],extra[2],extra[3],extra[1],extra[4],typeB);
+        return new MazeFloors(L,l,f,extra[0],extra[2],extra[3],f,extra[4],typeB);
     }
 
     static int getSelected(boolean[] s){
