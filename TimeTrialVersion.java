@@ -16,19 +16,19 @@ public class TimeTrialVersion extends GameVersion {
 	}
 
     public TimeTrialVersion(MazeFloors maze, Player player, int time) throws FormatNotSupported,IOException{
-		super(maze,player,new Scores("bestRaces.txt",MazeInterface.getDifficulty(maze.getFloor().getFirst().getHeight(),maze.getFloor().getFirst().getWidth())));
+		super(maze,player,new Scores("txt/bestRaces.txt",MazeInterface.getDifficulty(maze.getFloor().getFirst().getHeight(),maze.getFloor().getFirst().getWidth())));
         timeLimit=time;
 
     }
 
     public TimeTrialVersion(MazeFloors maze, String name, int time) throws FormatNotSupported,IOException{
-	    super(maze,name,new Scores("bestRaces.txt",MazeInterface.getDifficulty(maze.getFloor().getFirst().getHeight(),maze.getFloor().getFirst().getWidth())));
+	    super(maze,name,new Scores("txt/bestRaces.txt",MazeInterface.getDifficulty(maze.getFloor().getFirst().getHeight(),maze.getFloor().getFirst().getWidth())));
 	    timeLimit=time;
 
     }
 
 	public String scoresFile(){
-		return "bestRaces.txt";
+		return "txt/bestRaces.txt";
 	}
 
 

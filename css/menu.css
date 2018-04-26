@@ -1,5 +1,5 @@
 .root{
--fx-background-image:url("Dark-Background.jpg");
+-fx-background-image:url("../images/Dark-Background.jpg");
 }
 
 
@@ -40,6 +40,7 @@
 -fx-font-size:20;
 -fx-font-weight:bold;
 -fx-background-color:transparent;
+-fx-alignment:center;
 }
 
 .combo-box-popup .list-view{

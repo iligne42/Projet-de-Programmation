@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Camera;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -30,16 +31,21 @@ public class MultiView extends View {
         //protected Scores scores;
         protected IntegerProperty timeToBeat;
         protected Label nameLabel;
+        protected HBox toBeat=new HBox();
         protected Label label;
 
         public MultiControl() throws IOException, FormatNotSupported {
             super();
+            System.out.println("b");
             label = new Label();
-            nameLabel=new Label("Current Player : "+game.player().getName());
+            nameLabel=new Label(game.player().getName());
             timeToBeat = new TimeProperty(0);
             label.textProperty().bind(timeToBeat.asString());
-            main.getChildren().add(nameLabel);
-            StackPane.setAlignment(nameLabel, Pos.BOTTOM_CENTER);
+            label.setStyle("-fx-alignment:center;-fx-text-fill:crimson;-fx-font-size:50pt");
+            nameLabel.setStyle("-fx-alignment:center;-fx-text-fill:white;-fx-font-size:25pt");
+            toBeat.getChildren().addAll(new Label("Time to beat : "),label);
+            tool.getItems().add(nameLabel);
+            //StackPane.setAlignment(nameLabel, Pos.BOTTOM_CENTER);
 
             //timePane.getChildren().add(label);
 
@@ -54,12 +60,14 @@ public class MultiView extends View {
             //Get time to beat, it is the top of the list
             //Get to the next player and labyrinth
             if (!multi.gameOver()) {
+                mazePane.printMaze();
                 try {
                     game=multi.next();
                     mazePane.getChildren().clear();
                     handleAction();
-                  /*  main.getChildren().add(label);
+                    timePane.getChildren().add(toBeat);
                     nameLabel.setText(game.player().getName());
+                  /*  main.getChildren().add(label);
                     StackPane.setAlignment(label, Pos.BOTTOM_LEFT);*/
                 } catch (IOException e1) {
                     e1.printStackTrace();

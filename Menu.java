@@ -85,7 +85,8 @@ public class Menu extends Application {
 			});
                     pan.getChildren().add(prev);
                 }
-                catch(Exception exc){}
+                catch(Exception exc){
+                    exc.printStackTrace();}
     	});
     }
     public void config(VBox ranking,String path,StackPane stack,VBox menu){
@@ -103,11 +104,11 @@ public class Menu extends Application {
     public void initRank(StackPane stack,VBox ranking,VBox menu){
       Button solos = new Button("Solo");
       solos.setOnMouseClicked(e->{
-              config(ranking,"bestSolos.txt",stack,menu);
+              config(ranking,"txt/bestSolos.txt",stack,menu);
           });
       Button trial = new Button("Against the clock");
       trial.setOnMouseClicked(e->{
-              config(ranking,"bestRaces.txt",stack,menu);
+              config(ranking,"txt/bestRaces.txt",stack,menu);
           });
       ranking.getChildren().addAll(solos,trial);
     }
@@ -174,7 +175,7 @@ public class Menu extends Application {
                 st.show();
             }
             catch(Exception ex){
-
+                ex.printStackTrace();
             }
         });
 
@@ -195,6 +196,10 @@ public class Menu extends Application {
 
 
         ObservableList<String> options = FXCollections.observableArrayList();
+        File folder=new File("savings/");
+        for(File f:folder.listFiles()){
+            if(f.getName().endsWith(".ser")) options.add(f.getName());
+        }
 
         ComboBox cont = new ComboBox(options);
         cont.setPromptText("Continue a previous game");
@@ -213,7 +218,7 @@ public class Menu extends Application {
 
             }
             catch(Exception ex){
-
+                ex.printStackTrace();
             }
         });
      /* cont.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
@@ -392,7 +397,7 @@ public class Menu extends Application {
                    st.setFullScreen(true);
                     st.show();
                 } catch (Exception formatNotSupported) {
-
+                    formatNotSupported.printStackTrace();
                 }
             }
 
@@ -529,7 +534,7 @@ public class Menu extends Application {
                     hostmenu.initClient(name);
                     changePanel(stack, hostmenu);
                 } catch (Exception exception) {
-
+                    exception.printStackTrace();
                 }
             });
 
@@ -559,7 +564,7 @@ public class Menu extends Application {
         hostmenu.setVisible(false);
         ranking.setVisible(false);
         Scene scene = new Scene(stack);
-        scene.getStylesheets().add("menu.css");
+        scene.getStylesheets().add("css/menu.css");
         stage.setScene(scene);
         stage.show();
     }
@@ -594,7 +599,7 @@ public class Menu extends Application {
 
     public static void addCss(Dialog a) {
         DialogPane dialogPane = a.getDialogPane();
-        dialogPane.getStylesheets().add("alert.css");
+        dialogPane.getStylesheets().add("css/alert.css");
         a.setHeaderText(null);
         a.setGraphic(null);
 

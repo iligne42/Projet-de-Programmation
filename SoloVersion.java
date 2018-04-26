@@ -27,16 +27,16 @@ public class SoloVersion extends GameVersion {
 
 
 	public SoloVersion(MazeFloors maze, Player player) throws FormatNotSupported, IOException {
-		this(maze, player, new Scores("bestSolos.txt",MazeInterface.getDifficulty(maze.getFloor().getFirst().getHeight(),maze.getFloor().getFirst().getWidth())));
+		this(maze, player, new Scores("txt/bestSolos.txt",MazeInterface.getDifficulty(maze.getFloor().getFirst().getHeight(),maze.getFloor().getFirst().getWidth())));
 
 	}
 
 	public SoloVersion(MazeFloors maze, String name) throws FormatNotSupported, IOException {
-		this(maze, name, new Scores("bestSolos.txt",MazeInterface.getDifficulty(maze.getFloor().getFirst().getHeight(),maze.getFloor().getFirst().getWidth())));
+		this(maze, name, new Scores("txt/bestSolos.txt",MazeInterface.getDifficulty(maze.getFloor().getFirst().getHeight(),maze.getFloor().getFirst().getWidth())));
 	}
 
 	public String scoresFile() {
-		return "bestSolos.txt";
+		return "txt/bestSolos.txt";
 	}
 
 }
