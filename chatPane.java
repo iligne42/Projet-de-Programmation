@@ -43,7 +43,7 @@ public class chatPane extends BorderPane{
 				text.setText("");
 			}
 		});
-		getStylesheets().add("chat.css");
+		getStylesheets().add("css/chat.css");
 	}
 
 	public void initHost(String name){

@@ -28,6 +28,8 @@ public class netView extends View{
 
     public netView(GameVersion game, Socket me) throws IOException{
         super(new StackPane(), game);
+        main.getChildren().remove(tool);
+        mazePane.setToolBar(true);
         control=new NetControl(me);
     }
 
@@ -82,10 +84,10 @@ public class netView extends View{
                     }
                 }
             }
-    
+
             public void arret(){
-               end =true;
-           }
+                end =true;
+            }
         }
 
         public class getPos extends Thread{
@@ -105,12 +107,12 @@ public class netView extends View{
                                 if(debug)
                                     //System.out.println("Je recois une list de pos.");
                                     players = (ArrayList<Player>)tmp;
-                                    if(premierTour){
-                                        t=new DoubleProperty[players.size()][3];
-                                        Platform.runLater(() -> drawPlayer(mazePane)); //à changer
-                                        premierTour=false;
-                                    }
-                                    else  Platform.runLater(() -> updatePlayer());
+                                if(premierTour){
+                                    t=new DoubleProperty[players.size()][3];
+                                    Platform.runLater(() -> drawPlayer(mazePane)); //à changer
+                                    premierTour=false;
+                                }
+                                else  Platform.runLater(() -> updatePlayer());
                             }
                         }else if(tmp instanceof Scores) {
                             Scores sc = (Scores) tmp;
@@ -157,9 +159,9 @@ public class netView extends View{
             /*player.setTranslateX(p.getPosition().getX()+mazePane.coordSwitch[g].x()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateZ(p.getPosition().getY()+mazePane.coordSwitch[g].z()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateY(-p.getY()*mazePane.SIZE_BOX);*/
-            player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX/20);
-            player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX/20);
-            player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX/10);
+                player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX/20);
+                player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX/20);
+                player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX/10);
                 //System.out.println("J'ai fait les modifs");
                 root.getChildren().add(player);
             }catch(IOException e){

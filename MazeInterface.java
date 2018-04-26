@@ -24,11 +24,10 @@ public interface MazeInterface {
     static void initSounds() {
         File folder = new File("sounds/");
         for (File f : folder.listFiles()) {
-                System.out.println(f.toURI().toString());
-                AudioClip a = new AudioClip(f.toURI().toString());
-                a.setCycleCount(1);
-                sounds.add(a);
-            }
+            AudioClip a = new AudioClip(f.toURI().toString());
+            a.setCycleCount(1);
+            sounds.add(a);
+        }
     }
 
     static AudioClip sounds(int index){
@@ -68,7 +67,7 @@ public interface MazeInterface {
         return res;
     }
 
-    static boolean confirm(String input,Window stage){
+    static int confirm(String input,Window stage){
         Alert alert=new Alert(Alert.AlertType.CONFIRMATION);
         alert.initOwner(stage);
         alert.setTitle("You need to confirm ...");
@@ -78,8 +77,8 @@ public interface MazeInterface {
         Menu.addCss(alert);
         //Platform.runLater(alert::showAndWait);
         Optional<ButtonType> result=alert.showAndWait();
-        if(result.get()==bYes) return true;
-        else return false;
+        if(result.get()==bYes) return 0;
+        else return 1;
     }
 
     static void warning(String warn){
@@ -159,7 +158,7 @@ public interface MazeInterface {
             }
             return res;
         }
-       throw new FormatNotSupported("No value ");
+        throw new FormatNotSupported("No value ");
     }
 
 
@@ -172,9 +171,9 @@ public interface MazeInterface {
     }
 
     static MazeFloors getMaze(int L,int l,int f,int typeB,boolean[] sup,int extras) throws Exception{
-       int[] extra=new int[sup.length];
-       int nb=getSelected(sup);
-       boolean no=false;
+        int[] extra=new int[sup.length];
+        int nb=getSelected(sup);
+        boolean no=false;
         if(l==-1){
             L=readInt("Choose the length");
             l=readInt("Choose the width");
@@ -190,26 +189,26 @@ public interface MazeInterface {
                 case 3:s="Super Hard";
                     break;
             }
-             extras=nbExtra(s);
+            extras=nbExtra(s);
         }
 
-       for(int i=0;i<extra.length;i++){
-           extra[i]=0;
-           if(sup[i] ){
-               if(i!=4) {
-                   extra[i] = extras / nb;
-                   extras -= extra[i];
-                   nb--;
-                   if(extra[i]==0) no=true;
-               }
-               else{
-                   extra[i]=(typeB==0)?(L*l)/5:(L*l)/10;
-                   nb --;
-               }
-           }
-       }
+        for(int i=0;i<extra.length;i++){
+            extra[i]=0;
+            if(sup[i] ){
+                if(i!=4) {
+                    extra[i] = extras / nb;
+                    extras -= extra[i];
+                    nb--;
+                    if(extra[i]==0) no=true;
+                }
+                else{
+                    extra[i]=(typeB==0)?(L*l)/5:(L*l)/10;
+                    nb --;
+                }
+            }
+        }
         if(no) warning("Sorry, we couldn't put everything you requested :'(");
-        return new MazeFloors(L,l,f,extra[0],extra[2],extra[3],f,extra[4],typeB);
+        return new MazeFloors(L,l,f,extra[0],extra[2],extra[3],extra[1],extra[4],typeB);
     }
 
     static int getSelected(boolean[] s){
@@ -228,7 +227,7 @@ public interface MazeInterface {
         else if (ty.equals("Against the clock"))
             return new SingleView(new TimeTrialVersion(m, name, time));
 //Modify this part
-        //Rajouter des modifs ici
+            //Rajouter des modifs ici
         else return new MultiView(new MultiPlayerVersion(setMulti(), m));
     }
 
@@ -243,7 +242,7 @@ public interface MazeInterface {
         else return new MultiView(new MultiPlayerVersion(setMulti(), m));
     }
 
-//HERE ADD THE OPTIONS FOR THE NETWORK THING
+    //HERE ADD THE OPTIONS FOR THE NETWORK THING
     /*static View getView(int L, int l, String ty,int time) throws FormatNotSupported, IOException {
         if (ty.equals("Solo")) {
             if (l == -1)

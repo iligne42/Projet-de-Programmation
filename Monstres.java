@@ -132,7 +132,7 @@ public class Monstres extends Divers{
 
     public MeshView initMonster() throws IOException{
       FXMLLoader fxmlLoader = new FXMLLoader();
-      fxmlLoader.setLocation(this.getClass().getResource("ghost.fxml"));
+      fxmlLoader.setLocation(this.getClass().getResource("fxml/ghost.fxml"));
       MeshView ghost = fxmlLoader.<MeshView>load();
       PhongMaterial mat = new PhongMaterial();
       mat.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);

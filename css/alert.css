@@ -1,5 +1,5 @@
 .dialog-pane{
-   -fx-background-image:url("lab.jpg");
+   -fx-background-image:url("../images/lab.jpg");
 }
 
 .dialog-pane .label{

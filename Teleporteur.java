@@ -52,7 +52,7 @@ public class Teleporteur extends Divers{
 
     public MeshView initTeleport() throws IOException{
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(this.getClass().getResource("teleport.fxml"));
+        fxmlLoader.setLocation(this.getClass().getResource("fxml/teleport.fxml"));
         PhongMaterial mat = new PhongMaterial();
         mat.setSpecularColor(Color.HOTPINK);
         mat.setDiffuseColor(Color.PURPLE);

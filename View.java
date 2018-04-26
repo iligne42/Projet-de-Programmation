@@ -61,8 +61,8 @@ public class View extends Scene {
         // timeLabel.textProperty().bind(game.timeSecondsProperty().asString());
         if (game instanceof SoloVersion) timePane = new SoloTimePane();
         else if (game instanceof TimeTrialVersion) timePane = new TimeTrialPane(((TimeTrialVersion) game).timeLimit);
-        mazePane.setToolBar();
-        main.getChildren().addAll(mazeScene, timePane, tool);
+        mazePane.setToolBar(false);
+        main.getChildren().addAll(mazeScene, timePane);
         StackPane.setAlignment(timePane, Pos.TOP_LEFT);
         StackPane.setAlignment(tool, Pos.TOP_RIGHT);
     }
@@ -200,6 +200,7 @@ public class View extends Scene {
     }
 
 
+
     protected class MazePane extends Group {
         protected Group world;
         protected LinkedList<Maze> floors=game.floors();
@@ -232,7 +233,7 @@ public class View extends Scene {
             display.setAlignment(Pos.CENTER);
         }
 
-        public void setToolBar() {
+        public void setToolBar(boolean multi) {
             String style = "-fx-background-color: rgba(0, 0, 0, 0);";
             //String style="-fx-background-color: linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%), linear-gradient(#020b02, #3a3a3a),linear-gradient(#b9b9b9 0%, #c2c2c2 20%, #afafaf 80%, #c8c8c8 100%),  linear-gradient(#f5f5f5 0%, #dbdbdb 50%, #cacaca 51%, #d7d7d7 100%);";//"-fx-background-color:linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%),linear-gradient(#020b02, #3a3a3a),linear-gradient(#9d9e9d 0%, #6b6a6b 20%, #343534 80%, #242424 100%),linear-gradient(#8a8a8a 0%, #6b6a6b 20%, #343534 80%, #262626 100%),linear-gradient(#777777 0%, #606060 50%, #505250 51%, #2a2b2a 100%);-fx-background-insets: 0,1,4,5,6;-fx-background-radius: 9,8,5,4,3;-fx-padding: 15 30 15 30;";//-fx-font-size: 18px;-fx-font-weight: bold;-fx-text-fill: white;-fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);";
             quit = new Button();
@@ -270,52 +271,52 @@ public class View extends Scene {
                     main.getChildren().remove(display);
                 }
             });
+            TimeProperty nBpiece = new TimeProperty(game.player().getBonus().size());
+            Label piece = new Label();
+            piece.textProperty().bind(nBpiece.asString());
+
             save = new Button();
             configButton("images/save.png", save);
             save.setOnMouseClicked(e -> {
                 LocalDate now = LocalDate.now();
                 String date[] = now.toString().split("-");
-                System.out.println(now);
                 try {
                     game.save("savings/"+game.player().getName()+"--"+date[2] + "-" + date[1] + "-" + date[0].charAt(2) +date[0].charAt(3));
-                   //game.save(date[2] + "-" + date[1] + "-" + date[0].charAt(2) +date[0].charAt(3)+ "-" + game.player().getName());
+                    //game.save(date[2] + "-" + date[1] + "-" + date[0].charAt(2) +date[0].charAt(3)+ "-" + game.player().getName());
                 } catch (Exception exc) {
                     exc.printStackTrace();
                 }
             });
-            System.out.println("7");
             inv = new Button();
             configButton("images/inv.png", inv);
             inv.setOnMousePressed(e -> {
                 if (!main.getChildren().contains(display)) {
-                    timePane.pause();
+                    if(!multi)timePane.pause();
                     main.getChildren().add(display);
                     control.updateInventory();
                     tool.toFront();
                 } else {
-                    timePane.play();
+                    if(!multi)timePane.play();
                     main.getChildren().remove(display);
                 }
             });
-            System.out.println("6");
             help = new Button();
             configButton("images/help.png", help);
             help.setOnMousePressed(e -> {
-                timePane.pause();
+                if(!multi)timePane.pause();
                 boolean aide = main.getChildren().contains(display);
                 if (!aide) main.getChildren().add(display);
                 control.displayHelp();
             });
             help.setOnMouseReleased(e -> {
-                timePane.play();
+                if(!multi)timePane.play();
                 main.getChildren().remove(display);
             });
-            System.out.println("9");
             Region rg = new Region();
             HBox.setHgrow(rg, Priority.SOMETIMES);
             rg.setFocusTraversable(false);
-            tool = new ToolBar(rg, help, inv, save, pause, quit);
-            System.out.println("fin");
+            if(multi) tool=new ToolBar(rg,help,inv,plan,quit);
+            else tool = new ToolBar(rg, help, inv, save, plan,pause, quit);
             for (Node a : tool.getItems()) {
                 if (a instanceof Button) {
                     a.setStyle(style);
@@ -323,7 +324,7 @@ public class View extends Scene {
                 }
             }
             tool.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
-            System.out.println("efrgfthjk");
+            main.getChildren().add(tool);
         }
 
         public void configButton(String path, Button button) {
@@ -342,19 +343,34 @@ public class View extends Scene {
             DoubleProperty x = camera.translateXProperty();
             DoubleProperty y = camera.translateYProperty();
             DoubleProperty z = camera.translateZProperty();
-            PointLight light = new PointLight();
-            PointLight licht = new PointLight();
-            PointLight lum = new PointLight();
-            light.translateXProperty().bind(x);
-            light.translateYProperty().bind(y);
-            light.translateZProperty().bind(z);
-            licht.translateXProperty().bind(x.add(SIZE_BOX));
+            DoubleProperty angle=camera.rotateProperty();
+            PointLight lightL = new PointLight();
+            lightL.translateXProperty().bind(x.add(-SIZE_BOX*Math.cos(Math.toRadians(angle.get()))));
+            lightL.translateYProperty().bind(y.subtract(SIZE_BOX/2));
+            lightL.translateZProperty().bind(z.add(-SIZE_BOX*Math.sin(Math.toRadians(angle.get()))));
+            /*PointLight lightL = new PointLight();
+            PointLight lightR = new PointLight();
+            PointLight lightU = new PointLight();
+            PointLight lightD = new PointLight();
+            lightL.translateXProperty().bind(x.subtract(SIZE_BOX));
+            lightL.translateYProperty().bind(y);
+            lightL.translateZProperty().bind(z);
+            lightR.translateZProperty().bind(z);
+            lightR.translateYProperty().bind(y);
+            lightR.translateZProperty().bind(x.add(SIZE_BOX));
+            /*lightU.translateXProperty().bind(x);
+            lightU.translateYProperty().bind(y);
+            lightU.translateZProperty().bind(z.add(SIZE_BOX));
+            lightD.translateXProperty().bind(x);
+            lightD.translateYProperty().bind(y);
+            lightD.translateZProperty().bind(z.subtract(SIZE_BOX));*/
+           /*licht.translateXProperty().bind(x.add(SIZE_BOX));
             licht.translateZProperty().bind(z.add(SIZE_BOX));
             licht.translateYProperty().bind(y);
             lum.translateXProperty().bind(x.subtract(SIZE_BOX));
             lum.translateZProperty().bind(z.subtract(SIZE_BOX));
-            lum.translateYProperty().bind(y);
-            Group groupLight = new Group(licht, lum);//,light,new AmbientLight(Color.BLACK));//,new AmbientLight(Color.BLACK),new AmbientLight(Color.BLACK));
+            lum.translateYProperty().bind(y);*/
+            Group groupLight = new Group(lightL,new AmbientLight(Color.BLACK));//,light,new AmbientLight(Color.BLACK));//,new AmbientLight(Color.BLACK),new AmbientLight(Color.BLACK));
             this.getChildren().add(groupLight);
           /*light = new Light.Point();
           light.setColor(Color.LIGHTGOLDENRODYELLOW);
@@ -377,7 +393,7 @@ public class View extends Scene {
             Box square = null;
             Box firstS;
             COLOR_WALL.setBumpMap(new Image("images/brick.jpg"));
-            COLOR_WALL.setDiffuseColor(Color.LIGHTGOLDENRODYELLOW);
+           // COLOR_WALL.setDiffuseColor(Color.LIGHTGOLDENRODYELLOW);
             COLOR_WALL.setSpecularColor(Color.BLACK);
             COLOR_DOOR.setDiffuseMap(new Image("images/safe.jpg"));
             COLOR_DOOR.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
@@ -434,9 +450,6 @@ public class View extends Scene {
                 print(square);
                 a.print();
                 coordSwitch[i / 2] = (new Vector3D(floor.getTranslateX(), floor.getTranslateY(), floor.getTranslateZ()).subtract(new Vector3D(first.getTranslateX(), first.getTranslateY(), first.getTranslateZ()))).multiply(1.0 / 400);
-                //  if(firstS!=null)squareCoor.add(new Vector3D(square.getTranslateX(),square.getTranslateY(),square.getTranslateZ()).subtract(new Vector3D(firstS.getTranslateX(),firstS.getTranslateY(),firstS.getTranslateZ())).multiply(1/400));
-                //if(i>0) coordSwitch[i-1]=squareCoor;
-                // if(i<coordSwitch.length-1) coordSwitch[i+1]=coordSwitch[i];
                 world.getChildren().add(floor);
                 floorGroups[i / 2] = floor;
                 floor = new Group();
@@ -452,8 +465,7 @@ public class View extends Scene {
             this.getChildren().add(world);
             buildCamera(this);
             setLight();
-            for (int a = 0; a < coordSwitch.length; a++) System.out.println(coordSwitch[a]);
-            System.out.println("end");
+            printMaze();
         }
 
         public void print(Node a) {
@@ -479,6 +491,12 @@ public class View extends Scene {
                         case Maze.END:
                             cell = makeFloor(COLOR_END);
                             setBox(cell, i, j, root, floor, maze);
+                            Label message=new Label("Congratulations");
+                            message.setStyle("-fx-font-size:40pt");
+                            message.setTranslateX(cell.getTranslateX());
+                            message.setTranslateZ(cell.getTranslateX());
+                            message.setTranslateY(cell.getTranslateY()-SIZE_BOX/2);
+                            root.getChildren().add(message);
                             break;
 
                         case Maze.WAY:
@@ -651,7 +669,7 @@ public class View extends Scene {
             MeshView teleport = last.initTeleport();
             teleport.setTranslateX(j * SIZE_BOX);
             teleport.setTranslateZ(i * SIZE_BOX);
-            teleport.setTranslateY((-floor) * SIZE_BOX - SIZE_BOX / 2);
+            teleport.setTranslateY((-floor) * SIZE_BOX+SIZE_BOX/4);
             teleport.setScaleX(teleport.getScaleX() * SIZE_BOX / 4);
             teleport.setScaleZ(teleport.getScaleZ() * SIZE_BOX / 4);
             teleport.setScaleY(teleport.getScaleY() * SIZE_BOX / 4);
@@ -680,9 +698,11 @@ public class View extends Scene {
             float scale = 0, scaleY, scaleZ, posy;
             Box b = new Box(SIZE_BOX, 0, 0.1 * SIZE_BOX);
             b.setMaterial(COLOR_ENTRY);
+            Circle c=new Circle(SIZE_BOX/2,Color.LAVENDER);
             if (maze.getTypeObstacle().equals("Cercle")) {
                 fxmlLoader.setLocation(this.getClass().getResource("fxml/Spider.fxml"));
-                scale = scaleZ = 3f;
+                scale =  2.1f;
+                scaleZ = 2.5f;
                 scaleY = 1.5f;
                 posy = SIZE_BOX / 10;
             } else {
@@ -705,12 +725,12 @@ public class View extends Scene {
                     ((Shape3D) n).setScaleY(((Shape3D) n).getScaleY() * scaleY);
                     ((Shape3D) n).setScaleZ(((Shape3D) n).getScaleZ() * scaleZ);
                     ((Shape3D) n).setTranslateY(SIZE_BOX / 2 - posy - (floor * SIZE_BOX));
-                    b.setTranslateX(j * SIZE_BOX);
-                    b.setTranslateZ(i * SIZE_BOX);
-                    b.setTranslateY(SIZE_BOX / 2);
+                    c.setTranslateX(j * SIZE_BOX);
+                    c.setTranslateZ(i * SIZE_BOX);
+                    c.setTranslateY(SIZE_BOX / 2);
                 }
             }
-            root.getChildren().add(b);
+            root.getChildren().add(c);
             root.getChildren().add(obs);
         }
 
@@ -769,8 +789,6 @@ public class View extends Scene {
             Point2D position = game.player().getPosition();
             double yPos = game.player.getY();
             int floor = game.floor();
-            System.out.println(yPos);
-            System.out.println(position);
             x = new SimpleDoubleProperty((position.getX() + coordSwitch[floor].x()) * SIZE_BOX - SIZE_BOX / 2);
             y = new SimpleDoubleProperty(-yPos * SIZE_BOX);
             z = new SimpleDoubleProperty((position.getY() + coordSwitch[floor].z()) * SIZE_BOX - SIZE_BOX / 2);
@@ -880,7 +898,7 @@ public class View extends Scene {
     protected abstract class GameControl {
         protected double mouseXOld;
         protected double mouseYOld;
-        protected boolean action = false;
+        protected int action = -1;
         protected LongProperty lastUpdate;
         protected AnimationTimer gameTimer;
 
@@ -890,7 +908,12 @@ public class View extends Scene {
                 @Override
                 public void handle(long now) {
                     if (game.gameOver()) {
-                        whenIsFinished();
+                        timePane.stop();
+                        timePane.timeSeconds.set(game.getElapsed());
+                        System.out.println(game.player.getBonus().size());
+                        if(game.player.getBonus().size()==0){
+                            whenIsFinished();
+                        }
                     } else if (game.player.state() == Player.PlayerState.DEAD) {
                         timePane.stop();
                         final ImageView imv = new ImageView();
@@ -906,11 +929,14 @@ public class View extends Scene {
                     } else {
                         if (lastUpdate.get() > 0) {
                             double elapsedTime = (now - lastUpdate.get()) / 1000000000.0;
-                            if (action) {
-                                game.teleport((int) game.player.getPosition().getX(), (int) game.player.getPosition().getY());
+                            /*if (action!=-1) {
+                                if(action==0) game.teleport((int) game.player.getPosition().getX(), (int) game.player.getPosition().getY());
                                 game.player.teleport(false);
-                                action = false;
-                            }
+                                main.getChildren().remove(display);
+                                timePane.start();
+                                //game.player.teleport(false);
+                                action =-1;
+                            }*/
                             game.update(elapsedTime);
                             Point2D pos = game.player().getPosition();
                             double yPos = game.player().getY();
@@ -999,14 +1025,25 @@ public class View extends Scene {
                     if (game.player.state() != Player.PlayerState.JUMPING) {
                         switch (e.getCode()) {
                             case UP:
-                                // if(game.player.isUnderTeleport()) action=MazeInterface.confirm("Do you wish to teleport ?",st);
-                                game.player.up(true);
+                                 /*if(game.player.isUnderTeleport()){
+                                     timePane.pause();
+                                     game.player.up(false);
+                                     main.getChildren().add(display);
+                                     action=MazeInterface.confirm("Do you wish to teleport ?",st);
+                                 }
+                                 else*/ game.player.up(true);
                                 break;
                             case RIGHT:
                                 if (game.player.state() != Player.PlayerState.STAIRSDOWN && game.player.state() != Player.PlayerState.STAIRSUP)
                                     game.player.right(true);
                                 break;
                             case DOWN:
+                                /*if(game.player.isUnderTeleport()){
+                                    timePane.pause();
+                                    game.player.down(false);
+                                    main.getChildren().add(display);
+                                    action=MazeInterface.confirm("Do you wish to teleport ?",st);
+                                }*/
                                 game.player.down(true);
                                 break;
                             case LEFT:

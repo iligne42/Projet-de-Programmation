@@ -39,13 +39,17 @@ public class Maze implements Serializable,Cloneable{
     public Maze(int L, int l, int nbObstacles, int nbMonstres, int nbTeleport , int nbDoors, int nbBonus ,int typeBonus) throws FormatNotSupported{
         if(L<5 || l<5) throw new FormatNotSupported("The maze is too small");
         maze = new int[L][l];
+        String type=((new Random().nextInt(2)==0)?"Rectangle":"Cercle");
         if(nbObstacles==0){
             obstacles=null;
             randomMaze();
         }else {
             obstacles = new LinkedList<>();
-            randomMaze(nbObstacles, "Rectangle");
+            randomMaze(nbObstacles,type);
         }
+        if(nbDoors==0) doors=null;
+        else addDoor(nbObstacles,type,L,l);
+
         if(nbMonstres==0) monstres=null;
         else{
             monstres=new LinkedList<>();
@@ -56,12 +60,7 @@ public class Maze implements Serializable,Cloneable{
             teleport=new LinkedList<>();
             addTeleport(nbTeleport); //attention à la place
         }
-        if(nbDoors==0) doors=null;
-        else{
-            doors=new LinkedList<>();
-            //System.out.println("on va ajouter les portes");
-            addDoor(); //attention à la place
-        }if(nbBonus==0 || (typeBonus!=0 && typeBonus!=1)){
+        if(nbBonus==0 || (typeBonus!=0 && typeBonus!=1)){
             bonus=null;
         }
         else{
@@ -446,11 +445,11 @@ public class Maze implements Serializable,Cloneable{
     }
 
     public Bonus getBonus(Point2D point){
-      for (Bonus a : bonus){
-          Point2D p=a.getPosition();
-          if(p.getX()==point.getX() && p.getY()==point.getY())return a;
-      }
-      return null;
+        for (Bonus a : bonus){
+            Point2D p=a.getPosition();
+            if(p.getX()==point.getX() && p.getY()==point.getY())return a;
+        }
+        return null;
     }
 
     public Key getKey(Point2D point){
@@ -474,7 +473,7 @@ public class Maze implements Serializable,Cloneable{
     }
 
     public void updateGame(double elapsedSeconds){
-       if(monstres!=null && monstres.size()!=0) for(Monstres m:monstres) m.move(elapsedSeconds);
+        if(monstres!=null && monstres.size()!=0) for(Monstres m:monstres) m.move(elapsedSeconds);
     }
 
     public void fill(int value, Point2D p){
@@ -530,17 +529,27 @@ public class Maze implements Serializable,Cloneable{
         return false;
     }
 
-    private void addDoor(){
-      int doorX = (int) this.ending().getX();
-      int doorY = (int) this.ending().getY();
-      if(doorX==0)doorX++;
-      else if(doorX==this.getWidth()-1)doorX--;
-      else if(doorY==0)doorY++;
-      else if(doorY==this.getHeight()-1)doorY--;
-      Point doorPosition = new Point(doorX,doorY);
-      Door d = new Door(this,doorPosition);
-      fill(DOOR, d.getPosition());
-      fill(KEY, d.getKeyPlace());
+    private void addDoor(int nbObstacles,String type,int L,int l){
+        doors=new LinkedList<Door>();
+        int doorX = (int) this.ending().getX();
+        int doorY = (int) this.ending().getY();
+        if(doorX==0)doorX++;
+        else if(doorX==this.getWidth()-1)doorX--;
+        else if(doorY==0)doorY++;
+        else if(doorY==this.getHeight()-1)doorY--;
+        Point doorPosition = new Point(doorX,doorY);
+        double begX =this.beginning().getX();
+        double begY = this.beginning().getY();
+        if(doorPosition.getX()==begX+1||doorPosition.getY()==begX-1||doorPosition.getY()==begY+1||doorPosition.getY()==begY-1){
+            maze = new int[L][l];
+            if(nbObstacles==0)randomMaze();
+            else randomMaze(nbObstacles,type);
+            addDoor(nbObstacles,type,L,l);
+        }
+        Door d = new Door(this,doorPosition);
+        fill(DOOR, d.getPosition());
+        doors.add(d);
+        fill(KEY, d.getKeyPlace());
         /*while(nb!=0){
             //System.out.println("on est dans la fonction ajouter porte");
             Door d=new Door(this);
@@ -560,11 +569,11 @@ public class Maze implements Serializable,Cloneable{
     }
 
     public Door getDoor(Point2D point){
-      for (Door a : doors){
-        if(a.getPosition().equals(point))
-          return a;
-      }
-      return null;
+        for (Door a : doors){
+            if(a.getPosition().equals(point))
+                return a;
+        }
+        return null;
     }
 
     private void addBonus(int nb, int type){

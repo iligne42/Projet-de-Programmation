@@ -24,12 +24,12 @@ public class Player implements Serializable {
 
 	private float maxSpeed,accConstant,angularVelocity,gravity,friction,orientationSpeed,orientation,jumpVelocity,orientationX;
 	private float radius;
-	private boolean up,down,left,right,space,pickedUp,underTeleport;
+	private boolean up,down,left,right,space,pickedUp,underTeleport,metMonster;
 	private LinkedList<Bonus> bonus;
 	private LinkedList<Key> keys;
 
 	public enum PlayerState{
-		 BETWEEN,GROUND,STAIRSUP,STAIRSDOWN,DEAD,JUMPING,FALLING;
+		 BETWEEN,GROUND,STAIRSUP,STAIRSDOWN,DEAD,JUMPING
 	}
 
 	protected interface PlayerAnimation{
@@ -43,12 +43,15 @@ public class Player implements Serializable {
 	    public Falling(){
             setGround(0);
             state=null;
+            //add scream sound
 
         }
 
 	    public void animate(double elapsedSeconds){
+	        System.out.println(posY);
 	        applyGravity(elapsedSeconds);
-            if (posY < ground) {
+            if (posY <= ground) {
+                System.out.println("I'm dead !");
                 posY=ground;
                 velocity.setTo(0, 0, 0);
                 changeState(PlayerState.DEAD);
@@ -72,12 +75,16 @@ public class Player implements Serializable {
         }
 
         public void animate(double elapsedSeconds){
-	        if(destination>orientation && Math.abs(destination-orientation)<=180){
-	            turnLeft(elapsedSeconds);
+            if(Math.abs(destination-orientation)<=180){
+                if(orientation<destination) turnLeft(elapsedSeconds);
+                else turnRight(elapsedSeconds);
             }
-	        else turnRight(elapsedSeconds);
+            else{
+                if(orientation<destination) turnRight(elapsedSeconds);
+                else turnLeft(elapsedSeconds);
+            }
+            if(isOver()) orientation=destination;
         }
-
         public boolean isOver(){
 	        return (int)orientation==destination;
         }
@@ -93,10 +100,15 @@ public class Player implements Serializable {
             velocity.setTo(0,0,0);
         }
 
+
+
         public void animate(double elapsedSeconds){
-            if(destination>orientationX && Math.abs(destination-orientationX)<=180) lookUp(elapsedSeconds);
+            if(destination>orientationX && Math.abs(destination-orientationX)<=180 || Math.abs(destination-orientationX)>180 && destination<orientationX) lookUp(elapsedSeconds);
             else lookDown(elapsedSeconds);
+            if(isOver()) orientationX=destination;
         }
+
+
 
         public boolean isOver(){
             return (int)orientationX==destination;
@@ -239,6 +251,10 @@ public class Player implements Serializable {
 
     public void teleport(boolean b){underTeleport=b;}
 
+    public void meetMonster(boolean b){metMonster=b;}
+
+    public boolean hasMetMonster(){return metMonster;}
+
     public boolean isUnderTeleport(){
         return underTeleport;
     }
@@ -255,7 +271,7 @@ public class Player implements Serializable {
                     if (up) moveForward(elapsedSeconds);
                     else if (down) moveBackward(elapsedSeconds);
                 } else if (up) {
-                    if (space && state != PlayerState.JUMPING) {
+                    if (space) {
                         jump();
                         changeState(PlayerState.JUMPING);
                     } else if (left) turnLeft(elapsedSeconds);
@@ -263,13 +279,14 @@ public class Player implements Serializable {
                     moveForward(elapsedSeconds);
 
                 } else if (down) {
-                    if (space && state != PlayerState.JUMPING) {
+                    if (space) {
                         jump();
                         changeState(PlayerState.JUMPING);
-                    } else if (left) turnLeft(elapsedSeconds);
+                    }
+                    else if (left) turnLeft(elapsedSeconds);
                     else if (right) turnRight(elapsedSeconds);
                     moveBackward(elapsedSeconds);
-                } else if (space && state != PlayerState.JUMPING) {
+                } else if (space) {
                     jump();
                     changeState(PlayerState.JUMPING);
                 } else {
@@ -282,6 +299,9 @@ public class Player implements Serializable {
         else{
 	        if(!animation.isOver()) animation.animate(elapsedSeconds);
 	        else {
+	            System.out.println(velocity);
+	            System.out.println(acceleration);
+	            System.out.println("problem");
                 animation=null;
                 angularVelocity=0;
                 orientationSpeed=2;
@@ -359,6 +379,7 @@ public class Player implements Serializable {
         if(state!=PlayerState.JUMPING) previousState=state;
         state=s;
         setAcceleration();
+        setLookUp();
     }
 
     public void reverseState(PlayerState s){
@@ -385,10 +406,12 @@ public class Player implements Serializable {
     public void setAcceleration(){
         switch(state){
 
-            case STAIRSUP:acceleration.setTo(Math.cos(Math.toRadians(orientation)),1,Math.sin(Math.toRadians(orientation)));
+            case STAIRSUP:acceleration.setTo((int)Math.cos(Math.toRadians(orientation)),1,(int)Math.sin((Math.toRadians(orientation))));
+            System.out.println(Math.cos(Math.toRadians(180))+"   "+Math.sin(Math.toRadians(180)));
+
                 break;
 
-            case STAIRSDOWN:acceleration.setTo(Math.cos(Math.toRadians(orientation)),-1,Math.sin(Math.toRadians(orientation)));
+            case STAIRSDOWN:acceleration.setTo((int)Math.cos(Math.toRadians(orientation)),-1,(int)Math.sin(Math.toRadians(orientation)));
                 break;
 
             case BETWEEN:acceleration.setTo(Math.cos(Math.toRadians(orientation)),0,Math.sin(Math.toRadians(orientation)));
@@ -398,6 +421,26 @@ public class Player implements Serializable {
                 break;
         }
 
+    }
+
+    public void setLookUp(){
+	    switch(state){
+            case STAIRSUP:if((int)orientationX!=20) setAnimation(new LookingTo(20));
+            break;
+
+            case STAIRSDOWN:if((int)orientationX!=340) setAnimation(new LookingTo(340));
+                break;
+
+            case BETWEEN:
+                posY=ground;
+                if((int)orientationX!=340) setAnimation(new LookingTo(340));
+                break;
+
+            case GROUND:
+                posY=ground;
+                if(orientationX!=0) setAnimation(new LookingTo(0));
+                break;
+        }
     }
 
     public void pickUp(Key key){
@@ -411,7 +454,7 @@ public class Player implements Serializable {
 	}
     public MeshView initPlayer() throws IOException{
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(this.getClass().getResource("User.fxml"));
+        fxmlLoader.setLocation(this.getClass().getResource("fxml/User.fxml"));
         PhongMaterial mat = new PhongMaterial();
         mat.setSpecularColor(Color.SNOW);
         mat.setDiffuseColor(Color.YELLOW);
