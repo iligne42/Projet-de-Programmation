@@ -58,8 +58,9 @@ public class MultiPlayerVersion implements Serializable {
         return players.isEmpty();
     }
 
-    public void next() throws IOException, FormatNotSupported,CloneNotSupportedException {
-        game = new SoloVersion(originalMaze.clone(), players.pop(), scores);
+    public GameVersion next() throws IOException, FormatNotSupported,CloneNotSupportedException {
+       game = new SoloVersion(originalMaze.clone(), players.pop(), scores);
+       return game;
     }
 
     public Stack<Player> getPlayers() {

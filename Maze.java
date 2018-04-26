@@ -44,7 +44,7 @@ public class Maze implements Serializable,Cloneable{
             randomMaze();
         }else {
             obstacles = new LinkedList<>();
-            randomMaze(nbObstacles, "Cercle");
+            randomMaze(nbObstacles, "Rectangle");
         }
         if(nbMonstres==0) monstres=null;
         else{
@@ -60,7 +60,7 @@ public class Maze implements Serializable,Cloneable{
         else{
             doors=new LinkedList<>();
             //System.out.println("on va ajouter les portes");
-            addDoor(nbDoors); //attention à la place
+            addDoor(); //attention à la place
         }if(nbBonus==0 || (typeBonus!=0 && typeBonus!=1)){
             bonus=null;
         }
@@ -126,7 +126,9 @@ public class Maze implements Serializable,Cloneable{
     }
 
     public Maze clone() throws CloneNotSupportedException{
-        return (Maze)super.clone();
+        Maze m=(Maze)super.clone();
+        m.maze=this.copyMaze();
+        return m;
     }
     public void free(int i, int j){ maze[i][j]=WAY;}
 
@@ -528,8 +530,18 @@ public class Maze implements Serializable,Cloneable{
         return false;
     }
 
-    private void addDoor(int nb){
-        while(nb!=0){
+    private void addDoor(){
+      int doorX = (int) this.ending().getX();
+      int doorY = (int) this.ending().getY();
+      if(doorX==0)doorX++;
+      else if(doorX==this.getWidth()-1)doorX--;
+      else if(doorY==0)doorY++;
+      else if(doorY==this.getHeight()-1)doorY--;
+      Point doorPosition = new Point(doorX,doorY);
+      Door d = new Door(this,doorPosition);
+      fill(DOOR, d.getPosition());
+      fill(KEY, d.getKeyPlace());
+        /*while(nb!=0){
             //System.out.println("on est dans la fonction ajouter porte");
             Door d=new Door(this);
             while(existDoor(d)){ d=new Door(this);}
@@ -537,7 +549,7 @@ public class Maze implements Serializable,Cloneable{
             fill(DOOR, d.getPosition());
             fill(KEY, d.getKeyPlace());
             nb--;
-        }
+        }*/
     }
 
     private boolean existDoor(Door d){
@@ -552,7 +564,7 @@ public class Maze implements Serializable,Cloneable{
         if(a.getPosition().equals(point))
           return a;
       }
-      return null;    
+      return null;
     }
 
     private void addBonus(int nb, int type){
@@ -571,26 +583,6 @@ public class Maze implements Serializable,Cloneable{
         }
     }
 
-    public static void main(String[] args){
-        try{
-            File fic = new File("labiTest.txt");
-            /*Maze m = new Maze(fic);
-            m.print();*/
-            Maze m = new Maze(30,30,0,0,1,0,0,0);
-            m.print();
-            /*LinkedList<Monstres> monstres=m.getMonstres();
-            System.out.println(monstres.getFirst().getPosition());
-            int bouge=30;
-            while(bouge!=0) {
-                for (int i = 0; i < monstres.size(); i++) {
-                    monstres.get(i).move();
-                }
-                m.print();
-                bouge--;
-            }
-            System.out.println(monstres.getFirst().getPosition());*/
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+    public static void main(String[] args) {
     }
 }

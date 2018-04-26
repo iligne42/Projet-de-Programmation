@@ -14,8 +14,6 @@ public class Teleporteur extends Divers{
     //private Maze maze;
     //private static Point2D start; p==start
     private final Point2D end;
-    private Circle circleS;
-    private Circle circleE;
 
     public Teleporteur(Maze m){
         super(m);
@@ -25,9 +23,6 @@ public class Teleporteur extends Divers{
         while(end.equals(p)) {
             put(end);
         }
-        circleS=new Circle();
-        circleE=new Circle();
-        doCircle(p,end);
     }
 
     public Teleporteur(Maze m, Point2D s, Point2D e){
@@ -53,15 +48,6 @@ public class Teleporteur extends Divers{
         double k=centrer(i);
         double l=centrer(j);
         point.setLocation(l,k);
-    }
-
-    private void doCircle(Point2D s, Point2D e){
-        circleS.setCenterX(s.getX());
-        circleS.setCenterY(s.getY());
-        circleS.setRadius(0.5);
-        circleE.setCenterX(e.getX());
-        circleE.setCenterY(e.getY());
-        circleE.setRadius(0.5);
     }
 
     public MeshView initTeleport() throws IOException{
