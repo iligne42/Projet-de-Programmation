@@ -15,6 +15,10 @@ public abstract class Bonus extends Divers{
         avantage=a;
         put();
     }
+    public Bonus(Maze m, Point2D p,String a){
+      super(m,p);
+      avantage=a;
+    }
 
     public String getAvantage(){return avantage;}
 

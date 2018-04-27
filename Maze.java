@@ -97,6 +97,76 @@ public class Maze implements Serializable,Cloneable{
         if(nbEnter!=1)
             throw new FormatNotSupported("The maze has "+nbEnter+" starts and must only have 1.");
     }
+    
+    
+    public Maze(File fic,String mode) throws FileNotFoundException, FormatNotSupported{ 
+        int nbEnter=0,nbEnd=0;
+        Scanner sc = new Scanner(fic);
+        ArrayList<String> tmp = new ArrayList<String>();
+        LinkedList<Teleporteur>tp= new LinkedList<>();
+        String type=((new Random().nextInt(2)==0)?"Rectangle":"Cercle");
+        while(sc.hasNextLine())
+            tmp.add(sc.nextLine());
+        if(!sameLength(tmp))
+            throw new FormatNotSupported("The maze isn't rectangular");
+        int max = tmp.get(0).length();
+        maze = new int[tmp.size()][max];
+        int cas=-1,nbTeleport=0;
+        for(int i=0;i<tmp.size();i++){
+            for(int j=0;j<max;j++){
+                switch (tmp.get(i).charAt(j)){
+                    case '0':
+                          cas = WALL;break;
+                    case '1':
+                          cas = WAY;break;
+                    case '2':
+                          cas = START;nbEnter++;break;
+                    case '3':
+                          cas= END;nbEnd++;break;
+                    case '4':
+                          cas = OBSTACLE;
+                          if(obstacles==null)obstacles=new LinkedList<>();
+                          obstacles.add(new Obstacles(this,new Point2D.Double(i,j),type));
+                          break;
+                    case '7':
+                          cas = MONSTRE;
+                          if(monstres==null)monstres=new LinkedList<>();
+                          monstres.add(new Monstres(this,new Point2D.Double(i,j)));
+                          break;
+                    case '8':
+                          cas = TELEPORT;nbTeleport++;
+                          tp.add(new Teleporteur(this,new Point2D.Double(i,j)));
+                          break;
+                    case 'B':
+                          cas = BONUS;
+                          if(bonus==null)bonus = new LinkedList<>();
+                          if(mode.equals("Against the clock"))bonus.add(new TimeBonus(this,new Point2D.Double(i,j)));
+                          else bonus.add(new Piece(this,new Point2D.Double(i,j)));
+                          break;
+                    default:
+                        throw new FormatNotSupported("Unreadable Character");
+                }
+                maze[i][j]=cas;
+            }
+        }
+        if(nbEnter!=1)
+            throw new FormatNotSupported("The maze has "+nbEnter+" starts and must only have 1.");
+        else if(nbEnd==0)
+            throw new FormatNotSupported("The maze does not have an exit.");
+        else if(nbTeleport!=0){
+          if(nbTeleport%2!=0)throw new FormatNotSupported("There is an odd number of teleporter.");
+          teleport=new LinkedList<>();
+          for (int i =0;i<tp.size();i+=2){
+            Teleporteur first = tp.get(i);
+            Teleporteur second = tp.get(i+1);
+            first = new Teleporteur(this,first.getStart(),second.getStart());
+            second = new Teleporteur(this,second.getStart(),first.getStart());
+            teleport.add(new Pair<>(first,second));
+          }
+        }
+        /*else if(possibleMaze())
+              throw new FormatNotSupported("The maze is not resolvable.");*/
+    }
 
     public static boolean sameLength(ArrayList<String> t){ //vérifie que toutes les chaînes de caractères d'une ArrayList font la même taille
         int tmp = t.get(0).length();

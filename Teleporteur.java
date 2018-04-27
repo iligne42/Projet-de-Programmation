@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.util.*;
 import java.lang.Double;
 public class Teleporteur extends Divers{
-    //private Maze maze;
-    //private static Point2D start; p==start
     private final Point2D end;
 
     public Teleporteur(Maze m){
@@ -23,6 +21,11 @@ public class Teleporteur extends Divers{
         while(end.equals(p)) {
             put(end);
         }
+    }
+
+    public Teleporteur(Maze m, Point2D p){
+      super(m,p);
+      end=null;
     }
 
     public Teleporteur(Maze m, Point2D s, Point2D e){
@@ -37,7 +40,6 @@ public class Teleporteur extends Divers{
     public Point2D getEnd() {
         return end;
     }
-
     private void put(Point2D point){
         Random rand=new Random();
         int i=0; int j=0;

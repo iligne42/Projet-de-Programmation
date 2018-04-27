@@ -69,6 +69,7 @@ public class Menu extends Application {
     public void setButton(Button button, int a, VBox pan, String path,StackPane stack,VBox menu){
       	button.setOnMouseClicked(e->{
       		pan.getChildren().clear();
+      		pan.setStyle("-fx-spacing:2;");
                 try{
                     Scores sco = new Scores(path,a);
                     String [] sc = (sco.getScores()).split("\n");
@@ -156,11 +157,6 @@ public class Menu extends Application {
         StackPane stack = new StackPane();
         stack.getChildren().addAll(settings2, mode, maze, game, hostmenu,ranking, menu);
 
-       /* Button back=new Button("Back");
-        back.setOnMouseClicked(e->{
-            changePanel(stack,previous);
-        });*/
-
         initRank(stack,ranking,menu);
         /*Panneau pour le réseau*/
         Button go=new Button("Go !");
@@ -169,9 +165,7 @@ public class Menu extends Application {
                 Stage st = new Stage();
                 view = MazeInterface.getView(mazeM,gType,name,MazeInterface.getTime(dif));
                 view.setStage(st);
-                //sc.getStylesheets().add("");
                 st.setScene(view);
-                //view.setScene(sc);
                 st.setFullScreen(true);
                 st.show();
             }
@@ -191,7 +185,6 @@ public class Menu extends Application {
         /*Panneau pour charger le jeu*/
         Button newG = new Button("New Game");
         newG.setOnMouseClicked(e -> {
-            //previous=newG.getParent();
             changePanel(stack, maze);
         });
 
@@ -211,9 +204,7 @@ public class Menu extends Application {
                 view = new SingleView(g);
                 Stage st = new Stage();
                 view.setStage(st);
-                //sc.getStylesheets().add("");
-                st.setScene(view);
-                //view.setScene(sc);
+                st.setScene(view);    
                 st.setFullScreen(true);
                 st.show();
 
@@ -222,12 +213,6 @@ public class Menu extends Application {
          if(debug)       ex.printStackTrace();
             }
         });
-     /* cont.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-          @Override
-          public ListCell call(ListView param) {
-              return null;
-          }
-      });*/
         Button backToMenu = new Button("Back");
         backToMenu.setOnMouseClicked(e -> {
             changePanel(stack, menu);
@@ -392,9 +377,7 @@ public class Menu extends Application {
                     view = MazeInterface.getView(mazeM, gType,MazeInterface.getTime(dif));
                     Stage st = new Stage();
                     view.setStage(st);
-                    //sc.getStylesheets().add("");
                     st.setScene(view);
-                    //view.setScene(sc);
                    st.setFullScreen(true);
                     st.show();
                 } catch (Exception formatNotSupported) {
@@ -421,7 +404,6 @@ public class Menu extends Application {
 
         Button load = new Button("Load maze file");
         load.setOnMouseClicked(e -> {
-                    // previous=load.getParent();
                     changePanel(stack, settings2);
                 });
         Button backToGame = new Button("Back");
@@ -483,21 +465,18 @@ public class Menu extends Application {
             if(dif==null)dif = ((RadioButton) difficulty.getSelectedToggle()).getText();
             if (file != null) {
                 try {
-                    mazeM = new MazeFloors(new Maze(file));
+                    mazeM = new MazeFloors(new Maze(file,gType));
                     if (gType.equals("MultiPlayer In Network")) {
                             name = MazeInterface.readInput("What's your name ?");
                             hostmenu.initHost(name, mazeM);
                         }
                      else {
                             view = MazeInterface.getView(mazeM, gType,MazeInterface.getTime(dif));
-                            //sc.getStylesheets().add("");
                             Stage st = new Stage();
                             st.setScene(view);
                             view.setStage(st);
-                            //view.setScene(sc);
                             st.setFullScreen(true);
                             st.show();
-                            //sc.getStylesheets().add("");
                         }
                     }
                     catch (Exception formatNotSupported) {

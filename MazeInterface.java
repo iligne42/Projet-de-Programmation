@@ -6,6 +6,10 @@ import javafx.scene.media.AudioClip;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.scene.control.Label;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +36,13 @@ public interface MazeInterface {
 
     static AudioClip sounds(int index){
         return sounds.get(index);
+    }
+    
+    static void configLabel(Label txt, String path, String style) {
+        Image img = new Image(path);
+        txt.setGraphic(new ImageView(img));
+        txt.setContentDisplay(ContentDisplay.RIGHT);
+        txt.setStyle(style);
     }
 
     static String getT(int t) {

@@ -44,7 +44,6 @@ public class View extends Scene {
     protected GameControl control;
     protected SubScene mazeScene;
     protected Label timeLabel;
-    protected Button save, inv, quit, help, restart, pause, plan;
     protected Group map;
 
     public View(StackPane root, GameVersion game) {
@@ -56,39 +55,15 @@ public class View extends Scene {
         this.mazePane = new MazePane(cam);
         mazeScene = new SubScene(mazePane, screenBounds.getWidth(), screenBounds.getHeight(), true, SceneAntialiasing.BALANCED);
         mazeScene.setCamera(cam);
-        // mazeScene.setFill(Color.DARKGREY);
-        // timeLabel = new Label();
-        // timeLabel.textProperty().bind(game.timeSecondsProperty().asString());
         if (game instanceof SoloVersion) timePane = new SoloTimePane();
         else if (game instanceof TimeTrialVersion) timePane = new TimeTrialPane(((TimeTrialVersion) game).timeLimit);
-        mazePane.setToolBar(false);
         main.getChildren().addAll(mazeScene, timePane);
         StackPane.setAlignment(timePane, Pos.TOP_LEFT);
-        StackPane.setAlignment(tool, Pos.TOP_RIGHT);
     }
 
     public void setStage(Stage stage) {
         st = stage;
     }
-
-
-   /* public View(BorderPane root, GameVersion game) {
-        super(root);
-        this.game = game;
-        content = root;
-        PerspectiveCamera cam = new PerspectiveCamera(true);
-        this.mazePane = new MazePane(cam);
-        mazeScene = new SubScene(mazePane, 1490, 860, true, SceneAntialiasing.BALANCED);
-        mazeScene.setCamera(cam);
-        if (game instanceof SoloVersion) timePane = new SoloTimePane();
-        else if (game instanceof TimeTrialVersion) timePane = new TimeTrialPane(((TimeTrialVersion) game).timeLimit);
-        content.setCenter(mazeScene);
-        content.setLeft(timePane);
-    }*/
-
-    //add Menu bar to save game or start a new game, and view the help and shir
-    //timeLine.pause();
-
     public class TimeProperty extends SimpleIntegerProperty {
         public TimeProperty(int time) {
             super(time);
@@ -111,8 +86,10 @@ public class View extends Scene {
         }
     }
 
-
-    protected abstract class TimePane extends VBox {//not sure though, it is a layout
+    /**
+      Classe pour le timer
+    */
+    protected abstract class TimePane extends VBox {
         protected Timeline timeLine;
         protected Label timeLabel;
         protected IntegerProperty timeSeconds;
@@ -173,7 +150,6 @@ public class View extends Scene {
             timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (event) -> {
                 game.elapse(1);
                 timeSeconds.set(timeLimit - game.getElapsed());
-
             }));
         }
 
@@ -181,26 +157,18 @@ public class View extends Scene {
             return timeSeconds.get() == 0;
         }
     }
-    //Study interpolator
 
     protected class SoloTimePane extends TimePane {
 
         public SoloTimePane() {
             super(0);
             timeLine.setCycleCount(Timeline.INDEFINITE);
-               /* timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1),(event)->{
-                    timeSeconds.set(timeSeconds.get()+1);
-                }));*/
             timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (event) -> {
                 game.elapse(1);
                 timeSeconds.set(game.getElapsed());
             }));
         }
-
     }
-
-
-
 
     protected class MazePane extends Group {
         protected Group world;
@@ -229,117 +197,9 @@ public class View extends Scene {
 
         public MazePane(PerspectiveCamera cam) {
             camera = cam;
-            // cameraLight=new PointLight(Color.DARKORANGE);
             display = new VBox();
             display.setAlignment(Pos.CENTER);
         }
-
-        public void setToolBar(boolean multi) {
-            String style = "-fx-background-color: rgba(0, 0, 0, 0);";
-            //String style="-fx-background-color: linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%), linear-gradient(#020b02, #3a3a3a),linear-gradient(#b9b9b9 0%, #c2c2c2 20%, #afafaf 80%, #c8c8c8 100%),  linear-gradient(#f5f5f5 0%, #dbdbdb 50%, #cacaca 51%, #d7d7d7 100%);";//"-fx-background-color:linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%),linear-gradient(#020b02, #3a3a3a),linear-gradient(#9d9e9d 0%, #6b6a6b 20%, #343534 80%, #242424 100%),linear-gradient(#8a8a8a 0%, #6b6a6b 20%, #343534 80%, #262626 100%),linear-gradient(#777777 0%, #606060 50%, #505250 51%, #2a2b2a 100%);-fx-background-insets: 0,1,4,5,6;-fx-background-radius: 9,8,5,4,3;-fx-padding: 15 30 15 30;";//-fx-font-size: 18px;-fx-font-weight: bold;-fx-text-fill: white;-fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);";
-            quit = new Button();
-            configButton("images/quit.png", quit);
-            quit.setOnMouseClicked(e -> {
-                st.close();
-            });
-            plan = new Button();
-            /*configButton("images/map.png", plan);
-            plan.setOnMouseClicked(e -> {
-                if (!main.getChildren().contains(map)) {
-                    main.getChildren().add(map);
-                    StackPane.setAlignment(map, Pos.BOTTOM_LEFT);
-                } else {
-                    main.getChildren().remove(map);
-                }
-            });*/
-            //plan.setDisable(true);
-            pause = new Button();
-            configButton("images/pause.png", pause);
-            pause.setOnMouseClicked(e -> {
-                if (!main.getChildren().contains(display)) {
-                    configButton("images/play.png", pause);
-                    timePane.pause();
-                    display.getChildren().clear();
-                    Label pau = new Label("PAUSE");
-                    pau.setStyle("-fx-effect: dropshadow(gaussian,rgba(0,0,0,0.75) , 4,0,0,1 );-fx-text-fill: lightgrey;-fx-font-size: 150px;-fx-font-weight:bold;");
-                    display.getChildren().add(pau);
-                    display.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4); -fx-background-radius: 10;");
-                    main.getChildren().add(display);
-                    tool.toFront();
-                } else {
-                    configButton("images/pause.png", pause);
-                    timePane.play();
-                    main.getChildren().remove(display);
-                }
-            });
-            TimeProperty nBpiece = new TimeProperty(game.player().getBonus().size());
-            Label piece = new Label();
-            piece.textProperty().bind(nBpiece.asString());
-
-            save = new Button();
-            configButton("images/save.png", save);
-            save.setOnMouseClicked(e -> {
-                LocalDate now = LocalDate.now();
-                String date[] = now.toString().split("-");
-                try {
-                    game.save("savings/"+game.player().getName()+"--"+date[2] + "-" + date[1] + "-" + date[0].charAt(2) +date[0].charAt(3));
-                    //game.save(date[2] + "-" + date[1] + "-" + date[0].charAt(2) +date[0].charAt(3)+ "-" + game.player().getName());
-                } catch (Exception exc) {
-                    exc.printStackTrace();
-                }
-            });
-            inv = new Button();
-            configButton("images/inv.png", inv);
-            inv.setOnMousePressed(e -> {
-                if (!main.getChildren().contains(display)) {
-                    if(!multi)timePane.pause();
-                    main.getChildren().add(display);
-                    control.updateInventory();
-                    tool.toFront();
-                } else {
-                    if(!multi)timePane.play();
-                    main.getChildren().remove(display);
-                }
-            });
-            help = new Button();
-            configButton("images/help.png", help);
-            help.setOnMousePressed(e -> {
-                if(!multi)timePane.pause();
-                boolean aide = main.getChildren().contains(display);
-                if (!aide) main.getChildren().add(display);
-                control.displayHelp();
-            });
-            help.setOnMouseReleased(e -> {
-                if(!multi)timePane.play();
-                main.getChildren().remove(display);
-            });
-            Region rg = new Region();
-            HBox.setHgrow(rg, Priority.SOMETIMES);
-            rg.setFocusTraversable(false);
-            if(multi) tool=new ToolBar(rg,help,inv,plan,quit);
-            else tool = new ToolBar(rg, help, inv, save, plan,pause, quit);
-            for (Node a : tool.getItems()) {
-                if (a instanceof Button) {
-                    a.setStyle(style);
-                    a.setFocusTraversable(false);
-                }
-            }
-            tool.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
-            main.getChildren().add(tool);
-        }
-
-        public void configButton(String path, Button button) {
-            Image img = new Image(getClass().getResourceAsStream(path), 50, 50, false, false);
-          /*ImageView im = new ImageView(img);
-          im.setFitHeight(20);
-          im.setFitWidth(20);*/
-            button.setGraphic(new ImageView(img));
-        }
-
-        public boolean test(int a, int b, int c, int d) {
-            return ((a == b) && (b == c || b == d));
-        }
-
         public void setLight() {
             DoubleProperty x = camera.translateXProperty();
             DoubleProperty y = camera.translateYProperty();
@@ -383,7 +243,17 @@ public class View extends Scene {
           main.setEffect(lighting);*/
             //cam.setEffect(lighting);
         }
-
+        /**
+          Cette fonction est utilisée pour voir si les coordonées en x ou en z des escaliers
+          sont égales à 0 ou à la largeur/longueur - 1
+        */
+        public boolean test(int a, int b, int c, int d) {
+            return ((a == b) && (b == c || b == d));
+        }
+        /**
+          Création par appel successif de createMaze
+          À la fin, de chaque createMaze, on effectue des translations sur les étages pour les placer côte à côte selon les escaliers.
+        */
         public void initMaze() throws IOException {
             floors = game.floors();
             keyOrBonus = new ArrayList<>();
@@ -394,13 +264,10 @@ public class View extends Scene {
             Box square = null;
             Box firstS;
             COLOR_WALL.setBumpMap(new Image("images/brick.jpg"));
-           // COLOR_WALL.setDiffuseColor(Color.LIGHTGOLDENRODYELLOW);
             COLOR_WALL.setSpecularColor(Color.BLACK);
-            COLOR_DOOR.setDiffuseMap(new Image("images/safe.jpg"));
-            COLOR_DOOR.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
+            COLOR_DOOR.setDiffuseMap(new Image("images/safe.jpg"));            
             COLOR_ENTRY.setSpecularColor(Color.BLACK);
             COLOR_END.setSpecularColor(Color.WHITE);
-
             int i = 0;
             for (Maze a : floors) {
                 createMaze(floor, a, i);
@@ -445,11 +312,6 @@ public class View extends Scene {
                     posFz = (int) a.ending().getY();
                 }
                 before = a.ending();
-                print(first);
-                print(floor);
-                print(firstS);
-                print(square);
-                a.print();
                 coordSwitch[i / 2] = (new Vector3D(floor.getTranslateX(), floor.getTranslateY(), floor.getTranslateZ()).subtract(new Vector3D(first.getTranslateX(), first.getTranslateY(), first.getTranslateZ()))).multiply(1.0 / 400);
                 world.getChildren().add(floor);
                 floorGroups[i / 2] = floor;
@@ -457,26 +319,13 @@ public class View extends Scene {
                 i += 2;
 
             }
-           /* Sphere sphere=new Sphere();
-            sphere.setTranslateX(world.getTranslateX());
-            sphere.setTranslateY(world.getTranslateY());
-            sphere.setTranslateZ(world.getTranslateY());
-            sphere.setRadius(coordSwitch[coordSwitch.length-1].norm()*SIZE_BOX);
-            sphere.setMaterial(new PhongMaterial(Color.DARKBLUE));*/
             this.getChildren().add(world);
             buildCamera(this);
             setLight();
-            printMaze();
         }
-
-        public void print(Node a) {
-            if (a == null) {
-                System.out.println(a);
-                return;
-            }
-            System.out.println("X=" + a.getTranslateX() + "  Y=" + a.getTranslateY() + "  Z=" + a.getTranslateZ());
-        }
-
+        /**
+          Création de la vue d'un étage de labyrinthe selon l'objet Maze donné en argument
+        */
         public void createMaze(Group root, Maze maze, int floor) throws IOException {
             int CASE;
             Box cell;
@@ -566,7 +415,9 @@ public class View extends Scene {
             cell.setTranslateY(SIZE_BOX / 2);
             return cell;
         }
-
+        /*
+          Place une Box aux coordonées données aux arguments, et une Box rectangulaire au-dessus de la box crée
+        */
         public void setBox(Box cell, int i, int j, Group root, int floor, Maze maze) {
             cell.setTranslateX(j * SIZE_BOX);
             cell.setTranslateZ(i * SIZE_BOX);
@@ -587,7 +438,9 @@ public class View extends Scene {
             roof.setMaterial(new PhongMaterial(Color.BLACK));
             root.getChildren().add(roof);
         }
-
+        /*
+          Translate un étage selon la position des escaliers.
+        */
         public void setUp(int posx, int posz, int height, int width, Group floor, int a) {
             if (posx == 0) {
                 floor.setTranslateX(floor.getTranslateX() + SIZE_BOX * a);
@@ -688,8 +541,6 @@ public class View extends Scene {
         public void drawMonster(Group root, int i, int j, int floor, Maze maze) throws IOException {
             Monstres last = maze.getMonstres().getLast();
             MeshView ghost = last.initMonster();
-            //ghost.setTranslateX(j*SIZE_BOX);
-            //ghost.setTranslateZ(i*SIZE_BOX);
             ghost.setTranslateY((-floor) * SIZE_BOX - SIZE_BOX / 2);
             root.getChildren().add(ghost);
         }
@@ -755,8 +606,6 @@ public class View extends Scene {
             root.getChildren().add(bonus);
             keyOrBonus.add(bonus);
         }
-
-
         public void remove(Group root, int i, int j) {
             int posx = i * SIZE_BOX;
             int posz = j * SIZE_BOX;
@@ -772,21 +621,9 @@ public class View extends Scene {
                 }
             }
         }
-
-        public void printMaze() {
-            Maze m = game.floors().get(0);
-            for (int i = 0; i < m.getHeight(); i++) {
-                for (int j = 0; j < m.getWidth(); j++) System.out.print(m.getCase(i, j) + " ");
-                System.out.println();
-            }
-        }
-
         public void buildCamera(Group root) {
-            //Ici vérifier dans quel sens la début est pour modifier x et z
-            //System.out.println("Height " + maze.getHeight() + "   Width  " + maze.getWidth());
             camera.setFarClip(10000);
             camera.setNearClip(0.1);
-            //cameraLight.setTranslateY(0);
             Point2D position = game.player().getPosition();
             double yPos = game.player.getY();
             int floor = game.floor();
@@ -802,13 +639,171 @@ public class View extends Scene {
             rotateX = new Rotate();
             rotateX.setAxis(Rotate.X_AXIS);
             camera.getTransforms().add(rotateX);
-            //camera.setFieldOfView(100);
         }
 
         public void reset() throws IOException {
             this.getChildren().clear();
             initMaze();
+        }
+      }
+    /**
+      Classe contrôleur
+    */
+    protected abstract class GameControl {
+        protected double mouseXOld;
+        protected double mouseYOld;
+        protected int action = -1;
+        protected LongProperty lastUpdate;
+        protected AnimationTimer gameTimer;
+        protected Button save, inv, quit, help, restart, pause, plan;
 
+        /**
+          Création de la barre de menu avec les boutons sauvegarder, quitter, pause, plan active si le joueur possède plus de 5 pièces
+        */
+        public void setToolBar(boolean multi) {
+            String style = "-fx-background-color: rgba(0, 0, 0, 0);";
+            String style1="-fx-background-color: rgba(0, 0, 0, 0);-fx-font-size:23px;-fx-text-fill: white;";
+            quit = new Button();
+            configButton("images/quit.png", quit);
+            quit.setOnMouseClicked(e -> {
+                st.close();
+            });
+            plan = new Button();
+            configButton("images/map.png", plan);
+            plan.setOnMouseClicked(e -> {
+                if (!main.getChildren().contains(map)) {
+                    main.getChildren().add(map);
+                    StackPane.setAlignment(map, Pos.BOTTOM_LEFT);
+                  }
+                else main.getChildren().remove(map);
+            });
+            plan.setDisable(true);
+            pause = new Button();
+            configButton("images/pause.png", pause);
+            pause.setOnMouseClicked(e -> {
+                if (!main.getChildren().contains(display)) {
+                    configButton("images/play.png", pause);
+                    timePane.pause();
+                    display.getChildren().clear();
+                    Label pau = new Label("PAUSE");
+                    pau.setStyle("-fx-effect: dropshadow(gaussian,rgba(0,0,0,0.75) , 4,0,0,1 );-fx-text-fill: lightgrey;-fx-font-size: 150px;-fx-font-weight:bold;");
+                    display.getChildren().add(pau);
+                    display.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4); -fx-background-radius: 10;");
+                    main.getChildren().add(display);
+                    tool.toFront();
+                } else {
+                    configButton("images/pause.png", pause);
+                    timePane.play();
+                    main.getChildren().remove(display);
+                }
+            });
+            IntegerProperty nbPiece = new SimpleIntegerProperty();
+            IntegerProperty nbKey = new SimpleIntegerProperty();
+            Timeline pocket = new Timeline();
+            pocket.setCycleCount(Timeline.INDEFINITE);
+            pocket.getKeyFrames().add(new KeyFrame(Duration.millis(500),(evt)->{
+              nbPiece.set(game.player().getBonus().size());
+              nbKey.set(game.player().keys().size());
+            }));
+            pocket.playFromStart();
+            Label piece = new Label();
+            piece.textProperty().bind(nbPiece.asString());
+            MazeInterface.configLabel(piece,"/images/coin.png",style1);
+            Label key = new Label();
+            key.textProperty().bind(nbKey.asString());
+            MazeInterface.configLabel(key,"/images/key.png",style1);
+            save = new Button();
+            configButton("images/save.png", save);
+            save.setOnMouseClicked(e -> {
+                LocalDate now = LocalDate.now();
+                String date[] = now.toString().split("-");
+                try {
+                    game.save("savings/"+game.player().getName()+"--"+date[2] + "-" + date[1] + "-" + date[0].charAt(2) +date[0].charAt(3));
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                }
+            });
+            help = new Button();
+            configButton("images/help.png", help);
+            help.setOnMouseClicked(e -> {
+                if(main.getChildren().contains(display)){
+                  if(!multi)timePane.play();
+                  main.getChildren().remove(display);
+                }
+                else {
+                  if(!multi)timePane.pause();
+                  displayHelp();
+                  main.getChildren().add(display);
+                  tool.toFront();
+              }
+            });
+            Region rg = new Region();
+            HBox.setHgrow(rg, Priority.SOMETIMES);
+            rg.setFocusTraversable(false);
+            if(multi) tool=new ToolBar(rg,help,piece,plan,quit);
+            else tool = new ToolBar(rg, help,piece,save,plan,pause,quit);
+            for (Node a : tool.getItems()) {
+                if (a instanceof Button) {
+                    a.setStyle(style);
+                    a.setFocusTraversable(false);
+                }
+            }
+            if(game instanceof TimeTrialVersion)tool.getItems().remove(piece);
+            tool.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
+            main.getChildren().add(tool);
+            StackPane.setAlignment(tool,Pos.TOP_RIGHT);
+        }
+
+        public void configButton(String path, Button button) {
+            Image img = new Image(getClass().getResourceAsStream(path), 50, 50, false, false);
+            ImageView im = new ImageView(img);
+            im.setFitHeight(20);
+            im.setFitWidth(20);
+            button.setGraphic(new ImageView(img));
+        }
+
+        public GameControl(boolean multi) throws IOException {
+            lastUpdate = new SimpleLongProperty();
+            gameTimer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    if (game.gameOver()) {
+                        whenIsFinished();
+                    } else if (game.player.state() == Player.PlayerState.DEAD) {
+                        timePane.stop();
+                        final ImageView imv = new ImageView();
+                        final Image img = new Image(View.class.getResourceAsStream("images/death.png"));
+                        imv.setImage(img);
+                        main.getChildren().add(imv);
+                        View.this.setOnKeyPressed(null);
+                        gameTimer.stop();
+                    } else if (timePane.timeOver()) {
+                    } else {
+                        if (lastUpdate.get() > 0) {
+                            double elapsedTime = (now - lastUpdate.get()) / 1000000000.0;
+                            game.update(elapsedTime);
+                            Point2D pos = game.player().getPosition();
+                            double yPos = game.player().getY();
+                            int floor = game.player().getMazeIndex();
+                            mazePane.x.set((pos.getX() + mazePane.coordSwitch[floor].x()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
+                            mazePane.z.set((pos.getY() + mazePane.coordSwitch[floor].z()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
+                            mazePane.y.set(-yPos * mazePane.SIZE_BOX);
+                            mazePane.angle.set(90 - game.player().orientation());
+                            mazePane.rotateX.setAngle(game.player().orientationX());
+                            if (game.player.hasPickedUp()) {
+                                System.out.println((int) pos.getX() + "  " + (int) pos.getY());
+                                MazeInterface.sounds(0).play();
+                                mazePane.remove(mazePane.floorGroups[floor], (int) pos.getX(), (int) pos.getY());
+                                game.player.pick(false);
+                            }
+                        }
+                        lastUpdate.set(now);
+
+                    }
+                }
+            };
+            handleAction();
+            setToolBar(multi);
         }
 
         public void moveMap(int size, Circle player) {
@@ -859,7 +854,7 @@ public class View extends Scene {
                             gc.setFill(Color.YELLOW);
                             break;
                         case Maze.BONUS:
-                            gc.setFill(Color.GREEN);
+                            gc.setFill(Color.YELLOW);
                             break;
                     }
                     gc.fillRect(x, y, size, size);
@@ -870,105 +865,12 @@ public class View extends Scene {
             }
             map.getChildren().add(mapDraw);
         }
-
-       /* public void printMaze() {
-            for (int i = 0; i < MAZE_LENGTH; i++) {
-                for (int j = 0; j < MAZE_WIDTH; j++)
-                    System.out.print(maze.getCase(i, j) + "  ");
-                System.out.println();
-            }
-        }*/
-    }
-
-
-
-
-
-   /* public void beatTheRecord(java.time.Duration rec){
-        if(rec.compareTo(record)>0){
-            record=rec;
-            Alert newRecord= new Alert(Alert.AlertType.INFORMATION);
-            newRecord.setTitle("");
-            newRecord.setHeaderText("CONGRATULATIONS ! ");
-            newRecord.setContentText("You have made a new record ! ");
-            newRecord.show();
+        public void displayScore(Pane root) {
+            root.getChildren().clear();
+            String display = game.scores().getScores();
+            String[] splits = display.split("\n");
+            for (String s : splits) root.getChildren().add(new Label(s));
         }
-    }*/
-
-
-    protected abstract class GameControl {
-        protected double mouseXOld;
-        protected double mouseYOld;
-        protected int action = -1;
-        protected LongProperty lastUpdate;
-        protected AnimationTimer gameTimer;
-
-        public GameControl() throws IOException {
-            lastUpdate = new SimpleLongProperty();
-            gameTimer = new AnimationTimer() {
-                @Override
-                public void handle(long now) {
-                    if (game.gameOver()) whenIsFinished();
-                     else if (game.player.state() == Player.PlayerState.DEAD) {
-                        timePane.stop();
-                        final ImageView imv = new ImageView();
-                        final Image img = new Image(View.class.getResourceAsStream("images/death.png"));
-                        imv.setImage(img);
-                        main.getChildren().add(imv);
-                        View.this.setOnKeyPressed(null);
-                        gameTimer.stop();
-                        //mettre screen ecran cassé et you died of hnger ou you fell
-                    } else if (timePane.timeOver()) {
-                        final ImageView imv = new ImageView();
-                        final Image img = new Image(View.class.getResourceAsStream("images/over.png"));
-                        imv.setImage(img);
-                        main.getChildren().add(imv);
-                        View.this.setOnKeyPressed(null);
-                        gameTimer.stop();
-                        //timePane.setVisible(false);
-
-                        //Print you loose dumbass
-                    } else {
-                        if (lastUpdate.get() > 0) {
-                            double elapsedTime = (now - lastUpdate.get()) / 1000000000.0;
-                            /*if (action!=-1) {
-                                if(action==0) game.teleport((int) game.player.getPosition().getX(), (int) game.player.getPosition().getY());
-                                game.player.teleport(false);
-                                main.getChildren().remove(display);
-                                timePane.start();
-                                //game.player.teleport(false);
-                                action =-1;
-                            }*/
-                            game.update(elapsedTime);
-                            Point2D pos = game.player().getPosition();
-                            double yPos = game.player().getY();
-                            int floor = game.player().getMazeIndex();
-                            //System.out.println(pos);
-                            mazePane.x.set((pos.getX() + mazePane.coordSwitch[floor].x()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
-                            mazePane.z.set((pos.getY() + mazePane.coordSwitch[floor].z()) * mazePane.SIZE_BOX - mazePane.SIZE_BOX / 2);
-                            mazePane.y.set(-yPos * mazePane.SIZE_BOX);
-                            mazePane.angle.set(90 - game.player().orientation());
-                            mazePane.rotateX.setAngle(game.player().orientationX());
-                            if (game.player.hasPickedUp()) {
-                                System.out.println((int) pos.getX() + "  " + (int) pos.getY());
-                                MazeInterface.sounds(0).play();
-                                mazePane.remove(mazePane.floorGroups[floor], (int) pos.getX(), (int) pos.getY());
-                                game.player.pick(false);
-                            }
-                           /* else if(game.player.hasMetMonster() && !game.sounds.get(1).isPlaying()){
-                                //Put a black pane
-                                game.startF(0);
-                                game.player.meetMonster(false);
-                            }*/
-                        }
-                        lastUpdate.set(now);
-
-                    }
-                }
-            };
-            handleAction();
-        }
-
 
         public void displayScores(Scores s) {
             ScorePane sp = new ScorePane(s);
@@ -1003,43 +905,23 @@ public class View extends Scene {
             System.out.println(game.floors());
             gameTimer.start();
             timePane.start();
-            mazePane.setUpMap(10);
+            setUpMap(10);
             Circle player = new Circle(4.0, Color.WHITESMOKE);
-            mazePane.moveMap(10, player);
+            moveMap(10, player);
             map.getChildren().add(player);
             View.this.setOnKeyPressed(e -> {
-                boolean pocket = main.getChildren().contains(display);
-                if (e.getCode() == KeyCode.M) {
-                    if (!pocket) main.getChildren().add(display);
-                    updateInventory();
-                    timePane.pause();
-                    if (e.isControlDown()) {
-                        main.getChildren().remove(display);
-                        timePane.play();
-                    }
-                } else if (!pocket) {
+                boolean pane = main.getChildren().contains(display);
+                if (!pane) {
                     if (game.player.state() != Player.PlayerState.JUMPING) {
                         switch (e.getCode()) {
                             case UP:
-                                 /*if(game.player.isUnderTeleport()){
-                                     timePane.pause();
-                                     game.player.up(false);
-                                     main.getChildren().add(display);
-                                     action=MazeInterface.confirm("Do you wish to teleport ?",st);
-                                 }
-                                 else*/ game.player.up(true);
+                                game.player.up(true);
                                 break;
                             case RIGHT:
                                 if (game.player.state() != Player.PlayerState.STAIRSDOWN && game.player.state() != Player.PlayerState.STAIRSUP)
                                     game.player.right(true);
                                 break;
                             case DOWN:
-                                /*if(game.player.isUnderTeleport()){
-                                    timePane.pause();
-                                    game.player.down(false);
-                                    main.getChildren().add(display);
-                                    action=MazeInterface.confirm("Do you wish to teleport ?",st);
-                                }*/
                                 game.player.down(true);
                                 break;
                             case LEFT:
@@ -1057,9 +939,15 @@ public class View extends Scene {
                             case Q:
                                 if (e.isControlDown()) st.close();
                                 break;
+                            case M:
+                                if(!plan.isDisable()){
+                                  if(!main.getChildren().contains(map))main.getChildren().add(map);
+                                  else main.getChildren().remove(map);
+                                }
+                                break;
                         }
                     }
-                    mazePane.moveMap(10, player);
+                    moveMap(10, player);
                 }
             });
             View.this.setOnKeyReleased(e -> {
@@ -1087,8 +975,6 @@ public class View extends Scene {
                     double mouseYNew = evt.getSceneY();
                     if (evt.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                         double pitchRotate = mazePane.rotateX.getAngle() + (mouseYNew - mouseYOld);
-                        //set min and max to prevent flipping
-                        //pitchRotate=pitchRotate>cam
                         mazePane.rotateX.setAngle(pitchRotate);
                         double yawRotate = mazePane.angle.get() - (mouseXNew - mouseXOld);
                         mazePane.angle.set(yawRotate);
@@ -1118,13 +1004,13 @@ public class View extends Scene {
             String style = "-fx-text-fill: white;-fx-font:oblique 15pt cursive;-fx-text-alignment: left;-fx-font-weight:bold;-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.75),4,0,0,1);";
             String key = "To open a door, you need a gold key which is hidden somewhere";
             Label cle = new Label(key);
-            configLabel(cle, "images/key.png", style);
+            MazeInterface.configLabel(cle, "images/key.png", style);
             String time = "Hourglasses will get you some extra time";
             Label hour = new Label(time);
-            configLabel(hour, "images/hourglass.png", style);
+            MazeInterface.configLabel(hour, "images/hourglass.png", style);
             String coin = "Look for the coins.With half of them, you can buy a map of the maze, the rest will be extra time on your final score";
             Label piece = new Label(coin);
-            configLabel(piece, "images/coin.png", style);
+            MazeInterface.configLabel(piece, "images/coin.png", style);
             String inv = "Pressing M or clicking on the bag icon will show you the objects you possess";
             Label pock = new Label(inv);
             String keys = "Use the arrow keys to move and turn";
@@ -1138,134 +1024,23 @@ public class View extends Scene {
             display.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4); -fx-background-radius: 10; -fx-alignment:center");
             display.setSpacing(30.0);
             display.getChildren().addAll(touch,end, hour,cle, piece, pock,obst,mons);
+            if(plan.isDisable()&&!(game instanceof TimeTrialVersion)){
+              Label costLabel = new Label("You can buy a map for 5 coins");
+              costLabel.setStyle(style);
+              String styleB = "-fx-background-color:#090a0c,linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),linear-gradient(#20262b, #191d22),radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));-fx-text-fill:white;";
+              Button buyMap = new Button("Buy the map");
+              buyMap.setStyle(styleB);
+              if(game.player().getBonus().size()<5)buyMap.setDisable(true);
+              HBox cost = new HBox(costLabel,buyMap);
+              cost.setAlignment(Pos.CENTER);
+              display.getChildren().add(cost);
+              buyMap.setOnMouseClicked(e->{
+                game.useBonus(5);
+                plan.setDisable(false);
+                display.getChildren().remove(cost);
+              });
+            }
             for(Node n:display.getChildren()) n.setStyle(style);
-        }
-
-        /*public void displayHelp() {
-            display.getChildren().clear();
-            String style = "-fx-background-color:lightslategrey;-fx-text-fill: white;-fx-font:oblique 15pt cursive;-fx-text-alignment: center;-fx-font-weight:bold;-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.75),4,0,0,1);";
-            String key = "To open, you need a gold key which is somewhere";
-            Label cle = new Label(key);
-            configLabel(cle, "key.png", style);
-            String time = "Hourglasses are used to save time";
-            Label hour = new Label(time);
-            configLabel(hour, "hourglass.png", style);
-            String coin = "With 5 coins you can buy a map of the maze, with less you save time on your score";
-            Label piece = new Label(coin);
-            configLabel(piece, "coin.png", style);
-            String inv = "You can see what you have with the button pocket or press M";
-            Label pock = new Label(inv);
-            pock.setStyle(style);
-            String keys = "Use arrow keys to move";
-            Label touch = new Label(keys);
-            touch.setStyle(style);
-            String sortie = "The end is red whereas the beginning is blue";
-            Label end = new Label(sortie);
-            end.setStyle(style);
-            display.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4); -fx-background-radius: 10;");
-            display.setSpacing(30.0);
-            display.getChildren().addAll(cle, hour, piece, pock, touch, end);
-        }*/
-
-        public void updateInventory() {
-            display.getChildren().clear();
-            display.setStyle("-fx-background-color: rgba(0, 0, 0, 0); -fx-background-radius: 10;");
-            String style = "-fx-background-color:lightslategrey;-fx-text-fill: white;-fx-font:oblique 15pt cursive;-fx-text-alignment: center;-fx-font-weight:bold;-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.75),4,0,0,1);";
-            String styleB = "-fx-background-color:#090a0c,linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),linear-gradient(#20262b, #191d22),radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));-fx-text-fill:white;";
-            int time = 0, coin = 0;
-            int key = game.player().keys().size();
-            int bonus = game.player().getBonus().size();
-            if (bonus + key != 0) {
-                if (bonus != 0) {
-                    for (Bonus a : game.player().getBonus()) {
-                        if (a instanceof TimeBonus) time++;
-                        else coin++;
-                    }
-                    if (coin != 0) {
-                        Label piece = new Label("You have " + "" + coin + " coin(s)");
-                        configLabel(piece, "images/coin.png", style);
-                        Button usePiece = new Button("Buy the map");
-                        if (coin < 5) usePiece.setDisable(true);
-                        usePiece.setOnMouseClicked(e -> {
-                            plan.setDisable(false);
-                        });
-                        usePiece.setStyle(styleB);
-                        HBox panePiece = new HBox(piece, usePiece);
-                        panePiece.setAlignment(Pos.CENTER);
-                        display.getChildren().add(panePiece);
-                    }
-                }
-                if (key != 0) {
-                    Label keys = new Label("You have " + "" + key + " key(s)");
-                    configLabel(keys, "images/key.png", style);
-                    Button useKey = new Button("Use");
-                    useKey.setStyle(styleB);
-                    useKey.setOnMouseClicked(e -> {
-                        updateInventory();
-                    });
-                    HBox paneKey = new HBox(keys, useKey);
-                    paneKey.setAlignment(Pos.CENTER);
-                    display.getChildren().add(paneKey);
-                }
-            } else {
-                Label nothing = new Label("You have no object");
-                nothing.setStyle(style);
-                display.getChildren().add(nothing);
-            }
-        }
-
-       /* public void updateInventory() {
-            display.getChildren().clear();
-            display.setStyle("-fx-background-color: rgba(0, 0, 0, 0); -fx-background-radius: 10;");
-            String style = "-fx-background-color:lightslategrey;-fx-text-fill: white;-fx-font:oblique 15pt cursive;-fx-text-alignment: center;-fx-font-weight:bold;-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.75),4,0,0,1);";
-            String styleB = "-fx-background-color:#090a0c,linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),linear-gradient(#20262b, #191d22),radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));-fx-text-fill:white;";
-            int time = 0, coin = 0;
-            int key = game.player().keys().size();
-            int bonus = game.player().getBonus().size();
-            if (bonus + key != 0) {
-                if (bonus != 0) {
-                    for (Bonus a : game.player().getBonus()) {
-                        if (a instanceof TimeBonus) time++;
-                        else coin++;
-                    }
-                    if (coin != 0) {
-                        Label piece = new Label("You have " + "" + coin + " coin(s)");
-                        configLabel(piece, "coin.png", style);
-                        Button usePiece = new Button("Buy the map");
-                        if (coin < 5) usePiece.setDisable(true);
-                        usePiece.setOnMouseClicked(e -> {
-                            plan.setDisable(false);
-                        });
-                        usePiece.setStyle(styleB);
-                        HBox panePiece = new HBox(piece, usePiece);
-                        panePiece.setAlignment(Pos.CENTER);
-                        display.getChildren().add(panePiece);
-                    }
-                }
-                if (key != 0) {
-                    Label keys = new Label("You have " + "" + key + " key(s)");
-                    configLabel(keys, "key.png", style);
-                    Button useKey = new Button("Use");
-                    useKey.setStyle(styleB);
-                    useKey.setOnMouseClicked(e -> {
-                        updateInventory();
-                    });
-                    HBox paneKey = new HBox(keys, useKey);
-                    paneKey.setAlignment(Pos.CENTER);
-                    display.getChildren().add(paneKey);
-                }
-            } else {
-                Label nothing = new Label("You have no object");
-                nothing.setStyle(style);
-                display.getChildren().add(nothing);
-            }
-        }*/
-
-        public void configLabel(Label txt, String path, String style) {
-            Image img = new Image(getClass().getResourceAsStream(path));
-            txt.setGraphic(new ImageView(img));
-            txt.setContentDisplay(ContentDisplay.RIGHT);
-            txt.setStyle(style);
         }
     }
 }

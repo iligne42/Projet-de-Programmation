@@ -733,14 +733,8 @@ public abstract class GameVersion implements Serializable {
 
 
    public void useBonus(int i) {
-        if(player.getBonus().getFirst() instanceof TimeBonus){
-            player.useBonus(i);
-            elapsed -= 30 * i;
-        }
-        else{
-
-        }
-
+        if(player.getBonus().getFirst() instanceof TimeBonus)elapsed -= 30 * i;                
+        player.useBonus(i);
    }
     /*------------------------------------------------------------------------------------------------------------------------*/
 

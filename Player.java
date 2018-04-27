@@ -476,7 +476,7 @@ public class Player implements Serializable {
 
 
     public void useBonus(int i){
-        for(int a=0;a<i;i++) bonus.remove();
+        for(int a=0;a<i;a++) bonus.remove();
     }
 
 
