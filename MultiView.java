@@ -66,7 +66,6 @@ public class MultiView extends View {
                         //Get time to beat, it is the top of the list
                         //Get to the next player and labyrinth
                         if (!multi.gameOver()) {
-                            mazePane.printMaze();
                             try {
                                 game = multi.next();
                                 mazePane.getChildren().clear();
