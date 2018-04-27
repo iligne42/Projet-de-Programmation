@@ -28,8 +28,6 @@ public class netView extends View{
 
     public netView(GameVersion game, Socket me) throws IOException{
         super(new StackPane(), game);
-        main.getChildren().remove(tool);
-        mazePane.setToolBar(true);
         control=new NetControl(me);
     }
 
@@ -38,7 +36,7 @@ public class netView extends View{
         private sendPos sp;
         private getPos gp;
         public NetControl(Socket me) throws IOException{
-            super();
+            super(true);
             this.me=me;
             sp = new sendPos();
             sp.start();
