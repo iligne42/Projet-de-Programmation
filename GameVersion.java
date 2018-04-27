@@ -229,11 +229,7 @@ public abstract class GameVersion implements Serializable {
     }
 
     public boolean gameOver() {
-       if(current.equals(floors.getLast()) && isInBounds(player.getPosition(),current) && current.getCase(player.getPosition()) == Maze.END){
-           convertBonus();
-           return true;
-       }
-       return false;
+        return current.equals(floors.getLast()) && isInBounds(player.getPosition(),current) && current.getCase(player.getPosition()) == Maze.END ;
     }
 
     public boolean isInBounds(Point2D p,Maze current) {

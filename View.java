@@ -201,6 +201,7 @@ public class View extends Scene {
 
 
 
+
     protected class MazePane extends Group {
         protected Group world;
         protected LinkedList<Maze> floors=game.floors();
@@ -907,14 +908,8 @@ public class View extends Scene {
             gameTimer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
-                    if (game.gameOver()) {
-                        timePane.stop();
-                        timePane.timeSeconds.set(game.getElapsed());
-                        System.out.println(game.player.getBonus().size());
-                        if(game.player.getBonus().size()==0){
-                            whenIsFinished();
-                        }
-                    } else if (game.player.state() == Player.PlayerState.DEAD) {
+                    if (game.gameOver()) whenIsFinished();
+                     else if (game.player.state() == Player.PlayerState.DEAD) {
                         timePane.stop();
                         final ImageView imv = new ImageView();
                         final Image img = new Image(View.class.getResourceAsStream("images/death.png"));
@@ -924,7 +919,14 @@ public class View extends Scene {
                         gameTimer.stop();
                         //mettre screen ecran cassé et you died of hnger ou you fell
                     } else if (timePane.timeOver()) {
+                        final ImageView imv = new ImageView();
+                        final Image img = new Image(View.class.getResourceAsStream("images/over.png"));
+                        imv.setImage(img);
+                        main.getChildren().add(imv);
+                        View.this.setOnKeyPressed(null);
+                        gameTimer.stop();
                         //timePane.setVisible(false);
+
                         //Print you loose dumbass
                     } else {
                         if (lastUpdate.get() > 0) {
@@ -967,12 +969,6 @@ public class View extends Scene {
             handleAction();
         }
 
-        public void displayScore(Pane root) {
-            root.getChildren().clear();
-            String display = game.scores().getScores();
-            String[] splits = display.split("\n");
-            for (String s : splits) root.getChildren().add(new Label(s));
-        }
 
         public void displayScores(Scores s) {
             ScorePane sp = new ScorePane(s);

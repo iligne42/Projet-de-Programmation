@@ -43,6 +43,7 @@ public class Player implements Serializable {
 	    public Falling(){
             setGround(0);
             state=null;
+            MazeInterface.sounds(3).play();
             //add scream sound
 
         }
@@ -54,7 +55,9 @@ public class Player implements Serializable {
                 System.out.println("I'm dead !");
                 posY=ground;
                 velocity.setTo(0, 0, 0);
+                MazeInterface.sounds(3).stop();
                 changeState(PlayerState.DEAD);
+                //add crash sound
             }
         }
 

@@ -177,6 +177,35 @@ public interface MazeInterface {
         if(l==-1){
             L=readInt("Choose the length");
             l=readInt("Choose the width");
+        }
+        extras=L*l/30;
+
+        for(int i=0;i<extra.length;i++){
+            extra[i]=0;
+            if(sup[i] ){
+                if(i!=4) {
+                    extra[i] = extras / nb;
+                    extras -= extra[i];
+                    nb--;
+                    if(extra[i]==0) no=true;
+                }
+                else{
+                    extra[i]=(typeB==0)?(L*l)/5:(L*l)/10;
+                    nb --;
+                }
+            }
+        }
+        if(no) warning("Sorry, we couldn't put everything you requested :'(");
+        return new MazeFloors(L,l,f,extra[0],extra[2],extra[3],extra[1],extra[4],typeB);
+    }
+
+    /*static MazeFloors getMaze(int L,int l,int f,int typeB,boolean[] sup,int extras) throws Exception{
+        int[] extra=new int[sup.length];
+        int nb=getSelected(sup);
+        boolean no=false;
+        if(l==-1){
+            L=readInt("Choose the length");
+            l=readInt("Choose the width");
             int val=getDifficulty(L,l);
             String s="";
             switch(val){
@@ -209,7 +238,7 @@ public interface MazeInterface {
         }
         if(no) warning("Sorry, we couldn't put everything you requested :'(");
         return new MazeFloors(L,l,f,extra[0],extra[2],extra[3],extra[1],extra[4],typeB);
-    }
+    }*/
 
     static int getSelected(boolean[] s){
         int r=0;
@@ -233,6 +262,7 @@ public interface MazeInterface {
 
     static View getView(MazeFloors m, String ty, int time) throws FormatNotSupported, IOException {
         int type = 0;
+        time=m.getFloor().getFirst().getHeight()*m.getFloor().getFirst().getWidth();
         if (ty.equals("Solo"))
             return new SingleView(new SoloVersion(m, readInput("What's your name ?")));
 
@@ -294,6 +324,10 @@ public interface MazeInterface {
     static int typeBonus(String ty){
         if(ty.equals("Against the clock")) return 1;
         return 0;
+    }
+
+    static int nbExtra(int L, int l){
+        return L*l/30;
     }
 
     static int nbExtra(String s){

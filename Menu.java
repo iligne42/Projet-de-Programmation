@@ -33,6 +33,7 @@ public class Menu extends Application {
     boolean[] supp;
     int selected;
     IntegerProperty value;
+    boolean debug=false;
     //Parent previous;
 
     protected class Counter extends VBox{
@@ -71,10 +72,10 @@ public class Menu extends Application {
                 try{
                     Scores sco = new Scores(path,a);
                     String [] sc = (sco.getScores()).split("\n");
-                    System.out.println(sc.length);
+                    if(debug)System.out.println(sc.length);
                     for(String sct : sc){
                         Label res = new Label(sct);
-                        System.out.println(sct);
+                        if(debug)System.out.println(sct);
                         pan.getChildren().add(res);
                     }
                     Button prev = new Button("Back");
@@ -86,7 +87,7 @@ public class Menu extends Application {
                     pan.getChildren().add(prev);
                 }
                 catch(Exception exc){
-                    exc.printStackTrace();}
+              if(debug)      exc.printStackTrace();}
     	});
     }
     public void config(VBox ranking,String path,StackPane stack,VBox menu){
@@ -175,7 +176,7 @@ public class Menu extends Application {
                 st.show();
             }
             catch(Exception ex){
-                ex.printStackTrace();
+         if(debug)       ex.printStackTrace();
             }
         });
 
@@ -218,7 +219,7 @@ public class Menu extends Application {
 
             }
             catch(Exception ex){
-                ex.printStackTrace();
+         if(debug)       ex.printStackTrace();
             }
         });
      /* cont.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
@@ -397,7 +398,7 @@ public class Menu extends Application {
                    st.setFullScreen(true);
                     st.show();
                 } catch (Exception formatNotSupported) {
-                    formatNotSupported.printStackTrace();
+                    if(debug)formatNotSupported.printStackTrace();
                 }
             }
 
@@ -500,7 +501,7 @@ public class Menu extends Application {
                         }
                     }
                     catch (Exception formatNotSupported) {
-                            formatNotSupported.printStackTrace();
+                        if(debug)formatNotSupported.printStackTrace();
                         }
 
 
@@ -534,7 +535,7 @@ public class Menu extends Application {
                     hostmenu.initClient(name);
                     changePanel(stack, hostmenu);
                 } catch (Exception exception) {
-                    exception.printStackTrace();
+                    if(debug)exception.printStackTrace();
                 }
             });
 
