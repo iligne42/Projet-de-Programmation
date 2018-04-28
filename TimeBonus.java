@@ -1,10 +1,10 @@
+import java.awt.geom.Point2D;
 public class TimeBonus extends Bonus{
-    private int time;
 
     public TimeBonus(Maze m){
         super(m,"Time");
-        time=10;
     }
-
-    public int getTime(){return time;}
+    public TimeBonus(Maze m,Point2D p){
+      super(m,p,"Time");
+    }
 }

@@ -25,7 +25,7 @@ public class Key extends Divers{
 
     private static int inBetween(int x, int y){
         Random rand=new Random();
-        return rand.nextInt(max(x,y)-min(x,y))+min(x,y);
+        return ((x==y)?x:rand.nextInt(max(x,y)-min(x,y))+min(x,y));
     }
 
     public void beforeDoor() {
@@ -48,7 +48,7 @@ public class Key extends Divers{
         //System.out.println("La clé:"+j+","+i);
         double k=centrer(i);
         double l=centrer(j);
-        p.setLocation(l,k);        
+        p.setLocation(l,k);
     }
 
     public static void main(String[]args){

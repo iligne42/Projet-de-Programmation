@@ -15,6 +15,10 @@ public abstract class Bonus extends Divers{
         avantage=a;
         put();
     }
+    public Bonus(Maze m, Point2D p,String a){
+      super(m,p);
+      avantage=a;
+    }
 
     public String getAvantage(){return avantage;}
 
@@ -22,11 +26,11 @@ public abstract class Bonus extends Divers{
         FXMLLoader fxmlLoader = new FXMLLoader();
         PhongMaterial mat = new PhongMaterial();
         if(avantage.equals("Piece")) {
-            fxmlLoader.setLocation(this.getClass().getResource("MegaCoin.fxml")); //mettre pieces ou bonus temps
+            fxmlLoader.setLocation(this.getClass().getResource("fxml/MegaCoin.fxml")); //mettre pieces ou bonus temps
             mat.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
             mat.setDiffuseColor(Color.YELLOW);
         }else{
-            fxmlLoader.setLocation(this.getClass().getResource("sablier.fxml"));
+            fxmlLoader.setLocation(this.getClass().getResource("fxml/sablier.fxml"));
             mat.setSpecularColor(Color.MAROON);
             mat.setDiffuseColor(Color.BROWN);
         }

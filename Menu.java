@@ -33,6 +33,7 @@ public class Menu extends Application {
     boolean[] supp;
     int selected;
     IntegerProperty value;
+    boolean debug=false;
     //Parent previous;
 
     protected class Counter extends VBox{
@@ -68,13 +69,14 @@ public class Menu extends Application {
     public void setButton(Button button, int a, VBox pan, String path,StackPane stack,VBox menu){
       	button.setOnMouseClicked(e->{
       		pan.getChildren().clear();
+      		pan.setStyle("-fx-spacing:2;");
                 try{
                     Scores sco = new Scores(path,a);
                     String [] sc = (sco.getScores()).split("\n");
-                    System.out.println(sc.length);
+                    if(debug)System.out.println(sc.length);
                     for(String sct : sc){
                         Label res = new Label(sct);
-                        System.out.println(sct);
+                        if(debug)System.out.println(sct);
                         pan.getChildren().add(res);
                     }
                     Button prev = new Button("Back");
@@ -85,7 +87,8 @@ public class Menu extends Application {
 			});
                     pan.getChildren().add(prev);
                 }
-                catch(Exception exc){}
+                catch(Exception exc){
+              if(debug)      exc.printStackTrace();}
     	});
     }
     public void config(VBox ranking,String path,StackPane stack,VBox menu){
@@ -103,14 +106,15 @@ public class Menu extends Application {
     public void initRank(StackPane stack,VBox ranking,VBox menu){
       Button solos = new Button("Solo");
       solos.setOnMouseClicked(e->{
-              config(ranking,"bestSolos.txt",stack,menu);
+              config(ranking,"txt/bestSolos.txt",stack,menu);
           });
       Button trial = new Button("Against the clock");
       trial.setOnMouseClicked(e->{
-              config(ranking,"bestRaces.txt",stack,menu);
+              config(ranking,"txt/bestRaces.txt",stack,menu);
           });
       ranking.getChildren().addAll(solos,trial);
     }
+
     @Override
     public void start(Stage stage) throws FormatNotSupported, IOException {
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -154,27 +158,20 @@ public class Menu extends Application {
         StackPane stack = new StackPane();
         stack.getChildren().addAll(settings2, mode, maze, game, hostmenu,ranking, menu);
 
-       /* Button back=new Button("Back");
-        back.setOnMouseClicked(e->{
-            changePanel(stack,previous);
-        });*/
-
         initRank(stack,ranking,menu);
         /*Panneau pour le réseau*/
         Button go=new Button("Go !");
         go.setOnMouseClicked(e->{
             try {
                 Stage st = new Stage();
-                view = MazeInterface.getView(mazeM,gType,name,MazeInterface.getTime(dif));
+                view = MazeInterface.getView(mazeM,gType,name);
                 view.setStage(st);
-                //sc.getStylesheets().add("");
                 st.setScene(view);
-                //view.setScene(sc);
                 st.setFullScreen(true);
                 st.show();
             }
             catch(Exception ex){
-
+         if(debug)       ex.printStackTrace();
             }
         });
 
@@ -189,12 +186,15 @@ public class Menu extends Application {
         /*Panneau pour charger le jeu*/
         Button newG = new Button("New Game");
         newG.setOnMouseClicked(e -> {
-            //previous=newG.getParent();
             changePanel(stack, maze);
         });
 
 
         ObservableList<String> options = FXCollections.observableArrayList();
+        File folder=new File("savings/");
+        for(File f:folder.listFiles()){
+            if(f.getName().endsWith(".ser")) options.add(f.getName());
+        }
 
         ComboBox cont = new ComboBox(options);
         cont.setPromptText("Continue a previous game");
@@ -205,23 +205,15 @@ public class Menu extends Application {
                 view = new SingleView(g);
                 Stage st = new Stage();
                 view.setStage(st);
-                //sc.getStylesheets().add("");
-                st.setScene(view);
-                //view.setScene(sc);
+                st.setScene(view);    
                 st.setFullScreen(true);
                 st.show();
 
             }
             catch(Exception ex){
-
+         if(debug)  ex.printStackTrace();
             }
         });
-     /* cont.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-          @Override
-          public ListCell call(ListView param) {
-              return null;
-          }
-      });*/
         Button backToMenu = new Button("Back");
         backToMenu.setOnMouseClicked(e -> {
             changePanel(stack, menu);
@@ -373,7 +365,7 @@ public class Menu extends Application {
             if(gType.equals("Multiplayer In Network")){
                         try {
                         name = MazeInterface.readInput("What's your name ?");
-                        mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif),value.get(),0,supp,MazeInterface.nbExtra(dif));
+                        mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif),value.get(),0,supp);
                         hostmenu.initHost(name,mazeM);
                        changePanel(stack, hostmenu);
                     } catch (Exception exception) {
@@ -382,19 +374,15 @@ public class Menu extends Application {
             }
             else {
                 try {
-                    mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif),value.get(),MazeInterface.typeBonus(gType),supp,MazeInterface.nbExtra(dif));
-                    view = MazeInterface.getView(mazeM, gType,MazeInterface.getTime(dif));
+                    mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif),value.get(),MazeInterface.typeBonus(gType),supp);
+                    view = MazeInterface.getView(mazeM, gType);
                     Stage st = new Stage();
                     view.setStage(st);
-                    //sc.getStylesheets().add("");
                     st.setScene(view);
-                    //view.setScene(sc);
                    st.setFullScreen(true);
                     st.show();
-                } catch (FormatNotSupported formatNotSupported) {
-
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                } catch (Exception formatNotSupported) {
+                    if(debug)formatNotSupported.printStackTrace();
                 }
             }
 
@@ -417,7 +405,6 @@ public class Menu extends Application {
 
         Button load = new Button("Load maze file");
         load.setOnMouseClicked(e -> {
-                    // previous=load.getParent();
                     changePanel(stack, settings2);
                 });
         Button backToGame = new Button("Back");
@@ -479,29 +466,24 @@ public class Menu extends Application {
             if(dif==null)dif = ((RadioButton) difficulty.getSelectedToggle()).getText();
             if (file != null) {
                 try {
-                    mazeM = new MazeFloors(new Maze(file));
+                    mazeM = new MazeFloors(new Maze(file,gType));
                     if (gType.equals("MultiPlayer In Network")) {
                             name = MazeInterface.readInput("What's your name ?");
                             hostmenu.initHost(name, mazeM);
                         }
                      else {
-                            view = MazeInterface.getView(mazeM, gType,MazeInterface.getTime(dif));
-                            //sc.getStylesheets().add("");
+                            view = MazeInterface.getView(mazeM, gType);
                             Stage st = new Stage();
                             st.setScene(view);
                             view.setStage(st);
-                            //view.setScene(sc);
                             st.setFullScreen(true);
                             st.show();
-                            //sc.getStylesheets().add("");
                         }
                     }
-                    catch (FormatNotSupported formatNotSupported) {
-                            formatNotSupported.printStackTrace();
+                    catch (Exception formatNotSupported) {
+                        if(debug)formatNotSupported.printStackTrace();
                         }
-                        catch (IOException e1) {
-                e1.printStackTrace();
-            }
+
 
 
                 }
@@ -532,8 +514,8 @@ public class Menu extends Application {
                     name = MazeInterface.readInput("What's your name ?");
                     hostmenu.initClient(name);
                     changePanel(stack, hostmenu);
-                } catch (FormatNotSupported exception) {
-
+                } catch (Exception exception) {
+                    if(debug)exception.printStackTrace();
                 }
             });
 
@@ -563,7 +545,7 @@ public class Menu extends Application {
         hostmenu.setVisible(false);
         ranking.setVisible(false);
         Scene scene = new Scene(stack);
-        scene.getStylesheets().add("menu.css");
+        scene.getStylesheets().add("css/menu.css");
         stage.setScene(scene);
         stage.show();
     }
@@ -598,7 +580,7 @@ public class Menu extends Application {
 
     public static void addCss(Dialog a) {
         DialogPane dialogPane = a.getDialogPane();
-        dialogPane.getStylesheets().add("alert.css");
+        dialogPane.getStylesheets().add("css/alert.css");
         a.setHeaderText(null);
         a.setGraphic(null);
 

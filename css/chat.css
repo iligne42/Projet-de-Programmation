@@ -1,5 +1,5 @@
 .root{
-    -fx-background-image:url("lab.jpg");
+    -fx-background-image:url("../images/lab.jpg");
     -fx-alignment:center;
     -fx-padding:20,20,20,20;
 }

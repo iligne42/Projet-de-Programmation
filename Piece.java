@@ -1,10 +1,10 @@
+import java.awt.geom.Point2D;
 public class Piece extends Bonus{
-    private int montant;
 
     public Piece(Maze m){
         super(m,"Piece");
-        montant=10;
     }
-
-    public int getMontant(){return montant;}
+    public Piece(Maze m,Point2D p){
+      super(m,p,"Piece");
+    }
 }

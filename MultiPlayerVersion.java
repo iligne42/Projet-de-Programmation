@@ -39,11 +39,6 @@ public class MultiPlayerVersion implements Serializable {
         return game;
     }
 
-   /* public void save(String file) throws IOException{
-      game.save(file);
-      //save the players too
-  }*/
-
     public void save(String file) throws IOException {
         File f=new File(file);
         if(!f.exists()) f.createNewFile();
@@ -53,13 +48,13 @@ public class MultiPlayerVersion implements Serializable {
         oos.close();
     }
 
-
     public boolean gameOver() {
         return players.isEmpty();
     }
 
-    public void next() throws IOException, FormatNotSupported,CloneNotSupportedException {
-        game = new SoloVersion(originalMaze.clone(), players.pop(), scores);
+    public GameVersion next() throws IOException, FormatNotSupported,CloneNotSupportedException {
+       game = new SoloVersion(originalMaze.clone(), players.pop(), scores);
+       return game;
     }
 
     public Stack<Player> getPlayers() {

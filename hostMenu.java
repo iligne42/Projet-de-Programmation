@@ -90,13 +90,16 @@ public class hostMenu extends VBox{
 		waitIP.getStyleClass().add("vbox");
 		but.setOnMouseClicked(e->{
 			clear();
-			initMe(name,text.getText());
-			makeChat(text.getText());
+			if(initMe(name,text.getText()))
+				makeChat(text.getText());
+			else
+				MazeInterface.warning("Cannot connect to server.");
+				initClient(name);
 		});
 		this.getChildren().add(waitIP);
 	}
 
-	public void initMe(String name, String addr){
+	public boolean initMe(String name, String addr){
 		System.out.println("J'ai l'addr "+addr);
 		try{
 			me=new Socket(addr,netFunc.PORT);
@@ -111,7 +114,8 @@ public class hostMenu extends VBox{
 			});
 			getChildren().add(play);
 			printPlayer();
-		}catch(Exception e){e.printStackTrace();}
+			return true;
+		}catch(Exception e){return false;}
 	}
 
 	public void getClient(){
@@ -192,8 +196,7 @@ public class hostMenu extends VBox{
 								netFunc.sendObject(soc,names);
 						}
 						System.out.println("J'envoie les listes");
-					}else
-					tmp.close();
+					}
 				}catch(Exception e){}
 			}
 		}
