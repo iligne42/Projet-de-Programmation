@@ -27,6 +27,7 @@ public class TimeTrialVersion extends GameVersion {
 
     }
 
+    @Override
 	public String scoresFile(){
 		return "txt/bestRaces.txt";
 	}

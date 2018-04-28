@@ -72,9 +72,6 @@ public class Vector3D implements Serializable{
         return ("x="+x+" y="+y+" z="+z);
     }
 
-
-
-
     public Vector3D add(Vector3D f){
         return new Vector3D(x+f.x(),y+f.y(),z+f.z());
     }

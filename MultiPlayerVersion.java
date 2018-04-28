@@ -39,11 +39,6 @@ public class MultiPlayerVersion implements Serializable {
         return game;
     }
 
-   /* public void save(String file) throws IOException{
-      game.save(file);
-      //save the players too
-  }*/
-
     public void save(String file) throws IOException {
         File f=new File(file);
         if(!f.exists()) f.createNewFile();
@@ -52,7 +47,6 @@ public class MultiPlayerVersion implements Serializable {
         oos.writeObject(this);
         oos.close();
     }
-
 
     public boolean gameOver() {
         return players.isEmpty();

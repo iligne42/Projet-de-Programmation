@@ -20,10 +20,8 @@ import java.util.Stack;
 
 public class MultiView extends View {
     protected MultiPlayerVersion multi;
-    // protected Stack<Player> players;
 
     public MultiView(MultiPlayerVersion multi) throws IOException, FormatNotSupported {
-        //super(new BorderPane(),multi.getGame());
         super(new StackPane(), multi.getGame());
         this.multi = multi;
         control = new MultiControl();
@@ -31,7 +29,6 @@ public class MultiView extends View {
     }
 
     protected class MultiControl extends GameControl {
-        //protected Scores scores;
         protected IntegerProperty timeToBeat;
         protected Label nameLabel;
         protected HBox toBeat = new HBox();
@@ -47,10 +44,6 @@ public class MultiView extends View {
             nameLabel.setStyle("-fx-alignment:center;-fx-text-fill:white;-fx-font-size:25pt");
             toBeat.getChildren().addAll(new Label("Time to beat : "), label);
             tool.getItems().add(nameLabel);
-            //StackPane.setAlignment(nameLabel, Pos.BOTTOM_CENTER);
-
-            //timePane.getChildren().add(label);
-
         }
 
         protected class EndPane extends TimePane {
@@ -63,8 +56,6 @@ public class MultiView extends View {
                     if (game.player.getBonus().size() == 0) {
                         game.addToScoresList();
                         timeToBeat.set(game.scores().get(0).getValue());
-                        //Get time to beat, it is the top of the list
-                        //Get to the next player and labyrinth
                         if (!multi.gameOver()) {
                             try {
                                 game = multi.next();
@@ -72,20 +63,15 @@ public class MultiView extends View {
                                 handleAction();
                                 timePane.getChildren().add(toBeat);
                                 nameLabel.setText(game.player().getName());
-                  /*  main.getChildren().add(label);
-                    StackPane.setAlignment(label, Pos.BOTTOM_LEFT);*/
                             } catch (IOException e1) {
-                                e1.printStackTrace();
+                                if(debug) e1.printStackTrace();
                             } catch (FormatNotSupported formatNotSupported) {
-                                formatNotSupported.printStackTrace();
+                                if(debug)formatNotSupported.printStackTrace();
                             } catch (CloneNotSupportedException e) {
-                                e.printStackTrace();
+                                if(debug)e.printStackTrace();
                             }
-
-                            // timePane.setVisible(true);
                         } else {
                             displayScores(game.scores());
-                            //displayScores(MultiView.this);
                         }
                         timeLine.stop();
                     }
@@ -93,6 +79,7 @@ public class MultiView extends View {
             }
         }
 
+        @Override
         public void whenIsFinished() {
             timePane.stop();
             gameTimer.stop();

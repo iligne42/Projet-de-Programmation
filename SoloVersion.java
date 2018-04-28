@@ -12,7 +12,6 @@ public class SoloVersion extends GameVersion {
 	public SoloVersion(int length, int width, int nbFloors,int nbObstacles,int nbMonstres,int nbTeleport,int nbDoors,int nbBonus,int typeBonus,String name, Scores score) throws FormatNotSupported, IOException {
 		super(length, width,nbFloors,nbObstacles,nbMonstres,nbTeleport,nbDoors,nbBonus,typeBonus, name, score);
 
-
 	}
 
 	public SoloVersion(MazeFloors maze, Player player, Scores scores) throws FormatNotSupported, IOException {
@@ -25,7 +24,6 @@ public class SoloVersion extends GameVersion {
 
 	}
 
-
 	public SoloVersion(MazeFloors maze, Player player) throws FormatNotSupported, IOException {
 		this(maze, player, new Scores("txt/bestSolos.txt",MazeInterface.getDifficulty(maze.getFloor().getFirst().getHeight(),maze.getFloor().getFirst().getWidth())));
 
@@ -35,6 +33,7 @@ public class SoloVersion extends GameVersion {
 		this(maze, name, new Scores("txt/bestSolos.txt",MazeInterface.getDifficulty(maze.getFloor().getFirst().getHeight(),maze.getFloor().getFirst().getWidth())));
 	}
 
+	@Override
 	public String scoresFile() {
 		return "txt/bestSolos.txt";
 	}

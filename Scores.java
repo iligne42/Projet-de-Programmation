@@ -10,6 +10,7 @@ public class Scores implements Serializable{
 
     private class ScoreList extends ArrayList<Pair<String,Integer>>{
 
+        //Fonction dajout dans l'ordre croissant avec un maximum de 10 éléments
         public boolean add(String name,int score) {
             int i = 0;
             boolean added=false;
@@ -92,7 +93,9 @@ public class Scores implements Serializable{
         current=new Pair<String,Integer>(tab[0], MazeInterface.getSeconds(tab[1]));
     }
 
-
+    /*Fonction pour remplir la liste avec le contenu du ficher
+        -Les différents niveaux sont séparés par des étoiles dans le fichier et sont répartis chacun dans une des 4 listes
+     */
     public void fillList(){
         try{
             FileReader fr=new FileReader(file);
@@ -115,6 +118,7 @@ public class Scores implements Serializable{
         }
     }
 
+    //Fonction pour ajouter un score dans le fichier des meilleurs scores
     public void addToScoresFile(String name, int score) {
         current=new Pair<>(name,score);
         lists[dif].add(name, score);
@@ -131,6 +135,7 @@ public class Scores implements Serializable{
         return lists[dif].add(score);
     }
 
+    //Fonction pour ajouter un score uniquement dans le liste pour les classements le temps d'une partie(multijoueur)
     public void addToScoresList(String name, int score){
         lists[dif].add(name,score);
     }
@@ -155,6 +160,5 @@ public class Scores implements Serializable{
         if(current!=null) return current.getKey()+"-"+MazeInterface.getT(current.getValue())+"\r\n";
         return "";
     }
-
 
 }

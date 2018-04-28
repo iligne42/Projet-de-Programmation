@@ -23,8 +23,8 @@ import java.util.Optional;
 
 public interface MazeInterface {
     ArrayList<AudioClip> sounds=new ArrayList<>();
-    //Sounds handling
 
+    //Focntion de chargement des sons
     static void initSounds() {
         File folder = new File("sounds/");
         for (File f : folder.listFiles()) {
@@ -78,6 +78,7 @@ public interface MazeInterface {
         return res;
     }
 
+    //Popup de confirmation
     static int confirm(String input,Window stage){
         Alert alert=new Alert(Alert.AlertType.CONFIRMATION);
         alert.initOwner(stage);
@@ -131,6 +132,7 @@ public interface MazeInterface {
         return res;
     }
 
+    //Fonction pour charger un fichier de sauvegarde
     static GameVersion load(String file) throws IOException, ClassNotFoundException {
         FileInputStream fis = new FileInputStream("savings/"+file);
         ObjectInputStream ois = new ObjectInputStream(fis);
@@ -181,7 +183,7 @@ public interface MazeInterface {
         return new Maze(L,l);
     }
 
-    static MazeFloors getMaze(int L,int l,int f,int typeB,boolean[] sup,int extras) throws Exception{
+    static MazeFloors getMaze(int L,int l,int f,int typeB,boolean[] sup) throws Exception{
         int[] extra=new int[sup.length];
         int nb=getSelected(sup);
         boolean no=false;
@@ -189,7 +191,7 @@ public interface MazeInterface {
             L=readInt("Choose the length");
             l=readInt("Choose the width");
         }
-        extras=L*l/30;
+        int extras=L*l/30;
 
         for(int i=0;i<extra.length;i++){
             extra[i]=0;
@@ -209,47 +211,6 @@ public interface MazeInterface {
         if(no) warning("Sorry, we couldn't put everything you requested :'(");
         return new MazeFloors(L,l,f,extra[0],extra[2],extra[3],extra[1],extra[4],typeB);
     }
-
-    /*static MazeFloors getMaze(int L,int l,int f,int typeB,boolean[] sup,int extras) throws Exception{
-        int[] extra=new int[sup.length];
-        int nb=getSelected(sup);
-        boolean no=false;
-        if(l==-1){
-            L=readInt("Choose the length");
-            l=readInt("Choose the width");
-            int val=getDifficulty(L,l);
-            String s="";
-            switch(val){
-                case 0:s="Easy";
-                    break;
-                case 1:s="Normal";
-                    break;
-                case 2:s="Hard";
-                    break;
-                case 3:s="Super Hard";
-                    break;
-            }
-            extras=nbExtra(s);
-        }
-
-        for(int i=0;i<extra.length;i++){
-            extra[i]=0;
-            if(sup[i] ){
-                if(i!=4) {
-                    extra[i] = extras / nb;
-                    extras -= extra[i];
-                    nb--;
-                    if(extra[i]==0) no=true;
-                }
-                else{
-                    extra[i]=(typeB==0)?(L*l)/5:(L*l)/10;
-                    nb --;
-                }
-            }
-        }
-        if(no) warning("Sorry, we couldn't put everything you requested :'(");
-        return new MazeFloors(L,l,f,extra[0],extra[2],extra[3],extra[1],extra[4],typeB);
-    }*/
 
     static int getSelected(boolean[] s){
         int r=0;
@@ -259,21 +220,20 @@ public interface MazeInterface {
         return r;
     }
 
-    static View getView(MazeFloors m, String ty, String name, int time) throws FormatNotSupported, IOException {
+    static View getView(MazeFloors m, String ty, String name) throws FormatNotSupported, IOException {
         int type = 0;
+        int time=m.getFloor().getFirst().getHeight()*m.getFloor().getFirst().getWidth();
         if (ty.equals("Solo"))
             return new SingleView(new SoloVersion(m, name));
 
         else if (ty.equals("Against the clock"))
             return new SingleView(new TimeTrialVersion(m, name, time));
-//Modify this part
-            //Rajouter des modifs ici
         else return new MultiView(new MultiPlayerVersion(setMulti(), m));
     }
 
-    static View getView(MazeFloors m, String ty, int time) throws FormatNotSupported, IOException {
+    static View getView(MazeFloors m, String ty) throws FormatNotSupported, IOException {
         int type = 0;
-        time=m.getFloor().getFirst().getHeight()*m.getFloor().getFirst().getWidth();
+        int time=m.getFloor().getFirst().getHeight()*m.getFloor().getFirst().getWidth();
         if (ty.equals("Solo"))
             return new SingleView(new SoloVersion(m, readInput("What's your name ?")));
 
@@ -283,23 +243,6 @@ public interface MazeInterface {
         else return new MultiView(new MultiPlayerVersion(setMulti(), m));
     }
 
-    //HERE ADD THE OPTIONS FOR THE NETWORK THING
-    /*static View getView(int L, int l, String ty,int time) throws FormatNotSupported, IOException {
-        if (ty.equals("Solo")) {
-            if (l == -1)
-                return new SingleView(new SoloVersion(readInt("Choose the length"), readInt("Choose the width"), readInput("What's your name")));
-            else return new SingleView(new SoloVersion(L, l, readInput("What's your name ?")));
-        } else if (ty.equals("Against the clock")) {
-            if (l == -1)
-                return new SingleView(new TimeTrialVersion(readInt("Choose the length"), readInt("Choose the width"), readInput("What's your name"), time));
-            else return new SingleView(new TimeTrialVersion(L, l, readInput("What's your name ?"), time));
-        } else {
-            if (l == -1)
-                return new MultiView(new MultiPlayerVersion(setMulti(), new Maze(readInt("Choose the length"), readInt("Choose the width"))));
-            else return new MultiView(new MultiPlayerVersion(setMulti(), new Maze(L, l)));
-        }
-    }
-*/
     static int getSize(String lev) {
         int size = -1;
         switch (lev) {
@@ -328,8 +271,6 @@ public interface MazeInterface {
         if(length>=20 && length<30 && width>=20 && width<30) return 1;
         if(length>=30 && length<=99 && width>=30 && width<=99) return 2;
         else return 3;
-        /*if(length==100 && width==100) return 3;
-        else return 4;*/
     }
 
     static int typeBonus(String ty){
@@ -337,54 +278,6 @@ public interface MazeInterface {
         return 0;
     }
 
-    static int nbExtra(int L, int l){
-        return L*l/30;
-    }
-
-    static int nbExtra(String s){
-        int nb=0;
-        switch(s){
-            case "Easy":
-                nb=2;
-                break;
-
-            case "Normal":
-                nb=12;
-                break;
-
-            case "Hard":
-                nb=18;
-                break;
-
-            case "Super Hard":
-                nb=30;
-                break;
-        }
-        return nb;
-    }
-
-
-    static int getTime(String s){
-        int time=0;
-        switch(s){
-            case "Easy":
-                time=300;
-                break;
-
-            case "Normal":
-                time=900;
-                break;
-
-            case "Hard":
-                time=1800;
-                break;
-
-            case "Super Hard":
-                time=7200;
-                break;
-        }
-        return time;
-    }
 
     static int rand(int a, int b) {
         double x = Math.random() * (b - a) + a;

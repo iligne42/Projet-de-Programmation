@@ -1,6 +1,6 @@
 import javafx.animation.*;
 import java.time.LocalDate;
-
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.MapExpression;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -26,8 +26,8 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Screen;
 import javafx.util.Duration;
-import java.awt.*;
 import java.awt.geom.Point2D;
+import java.awt.Point;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,7 +44,8 @@ public class View extends Scene {
     protected GameControl control;
     protected SubScene mazeScene;
     protected Label timeLabel;
-    protected Group map;
+    protected Pane map;
+    protected boolean debug=false;
 
     public View(StackPane root, GameVersion game) {
         super(root);
@@ -102,7 +103,7 @@ public class View extends Scene {
             timeLabel.textProperty().bind(timeSeconds.asString());
             timeLabel.setStyle("-fx-alignment:center;-fx-text-fill:crimson;-fx-font-size:50pt");
             this.getChildren().add(timeLabel);
-            this.setSpacing(500);
+            this.setSpacing(200);
         }
 
 
@@ -265,7 +266,7 @@ public class View extends Scene {
             Box firstS;
             COLOR_WALL.setBumpMap(new Image("images/brick.jpg"));
             COLOR_WALL.setSpecularColor(Color.BLACK);
-            COLOR_DOOR.setDiffuseMap(new Image("images/safe.jpg"));            
+            COLOR_DOOR.setDiffuseMap(new Image("images/safe.jpg"));
             COLOR_ENTRY.setSpecularColor(Color.BLACK);
             COLOR_END.setSpecularColor(Color.WHITE);
             int i = 0;
@@ -342,7 +343,7 @@ public class View extends Scene {
                             cell = makeFloor(COLOR_END);
                             setBox(cell, i, j, root, floor, maze);
                             Label message=new Label("Congratulations");
-                            message.setStyle("-fx-font-size:40pt");
+                            message.setStyle("-fx-font-size:30pt");
                             message.setTranslateX(cell.getTranslateX());
                             message.setTranslateZ(cell.getTranslateX());
                             message.setTranslateY(cell.getTranslateY()-SIZE_BOX/2);
@@ -671,9 +672,11 @@ public class View extends Scene {
             plan = new Button();
             configButton("images/map.png", plan);
             plan.setOnMouseClicked(e -> {
+              System.out.println("ouai");
                 if (!main.getChildren().contains(map)) {
                     main.getChildren().add(map);
                     StackPane.setAlignment(map, Pos.BOTTOM_LEFT);
+                    tool.toFront();
                   }
                 else main.getChildren().remove(map);
             });
@@ -806,98 +809,7 @@ public class View extends Scene {
             setToolBar(multi);
         }
 
-        public void moveMap(int size, Circle player) {
-            player.centerXProperty().set(game.player().getPosition().getX() * size);
-            player.centerYProperty().set(game.player().getPosition().getY() * size);
-        }
-
-        public void setUpMap(int size) {
-            map = new Group();
-            Canvas mapDraw = new Canvas(600, 800);
-            GraphicsContext gc = mapDraw.getGraphicsContext2D();
-            int x = 0, y = 0;
-            Maze maze = game.current();
-            for (int i = 0; i < maze.getHeight(); i++) {
-                for (int j = 0; j < maze.getWidth(); j++) {
-                    switch (maze.getCase(i, j)) {
-                        case Maze.WAY:
-                            gc.setFill(Color.TRANSPARENT);
-                            break;
-                        case Maze.START:
-                            gc.setFill(Color.BLUE);
-                            break;
-                        case Maze.END:
-                            gc.setFill(Color.RED);
-                            break;
-                        case Maze.WALL:
-                            gc.setFill(Color.LIGHTGREY);
-                            break;
-                        case Maze.STAIRSUP:
-                            gc.setFill(Color.BROWN);
-                            break;
-                        case Maze.STAIRSDOWN:
-                            gc.setFill(Color.BROWN);
-                            break;
-                        case Maze.OBSTACLE:
-                            gc.setFill(Color.GREY);
-                            break;
-                        case Maze.MONSTRE:
-                            gc.setFill(Color.WHITE);
-                            break;
-                        case Maze.TELEPORT:
-                            gc.setFill(Color.PURPLE);
-                            break;
-                        case Maze.DOOR:
-                            gc.setFill(Color.LIGHTBLUE);
-                            break;
-                        case Maze.KEY:
-                            gc.setFill(Color.YELLOW);
-                            break;
-                        case Maze.BONUS:
-                            gc.setFill(Color.YELLOW);
-                            break;
-                    }
-                    gc.fillRect(x, y, size, size);
-                    x += size;
-                }
-                y += size;
-                x = 0;
-            }
-            map.getChildren().add(mapDraw);
-        }
-        public void displayScore(Pane root) {
-            root.getChildren().clear();
-            String display = game.scores().getScores();
-            String[] splits = display.split("\n");
-            for (String s : splits) root.getChildren().add(new Label(s));
-        }
-
-        public void displayScores(Scores s) {
-            ScorePane sp = new ScorePane(s);
-            main.getChildren().clear();
-            main.getChildren().add(sp);
-            sp.printScores();
-        }
-
-
-        public void countDownToStart() {
-            Label label = new Label();
-            label.setStyle("-fx-background-color:transparent");
-            IntegerProperty count = new SimpleIntegerProperty(5);
-            label.textProperty().bind(count.asString());
-
-            Timeline countdown = new Timeline();
-            countdown.getKeyFrames().add(new KeyFrame(
-                    Duration.seconds(5),
-                    new KeyValue(count, 0))
-            );
-            if (count.get() == 0) {
-                //remove
-                //game.start();
-                //timePane.start();
-            }
-        }
-
+        //Fonction de gestion des actions clavier du joueur
         public void handleAction() throws IOException {
             game.start();
             mazePane.initMaze();
@@ -905,10 +817,9 @@ public class View extends Scene {
             System.out.println(game.floors());
             gameTimer.start();
             timePane.start();
-            setUpMap(10);
-            Circle player = new Circle(4.0, Color.WHITESMOKE);
-            moveMap(10, player);
-            map.getChildren().add(player);
+            int size=500/Math.max(mazePane.MAZE_LENGTH,mazePane.MAZE_WIDTH);
+            map = new Pane();
+            setUpMap(size);
             View.this.setOnKeyPressed(e -> {
                 boolean pane = main.getChildren().contains(display);
                 if (!pane) {
@@ -941,13 +852,15 @@ public class View extends Scene {
                                 break;
                             case M:
                                 if(!plan.isDisable()){
-                                  if(!main.getChildren().contains(map))main.getChildren().add(map);
-                                  else main.getChildren().remove(map);
+                                    if(!main.getChildren().contains(map))main.getChildren().add(map);
+                                    else main.getChildren().remove(map);
                                 }
                                 break;
                         }
+                        map.getChildren().clear();
+                        setUpMap(size);
+                        StackPane.setAlignment(map,Pos.BOTTOM_LEFT);
                     }
-                    moveMap(10, player);
                 }
             });
             View.this.setOnKeyReleased(e -> {
@@ -999,7 +912,126 @@ public class View extends Scene {
 
         public abstract void whenIsFinished();
 
+        public void moveMap(int size, Circle player) {
+            player.centerXProperty().set(game.player().getPosition().getX() * size+10);
+            player.centerYProperty().set(game.player().getPosition().getY() * size+300);
+        }
+
+        public void makeClip(Circle player,Pane pane){
+          Rectangle clip = new Rectangle();
+          DoubleProperty height = new SimpleDoubleProperty(400);
+          DoubleProperty width = new SimpleDoubleProperty(400);
+          clip.widthProperty().bind(height);
+          clip.heightProperty().bind(width);
+          clip.xProperty().bind(Bindings.createDoubleBinding(
+                () -> magic(player.getCenterX() - width.get() / 5, 0, pane.getWidth() - width.get())
+                , player.centerXProperty(), width));
+                clip.yProperty().bind(Bindings.createDoubleBinding(
+                () -> magic(player.getCenterY() - height.get() / 5, 0, pane.getHeight() - height.get()),
+                player.centerYProperty(), height));
+
+                pane.setClip(clip);
+        }
+
+        public double magic(double value,double min,double max){
+          if (value < min) return min ;
+          if (value > max) return max ;
+          return value ;
+        }
+
+        public void setUpMap(int size) {
+            Canvas mapDraw = new Canvas(600, 800);
+            GraphicsContext gc = mapDraw.getGraphicsContext2D();
+            int x = 10, y=300;
+            Maze maze = game.current();
+            for (int i = 0; i < maze.getHeight(); i++) {
+                for (int j = 0; j < maze.getWidth(); j++) {
+                    switch (maze.getCase(i, j)) {
+                        case Maze.WAY:
+                            gc.setFill(Color.TRANSPARENT);
+                            break;
+                        case Maze.START:
+                            gc.setFill(Color.BLUE);
+                            break;
+                        case Maze.END:
+                            gc.setFill(Color.RED);
+                            break;
+                        case Maze.WALL:
+                            gc.setFill(Color.LIGHTGREY);
+                            break;
+                        case Maze.STAIRSUP:
+                            gc.setFill(Color.BROWN);
+                            break;
+                        case Maze.STAIRSDOWN:
+                            gc.setFill(Color.BROWN);
+                            break;
+                        case Maze.OBSTACLE:
+                            gc.setFill(Color.GREY);
+                            break;
+                        case Maze.MONSTRE:
+                            gc.setFill(Color.WHITE);
+                            break;
+                        case Maze.TELEPORT:
+                            gc.setFill(Color.PURPLE);
+                            break;
+                        case Maze.DOOR:
+                            gc.setFill(Color.LIGHTBLUE);
+                            break;
+                        case Maze.KEY:
+                            gc.setFill(Color.YELLOW);
+                            break;
+                        case Maze.BONUS:
+                            gc.setFill(Color.YELLOW);
+                            break;
+                    }
+                    gc.fillRect(x, y, size, size);
+                    x += size;
+                }
+                y += size;
+                x = 10;
+            }
+            Circle player = new Circle(size/4);
+            player.setFill(Color.WHITESMOKE);
+            map.getChildren().addAll(mapDraw,player);
+            moveMap(size,player);
+            makeClip(player,map);
+        }
+        public void displayScore(Pane root) {
+            root.getChildren().clear();
+            String display = game.scores().getScores();
+            String[] splits = display.split("\n");
+            for (String s : splits) root.getChildren().add(new Label(s));
+        }
+
+        public void displayScores(Scores s) {
+            ScorePane sp = new ScorePane(s);
+            main.getChildren().clear();
+            main.getChildren().add(sp);
+            sp.printScores();
+        }
+
+
+        public void countDownToStart() {
+            Label label = new Label();
+            label.setStyle("-fx-background-color:transparent");
+            IntegerProperty count = new SimpleIntegerProperty(5);
+            label.textProperty().bind(count.asString());
+
+            Timeline countdown = new Timeline();
+            countdown.getKeyFrames().add(new KeyFrame(
+                    Duration.seconds(5),
+                    new KeyValue(count, 0))
+            );
+            if (count.get() == 0) {
+                //remove
+                //game.start();
+                //timePane.start();
+            }
+        }
+
+
         public void displayHelp(){
+            int coins=game.maze().getFloor().getFirst().getBonus().size();
             display.getChildren().clear();
             String style = "-fx-text-fill: white;-fx-font:oblique 15pt cursive;-fx-text-alignment: left;-fx-font-weight:bold;-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.75),4,0,0,1);";
             String key = "To open a door, you need a gold key which is hidden somewhere";
@@ -1023,15 +1055,13 @@ public class View extends Scene {
             Label end = new Label(sortie);
             display.setStyle("-fx-background-color: rgba(0, 0, 0, 0.4); -fx-background-radius: 10; -fx-alignment:center");
             display.setSpacing(30.0);
-            display.getChildren().addAll(touch,end, hour,cle, piece, pock,obst,mons);
+            display.getChildren().addAll(touch,end, hour,cle, pock,obst,mons);
             if(plan.isDisable()&&!(game instanceof TimeTrialVersion)){
-              Label costLabel = new Label("You can buy a map for 5 coins");
-              costLabel.setStyle(style);
               String styleB = "-fx-background-color:#090a0c,linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),linear-gradient(#20262b, #191d22),radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));-fx-text-fill:white;";
               Button buyMap = new Button("Buy the map");
               buyMap.setStyle(styleB);
               if(game.player().getBonus().size()<5)buyMap.setDisable(true);
-              HBox cost = new HBox(costLabel,buyMap);
+              VBox cost = new VBox(piece,buyMap);
               cost.setAlignment(Pos.CENTER);
               display.getChildren().add(cost);
               buyMap.setOnMouseClicked(e->{

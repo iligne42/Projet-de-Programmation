@@ -114,6 +114,7 @@ public class Menu extends Application {
           });
       ranking.getChildren().addAll(solos,trial);
     }
+
     @Override
     public void start(Stage stage) throws FormatNotSupported, IOException {
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -163,7 +164,7 @@ public class Menu extends Application {
         go.setOnMouseClicked(e->{
             try {
                 Stage st = new Stage();
-                view = MazeInterface.getView(mazeM,gType,name,MazeInterface.getTime(dif));
+                view = MazeInterface.getView(mazeM,gType,name);
                 view.setStage(st);
                 st.setScene(view);
                 st.setFullScreen(true);
@@ -210,7 +211,7 @@ public class Menu extends Application {
 
             }
             catch(Exception ex){
-         if(debug)       ex.printStackTrace();
+         if(debug)  ex.printStackTrace();
             }
         });
         Button backToMenu = new Button("Back");
@@ -364,7 +365,7 @@ public class Menu extends Application {
             if(gType.equals("Multiplayer In Network")){
                         try {
                         name = MazeInterface.readInput("What's your name ?");
-                        mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif),value.get(),0,supp,MazeInterface.nbExtra(dif));
+                        mazeM=MazeInterface.getMaze(MazeInterface.getSize(dif),MazeInterface.getSize(dif),value.get(),0,supp);
                         hostmenu.initHost(name,mazeM);
                        changePanel(stack, hostmenu);
                     } catch (Exception exception) {
@@ -373,8 +374,8 @@ public class Menu extends Application {
             }
             else {
                 try {
-                    mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif),value.get(),MazeInterface.typeBonus(gType),supp,MazeInterface.nbExtra(dif));
-                    view = MazeInterface.getView(mazeM, gType,MazeInterface.getTime(dif));
+                    mazeM = MazeInterface.getMaze(MazeInterface.getSize(dif), MazeInterface.getSize(dif),value.get(),MazeInterface.typeBonus(gType),supp);
+                    view = MazeInterface.getView(mazeM, gType);
                     Stage st = new Stage();
                     view.setStage(st);
                     st.setScene(view);
@@ -471,7 +472,7 @@ public class Menu extends Application {
                             hostmenu.initHost(name, mazeM);
                         }
                      else {
-                            view = MazeInterface.getView(mazeM, gType,MazeInterface.getTime(dif));
+                            view = MazeInterface.getView(mazeM, gType);
                             Stage st = new Stage();
                             st.setScene(view);
                             view.setStage(st);

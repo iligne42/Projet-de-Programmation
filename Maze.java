@@ -126,22 +126,22 @@ public class Maze implements Serializable,Cloneable{
                     case '4':
                           cas = OBSTACLE;
                           if(obstacles==null)obstacles=new LinkedList<>();
-                          obstacles.add(new Obstacles(this,new Point2D.Double(i,j),type));
+                          obstacles.add(new Obstacles(this,new Point2D.Double(j,i),type));
                           break;
                     case '7':
                           cas = MONSTRE;
                           if(monstres==null)monstres=new LinkedList<>();
-                          monstres.add(new Monstres(this,new Point2D.Double(i,j)));
+                          monstres.add(new Monstres(this,new Point2D.Double(j,i)));
                           break;
                     case '8':
                           cas = TELEPORT;nbTeleport++;
-                          tp.add(new Teleporteur(this,new Point2D.Double(i,j)));
+                          tp.add(new Teleporteur(this,new Point2D.Double(j,i)));
                           break;
                     case 'B':
                           cas = BONUS;
                           if(bonus==null)bonus = new LinkedList<>();
-                          if(mode.equals("Against the clock"))bonus.add(new TimeBonus(this,new Point2D.Double(i,j)));
-                          else bonus.add(new Piece(this,new Point2D.Double(i,j)));
+                          if(mode.equals("Against the clock"))bonus.add(new TimeBonus(this,new Point2D.Double(j,i)));
+                          else bonus.add(new Piece(this,new Point2D.Double(j,i)));
                           break;
                     default:
                         throw new FormatNotSupported("Unreadable Character");
