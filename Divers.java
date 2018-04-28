@@ -1,7 +1,8 @@
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 import java.util.Random;
 
-public abstract class Divers {
+public abstract class Divers implements Serializable{
     protected Maze maze;
     protected Point2D p;
 
