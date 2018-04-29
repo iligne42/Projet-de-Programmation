@@ -194,7 +194,7 @@ public class Menu extends Application {
         ObservableList<String> options = FXCollections.observableArrayList();
         File folder=new File("savings/");
         for(File f:folder.listFiles()){
-            if(f.getName().endsWith(".ser")) options.add(f.getName());
+            if(f.getName().endsWith(".ser") || f.getName().endsWith(".serM")) options.add(f.getName());
         }
 
         ComboBox cont = new ComboBox(options);
@@ -202,8 +202,14 @@ public class Menu extends Application {
         cont.setOnAction(e -> {
             String ser = cont.getSelectionModel().getSelectedItem().toString();
             try {
-                GameVersion g = MazeInterface.load(ser);
-                view = new SingleView(g);
+                if(ser.contains(".serM")){
+                    MultiPlayerVersion g=MazeInterface.loadM(ser);
+                    view = new MultiView(g);
+                }
+                else{
+                    GameVersion g = MazeInterface.load(ser);
+                    view = new SingleView(g);
+                }
                 Stage st = new Stage();
                 view.setStage(st);
                 st.setScene(view);    

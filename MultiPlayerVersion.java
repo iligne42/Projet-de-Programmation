@@ -40,7 +40,7 @@ public class MultiPlayerVersion implements Serializable {
     }
 
     public void save(String file) throws IOException {
-        File f=new File(file);
+        File f=new File(file+".serM");
         if(!f.exists()) f.createNewFile();
         FileOutputStream fos = new FileOutputStream(f);
         ObjectOutputStream oos = new ObjectOutputStream(fos);

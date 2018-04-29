@@ -15,6 +15,7 @@ import javafx.util.Duration;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -35,7 +36,7 @@ public class MultiView extends View {
         protected Label label;
 
         public MultiControl() throws IOException, FormatNotSupported {
-            super(true);
+            super(false);
             label = new Label();
             nameLabel = new Label(game.player().getName());
             timeToBeat = new TimeProperty(0);
@@ -43,6 +44,15 @@ public class MultiView extends View {
             label.setStyle("-fx-alignment:center;-fx-text-fill:crimson;-fx-font-size:50pt");
             nameLabel.setStyle("-fx-alignment:center;-fx-text-fill:white;-fx-font-size:25pt");
             toBeat.getChildren().addAll(new Label("Time to beat : "), label);
+            save.setOnMouseClicked(e -> {
+                LocalDate now = LocalDate.now();
+                String date[] = now.toString().split("-");
+                try {
+                    multi.save("savings/"+game.player().getName()+"--"+date[2] + "-" + date[1] + "-" + date[0].charAt(2) +date[0].charAt(3));
+                } catch (Exception exc) {
+                    if(debug)exc.printStackTrace();
+                }
+            });
             tool.getItems().add(nameLabel);
         }
 

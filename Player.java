@@ -27,12 +27,12 @@ public class Player implements Serializable {
 	private LinkedList<Key> keys;
 
 	//Les états du joueur
-	public enum PlayerState{
+	public enum PlayerState implements Serializable{
 		 BETWEEN,GROUND,STAIRSUP,STAIRSDOWN,DEAD,JUMPING
 	}
 
 	//Les animations du joueur
-	protected interface PlayerAnimation{
+	protected interface PlayerAnimation extends Serializable{
             void animate(double elapsedSeconds);
 
             boolean isOver();
