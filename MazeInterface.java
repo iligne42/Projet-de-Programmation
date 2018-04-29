@@ -32,6 +32,9 @@ public interface MazeInterface {
             a.setCycleCount(1);
             sounds.add(a);
         }
+        for(AudioClip a : sounds){
+            a.play(0);
+        }
     }
 
     static AudioClip sounds(int index){
@@ -176,6 +179,7 @@ public interface MazeInterface {
 
 
     static Maze getMaze(int L, int l ) throws FormatNotSupported,IOException{
+        initSounds();
         if(l==-1){
             L=readInt("Choose the length");
             l=readInt("Choose the width");
@@ -184,6 +188,7 @@ public interface MazeInterface {
     }
 
     static MazeFloors getMaze(int L,int l,int f,int typeB,boolean[] sup) throws Exception{
+        initSounds();
         int[] extra=new int[sup.length];
         int nb=getSelected(sup);
         boolean no=false;
