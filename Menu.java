@@ -520,6 +520,7 @@ public class Menu extends Application {
             try {
                     name = MazeInterface.readInput("What's your name ?");
                     hostmenu.initClient(name);
+		    hostmenu.getChildren().add(backToMenu);
                     changePanel(stack, hostmenu);
                 } catch (Exception exception) {
                     if(debug)exception.printStackTrace();
