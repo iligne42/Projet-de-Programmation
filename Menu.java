@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import javafx.scene.input.MouseEvent;
 
+//ICI RAJOUTER /MODIFIER DU CODE QUAND LE RESEAU SERA FINI POUR LE METTRE A JOUR ET TOUT RELIER
 
 
 public class Menu extends Application {
@@ -32,7 +33,8 @@ public class Menu extends Application {
     boolean[] supp;
     int selected;
     IntegerProperty value;
-    boolean debug=false;
+    boolean debug=true;
+    //Parent previous;
 
     protected class Counter extends VBox{
 
@@ -67,11 +69,11 @@ public class Menu extends Application {
     public void setButton(Button button, int a, VBox pan, String path,StackPane stack,VBox menu){
       	button.setOnMouseClicked(e->{
       		pan.getChildren().clear();
+      		pan.setStyle("-fx-spacing:0;");
                 try{
                     Scores sco = new Scores(path,a);
                     String [] sc = (sco.getScores()).split("\n");
                     if(debug)System.out.println(sc.length);
-                    pan.setStyle("-fx-spacing:0");
                     for(String sct : sc){
                         Label res = new Label(sct);
                         res.setStyle("-fx-font-size:14px");
@@ -87,7 +89,7 @@ public class Menu extends Application {
                     pan.getChildren().add(prev);
                 }
                 catch(Exception exc){
-              if(debug) exc.printStackTrace();}
+              if(debug)      exc.printStackTrace();}
     	});
     }
     public void config(VBox ranking,String path,StackPane stack,VBox menu){
@@ -217,6 +219,7 @@ public class Menu extends Application {
         backToMenu.setOnMouseClicked(e -> {
             changePanel(stack, menu);
         });
+        //backToMenu.getStyleClass().add("back");
 
 
         game.getChildren().addAll(newG, cont, backToMenu);
@@ -355,6 +358,7 @@ public class Menu extends Application {
 
         Button playGame = new Button("Go !");
         playGame.setOnMouseClicked(e -> {
+           // previous=mode;
             if(dif==null)dif = ((RadioButton) difficulty.getSelectedToggle()).getText();
             if(gType==null)gType = ((RadioButton) gameType.getSelectedToggle()).getText();
 
@@ -396,6 +400,7 @@ public class Menu extends Application {
         /* Panneau pour générer le labyrinthe*/
         Button random = new Button("Random maze");
         random.setOnMouseClicked(e -> {
+           // previous=random.getParent();
             changePanel(stack, mode);
         });
 
@@ -407,6 +412,14 @@ public class Menu extends Application {
         backToGame.setOnMouseClicked(e -> {
             changePanel(stack, game);
         });
+        /*if(file!=null){
+            HBox h=new HBox();
+            Button ok=new Button("Set");
+            ok.setOnMouseClicked(e->{
+                String type=((RadioButton)gameType.getSelectedToggle()).getText();});
+            h.getChildren().addAll(solo,chro,multi);
+            view=MazeInterface.getView(new Maze(file),type);
+        }*/
 
 
 
@@ -437,6 +450,8 @@ public class Menu extends Application {
         VBox type2 = new VBox();
         type2.getChildren().addAll(new Label("Choose a game type"), op);
         type2.getStyleClass().add("vbox");
+        //type2.setStyle("-fx-alignment:top-center;");
+        //type2.getStyleClass().add("v1");
 
 
         Button backToMaze2 = new Button("Back");
@@ -488,11 +503,14 @@ public class Menu extends Application {
 
         Button play = new Button("PLAY");
         play.setOnMouseClicked(e -> {
+            //previous=play.getParent();
             changePanel(stack, game);
+            //changePanel(stack,level);
         });
 
         Button jplay=new Button("JOIN A GROUP");
         jplay.setOnMouseClicked(e->{
+            //previous=jplay.getParent();
             try {
                     name = MazeInterface.readInput("What's your name ?");
                     hostmenu.initClient(name);
@@ -505,6 +523,7 @@ public class Menu extends Application {
 
         Button cred = new Button("CREDITS");
         cred.setOnMouseClicked(e -> {
+           // previous=cred.getParent();
             Alert dev = new Alert(Alert.AlertType.INFORMATION);
             dev.setTitle("Developpers of Maz3D");
             dev.setContentText("Game made by Faridah Akinotcho, Frédéric Francine" + "\r\n" + "Iman Lignel, Pierre Méjane");
@@ -581,6 +600,7 @@ public class Menu extends Application {
         );
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Text", "*.txt")
+                //new FileChooser.ExtensionFilter("JPG", "*.jpg")
         );
     }
 

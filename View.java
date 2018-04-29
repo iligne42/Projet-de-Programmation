@@ -541,9 +541,6 @@ public class View extends Scene {
         public void drawObstacle(Group root, int i, int j, int floor, Maze maze) throws IOException {
             FXMLLoader fxmlLoader = new FXMLLoader();
             float scale = 0, scaleY, scaleZ, posy;
-            Box b = new Box(SIZE_BOX, 0, 0.1 * SIZE_BOX);
-            b.setMaterial(COLOR_ENTRY);
-            Circle c=new Circle(SIZE_BOX/2,Color.LAVENDER);
             if (maze.getTypeObstacle().equals("Cercle")) {
                 fxmlLoader.setLocation(this.getClass().getResource("fxml/Spider.fxml"));
                 scale =  2.1f;
@@ -570,12 +567,8 @@ public class View extends Scene {
                     ((Shape3D) n).setScaleY(((Shape3D) n).getScaleY() * scaleY);
                     ((Shape3D) n).setScaleZ(((Shape3D) n).getScaleZ() * scaleZ);
                     ((Shape3D) n).setTranslateY(SIZE_BOX / 2 - posy - (floor * SIZE_BOX));
-                    c.setTranslateX(j * SIZE_BOX);
-                    c.setTranslateZ(i * SIZE_BOX);
-                    c.setTranslateY(SIZE_BOX / 2);
                 }
             }
-            root.getChildren().add(c);
             root.getChildren().add(obs);
         }
 
@@ -873,8 +866,8 @@ public class View extends Scene {
                         game.player.jump(false);
                         break;
                     case SHIFT:
-                        game.player.lookDown(false);
                         game.player.lookUp(false);
+                        game.player.lookDown(false);
                         break;
                     case CONTROL:game.player.lookDown(false);
                     break;
@@ -915,27 +908,6 @@ public class View extends Scene {
             player.centerYProperty().set(game.player().getPosition().getY() * size+300);
         }
 
-        public void makeClip(Circle player,Pane pane){
-          Rectangle clip = new Rectangle();
-          DoubleProperty height = new SimpleDoubleProperty(400);
-          DoubleProperty width = new SimpleDoubleProperty(400);
-          clip.widthProperty().bind(height);
-          clip.heightProperty().bind(width);
-          clip.xProperty().bind(Bindings.createDoubleBinding(
-                () -> magic(player.getCenterX() - width.get() / 5, 0, pane.getWidth() - width.get())
-                , player.centerXProperty(), width));
-                clip.yProperty().bind(Bindings.createDoubleBinding(
-                () -> magic(player.getCenterY() - height.get() / 5, 0, pane.getHeight() - height.get()),
-                player.centerYProperty(), height));
-
-                pane.setClip(clip);
-        }
-
-        public double magic(double value,double min,double max){
-          if (value < min) return min ;
-          if (value > max) return max ;
-          return value ;
-        }
 
         public void setUpMap(int size) {
             Canvas mapDraw = new Canvas(600, 800);
@@ -992,7 +964,6 @@ public class View extends Scene {
             player.setFill(Color.WHITESMOKE);
             map.getChildren().addAll(mapDraw,player);
             moveMap(size,player);
-            makeClip(player,map);
         }
         public void displayScore(Pane root) {
             root.getChildren().clear();
@@ -1058,12 +1029,12 @@ public class View extends Scene {
               String styleB = "-fx-background-color:#090a0c,linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),linear-gradient(#20262b, #191d22),radial-gradient(center 50% 0%, radius 100%, rgba(114,131,148,0.9), rgba(255,255,255,0));-fx-text-fill:white;";
               Button buyMap = new Button("Buy the map");
               buyMap.setStyle(styleB);
-              if(game.player().getBonus().size()<5)buyMap.setDisable(true);
+              if(game.player().getBonus().size()<coins/2)buyMap.setDisable(true);
               VBox cost = new VBox(piece,buyMap);
               cost.setAlignment(Pos.CENTER);
               display.getChildren().add(cost);
               buyMap.setOnMouseClicked(e->{
-                game.useBonus(5);
+                game.useBonus(coins/2);
                 plan.setDisable(false);
                 display.getChildren().remove(cost);
               });

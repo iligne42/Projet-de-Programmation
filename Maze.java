@@ -35,21 +35,17 @@ public class Maze implements Serializable,Cloneable{
         }
     }
 
-
     public Maze(int L, int l, int nbObstacles, int nbMonstres, int nbTeleport , int nbDoors, int nbBonus ,int typeBonus) throws FormatNotSupported{
         if(L<5 || l<5) throw new FormatNotSupported("The maze is too small");
         maze = new int[L][l];
-        String type=((new Random().nextInt(2)==0)?"Rectangle":"Cercle");
         if(nbObstacles==0){
             obstacles=null;
             randomMaze();
         }else {
             obstacles = new LinkedList<>();
-            randomMaze(nbObstacles,type);
+            String type=((new Random().nextInt(2)==0)?"Rectangle":"Cercle");
+            randomMaze(nbObstacles, type);
         }
-        if(nbDoors==0) doors=null;
-        else addDoor(nbObstacles,type,L,l);
-
         if(nbMonstres==0) monstres=null;
         else{
             monstres=new LinkedList<>();
@@ -60,7 +56,12 @@ public class Maze implements Serializable,Cloneable{
             teleport=new LinkedList<>();
             addTeleport(nbTeleport); //attention à la place
         }
-        if(nbBonus==0 || (typeBonus!=0 && typeBonus!=1)){
+        if(nbDoors==0) doors=null;
+        else{
+            doors=new LinkedList<>();
+            //System.out.println("on va ajouter les portes");
+            addDoor(nbDoors); //attention à la place
+        }if(nbBonus==0 || (typeBonus!=0 && typeBonus!=1)){
             bonus=null;
         }
         else{
@@ -68,6 +69,8 @@ public class Maze implements Serializable,Cloneable{
             addBonus(nbBonus,typeBonus);
         }
     }
+
+
 
     public Maze(File fic) throws FileNotFoundException, FormatNotSupported{ //constructeur qui créer un labyrinthe à partir d'un fichier
         int nbEnter=0;
@@ -97,9 +100,9 @@ public class Maze implements Serializable,Cloneable{
         if(nbEnter!=1)
             throw new FormatNotSupported("The maze has "+nbEnter+" starts and must only have 1.");
     }
-    
-    
-    public Maze(File fic,String mode) throws FileNotFoundException, FormatNotSupported{ 
+
+
+    public Maze(File fic,String mode) throws FileNotFoundException, FormatNotSupported{
         int nbEnter=0,nbEnd=0;
         Scanner sc = new Scanner(fic);
         ArrayList<String> tmp = new ArrayList<String>();
@@ -116,33 +119,33 @@ public class Maze implements Serializable,Cloneable{
             for(int j=0;j<max;j++){
                 switch (tmp.get(i).charAt(j)){
                     case '0':
-                          cas = WALL;break;
+                        cas = WALL;break;
                     case '1':
-                          cas = WAY;break;
+                        cas = WAY;break;
                     case '2':
-                          cas = START;nbEnter++;break;
+                        cas = START;nbEnter++;break;
                     case '3':
-                          cas= END;nbEnd++;break;
+                        cas= END;nbEnd++;break;
                     case '4':
-                          cas = OBSTACLE;
-                          if(obstacles==null)obstacles=new LinkedList<>();
-                          obstacles.add(new Obstacles(this,new Point2D.Double(j,i),type));
-                          break;
+                        cas = OBSTACLE;
+                        if(obstacles==null)obstacles=new LinkedList<>();
+                        obstacles.add(new Obstacles(this,new Point2D.Double(j,i),type));
+                        break;
                     case '7':
-                          cas = MONSTRE;
-                          if(monstres==null)monstres=new LinkedList<>();
-                          monstres.add(new Monstres(this,new Point2D.Double(j,i)));
-                          break;
+                        cas = MONSTRE;
+                        if(monstres==null)monstres=new LinkedList<>();
+                        monstres.add(new Monstres(this,new Point2D.Double(j,i)));
+                        break;
                     case '8':
-                          cas = TELEPORT;nbTeleport++;
-                          tp.add(new Teleporteur(this,new Point2D.Double(j,i)));
-                          break;
+                        cas = TELEPORT;nbTeleport++;
+                        tp.add(new Teleporteur(this,new Point2D.Double(j,i)));
+                        break;
                     case 'B':
-                          cas = BONUS;
-                          if(bonus==null)bonus = new LinkedList<>();
-                          if(mode.equals("Against the clock"))bonus.add(new TimeBonus(this,new Point2D.Double(j,i)));
-                          else bonus.add(new Piece(this,new Point2D.Double(j,i)));
-                          break;
+                        cas = BONUS;
+                        if(bonus==null)bonus = new LinkedList<>();
+                        if(mode.equals("Against the clock"))bonus.add(new TimeBonus(this,new Point2D.Double(j,i)));
+                        else bonus.add(new Piece(this,new Point2D.Double(j,i)));
+                        break;
                     default:
                         throw new FormatNotSupported("Unreadable Character");
                 }
@@ -154,16 +157,18 @@ public class Maze implements Serializable,Cloneable{
         else if(nbEnd==0)
             throw new FormatNotSupported("The maze does not have an exit.");
         else if(nbTeleport!=0){
-          if(nbTeleport%2!=0)throw new FormatNotSupported("There is an odd number of teleporter.");
-          teleport=new LinkedList<>();
-          for (int i =0;i<tp.size();i+=2){
-            Teleporteur first = tp.get(i);
-            Teleporteur second = tp.get(i+1);
-            first = new Teleporteur(this,first.getStart(),second.getStart());
-            second = new Teleporteur(this,second.getStart(),first.getStart());
-            teleport.add(new Pair<>(first,second));
-          }
+            if(nbTeleport%2!=0)throw new FormatNotSupported("There is an odd number of teleporter.");
+            teleport=new LinkedList<>();
+            for (int i =0;i<tp.size();i+=2){
+                Teleporteur first = tp.get(i);
+                Teleporteur second = tp.get(i+1);
+                first = new Teleporteur(this,first.getStart(),second.getStart());
+                second = new Teleporteur(this,second.getStart(),first.getStart());
+                teleport.add(new Pair<>(first,second));
+            }
         }
+        /*else if(possibleMaze())
+              throw new FormatNotSupported("The maze is not resolvable.");*/
     }
 
     public static boolean sameLength(ArrayList<String> t){ //vérifie que toutes les chaînes de caractères d'une ArrayList font la même taille
@@ -452,6 +457,17 @@ public class Maze implements Serializable,Cloneable{
         maze[j][i]=STAIRSDOWN;
     }
 
+    /*private Point fill(int value){
+        int i=0;
+        int j=0;
+        while(maze[i][j]!=WAY){
+            i=rand.nextInt(maze.length);
+            j=rand.nextInt(maze[i].length);
+        }
+        maze[i][j]=value;
+        return new Point(i,j);
+    }*/
+
     //Renvoie la porte à la case de position x,y selon les axes
     public Door getDoor(int x,int y){
         for(Door a:doors) {
@@ -537,6 +553,9 @@ public class Maze implements Serializable,Cloneable{
         maze[(int)p.getY()][(int)p.getX()]=value;
     }
 
+    /*private Point addObstacle(){
+        return fill(OBSTACLE);
+    }*/
 
     private void removeObstacle(Point2D p){
         int i=(int)p.getX();
@@ -553,6 +572,16 @@ public class Maze implements Serializable,Cloneable{
         }
     }
 
+
+    /*public boolean moveMonstre(Monstres m, int i, int j){
+        Point2D p=m.getPosition();
+        if(maze[i][j]==WAY) {
+            removeObstacle(p);
+            maze[i][j] = MONSTRE;
+            return true;
+        }
+        return false;
+    }*/
 
     private void addTeleport(int nb){
         while(nb!=0) {
@@ -573,27 +602,16 @@ public class Maze implements Serializable,Cloneable{
         return false;
     }
 
-    private void addDoor(int nbObstacles,String type,int L,int l){
-        doors=new LinkedList<Door>();
-        int doorX = (int) this.ending().getX();
-        int doorY = (int) this.ending().getY();
-        if(doorX==0)doorX++;
-        else if(doorX==this.getWidth()-1)doorX--;
-        else if(doorY==0)doorY++;
-        else if(doorY==this.getHeight()-1)doorY--;
-        Point doorPosition = new Point(doorX,doorY);
-        double begX =this.beginning().getX();
-        double begY = this.beginning().getY();
-        if(doorPosition.getX()==begX+1||doorPosition.getY()==begX-1||doorPosition.getY()==begY+1||doorPosition.getY()==begY-1){
-            maze = new int[L][l];
-            if(nbObstacles==0)randomMaze();
-            else randomMaze(nbObstacles,type);
-            addDoor(nbObstacles,type,L,l);
+    private void addDoor(int nb){
+        while(nb!=0){
+            //System.out.println("on est dans la fonction ajouter porte");
+            Door d=new Door(this);
+            while(existDoor(d)){ d=new Door(this);}
+            doors.add(d);
+            fill(DOOR, d.getPosition());
+            fill(KEY, d.getKeyPlace());
+            nb--;
         }
-        Door d = new Door(this,doorPosition);
-        fill(DOOR, d.getPosition());
-        doors.add(d);
-        fill(KEY, d.getKeyPlace());
     }
 
     private boolean existDoor(Door d){
@@ -603,16 +621,10 @@ public class Maze implements Serializable,Cloneable{
         return false;
     }
 
-    public Door getDoor(Point2D point){
-        for (Door a : doors){
-            if(a.getPosition().equals(point))
-                return a;
-        }
-        return null;
-    }
 
     private void addBonus(int nb, int type){
         while(nb!=0){
+            //if(type==-1)type=new Random().nextInt(2);
             if(type==1){
                 TimeBonus tb=new TimeBonus(this);
                 bonus.add(tb);
