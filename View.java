@@ -315,10 +315,14 @@ public class View extends Scene {
             Group first=floor;
             Point before = null;
             Box square = null;
+<<<<<<< HEAD
             Box firstS;
             Vector3D squareCoor=new Vector3D();
             COLOR_WALL.setBumpMap(new Image("brick.jpg"));
             COLOR_WALL.setDiffuseColor(Color.LIGHTGOLDENRODYELLOW);
+=======
+            COLOR_WALL.setBumpMap(new Image("images/brick.jpg"));
+>>>>>>> c6af39555428b59a3f26fddcdf0a80a6937bceaa
             COLOR_WALL.setSpecularColor(Color.BLACK);
             COLOR_DOOR.setDiffuseMap(new Image("/safe.jpg"));
             COLOR_DOOR.setSpecularColor(Color.LIGHTGOLDENRODYELLOW);
@@ -327,9 +331,14 @@ public class View extends Scene {
 
             int i=0;
             for (Maze a : floors) {
+<<<<<<< HEAD
                 createMaze(floor,a,i);
                 firstS=square;
                 if(before!=null){
+=======
+                createMaze(floor, a, i);
+                if (before != null) {
+>>>>>>> c6af39555428b59a3f26fddcdf0a80a6937bceaa
                     int aposx = (int) a.beginning().getX();
                     int aposz = (int) a.beginning().getY();
                     floor.setTranslateX((posFx-aposx)*SIZE_BOX);
@@ -426,7 +435,11 @@ public class View extends Scene {
 
                         case Maze.END:
                             cell = makeFloor(COLOR_END);
+<<<<<<< HEAD
                             setBox(cell,i,j,root,floor,maze);
+=======
+                            setBox(cell, i, j, root, floor, maze);
+>>>>>>> c6af39555428b59a3f26fddcdf0a80a6937bceaa
                             break;
 
                         case Maze.WAY:
@@ -922,6 +935,7 @@ public class View extends Scene {
                                 case SPACE:
                                     if (game.player.state() != Player.PlayerState.STAIRSDOWN && game.player.state() != Player.PlayerState.STAIRSUP)
                                     game.player.jump(true);
+<<<<<<< HEAD
                                     break;
                                 case SHIFT:
                                     if (e.isControlDown()) mazePane.rotateX.setAngle(mazePane.rotateX.getAngle() - 0.5);
@@ -930,6 +944,22 @@ public class View extends Scene {
                                 case Q:
                                       if(e.isControlDown())st.close();break;
                             }
+=======
+                                break;
+                            case SHIFT:
+                                if (e.isControlDown()) game.player.lookDown(true);
+                                else game.player.lookUp(true);
+                                break;
+                            case Q:
+                                if (e.isControlDown()) st.close();
+                                break;
+                            case M:
+                                if(!plan.isDisable()){
+                                    if(!main.getChildren().contains(map))main.getChildren().add(map);
+                                    else main.getChildren().remove(map);
+                                }
+                                break;
+>>>>>>> c6af39555428b59a3f26fddcdf0a80a6937bceaa
                         }
                         mazePane.moveMap(10,player);
                     }
@@ -951,6 +981,12 @@ public class View extends Scene {
                     case SPACE:
                         game.player.jump(false);
                         break;
+                    case SHIFT:
+                        game.player.lookDown(false);
+                        game.player.lookUp(false);
+                        break;
+                    case CONTROL:game.player.lookDown(false);
+                    break;
                 }
             });
             View.this.addEventHandler(MouseEvent.ANY, evt->{

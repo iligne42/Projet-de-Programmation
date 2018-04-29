@@ -2,86 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1c3c1e8d-d275-4284-b114-b0fb72b085b0" name="Default" comment="wtf">
-      <change beforePath="" afterPath="$PROJECT_DIR$/Coin.fxml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/Dark-Background.jpg" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/MegaCoin.fxml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/Spider.fxml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/Test.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/User.fxml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/alert.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/bigkey.fxml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/brick.jpg" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/chat.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/coin.png" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/end.jpg" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/face.jpg" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/gate.fxml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/ghost.fxml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/hourglass.png" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/key.fxml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/key.png" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/lab.jpg" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/labiTest.txt" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/lock.jpg" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/menu.css" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/sablier.fxml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/sablier2.fxml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/sablier4.fxml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/safe.jpg" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/teleport.fxml" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change beforePath="$PROJECT_DIR$/Bonus.java" afterPath="$PROJECT_DIR$/Bonus.java" />
-      <change beforePath="$PROJECT_DIR$/Divers.java" afterPath="$PROJECT_DIR$/Divers.java" />
-      <change beforePath="$PROJECT_DIR$/Maze.java" afterPath="$PROJECT_DIR$/Maze.java" />
-      <change beforePath="$PROJECT_DIR$/Obstacles.java" afterPath="$PROJECT_DIR$/Obstacles.java" />
-      <change beforePath="$PROJECT_DIR$/Player.java" afterPath="$PROJECT_DIR$/Player.java" />
-      <change beforePath="$PROJECT_DIR$/ScorePane.java" afterPath="$PROJECT_DIR$/ScorePane.java" />
-      <change beforePath="$PROJECT_DIR$/Scores.java" afterPath="$PROJECT_DIR$/Scores.java" />
-      <change beforePath="$PROJECT_DIR$/View.java" afterPath="$PROJECT_DIR$/View.java" />
-      <change beforePath="$PROJECT_DIR$/css/alert.css" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/css/chat.css" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/css/menu.css" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fxml/Coin.fxml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fxml/MegaCoin.fxml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fxml/Spider.fxml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fxml/User.fxml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fxml/bigkey.fxml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fxml/gate.fxml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fxml/ghost.fxml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fxml/key.fxml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fxml/sablier.fxml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fxml/sablier2.fxml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fxml/sablier4.fxml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fxml/teleport.fxml" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/Dark-Background.jpg" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/brick.jpg" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/coin.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/death.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/end.jpg" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/help.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/hourglass.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/inv.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/key.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/lab.jpg" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/map.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/over.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/pause.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/play.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/quit.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/safe.jpg" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/save.png" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/images/sky.jpg" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/netView.java" afterPath="$PROJECT_DIR$/netView.java" />
-      <change beforePath="$PROJECT_DIR$/savings/desgtfy--27-04-18.ser" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/savings/dsfg--19-04-18.ser" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/savings/rtfgkj--26-04-18.ser" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/sounds/coin.wav" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/sounds/footstep2.wav" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/sounds/monster.wav" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/txt/bestSolos.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/txt/labiTest.txt" afterPath="" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/sounds/coin.mp3" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/sounds/footstep.mp3" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/sounds/monster.mp3" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/sounds/scream.mp3" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/sounds/thump.mp3" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/sounds/zee.wav" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/GameVersion.java" afterPath="$PROJECT_DIR$/GameVersion.java" />
+      <change beforePath="$PROJECT_DIR$/MazeInterface.java" afterPath="$PROJECT_DIR$/MazeInterface.java" />
+      <change beforePath="$PROJECT_DIR$/Menu.java" afterPath="$PROJECT_DIR$/Menu.java" />
+      <change beforePath="$PROJECT_DIR$/Player.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/SingleView.java" afterPath="$PROJECT_DIR$/SingleView.java" />
+      <change beforePath="$PROJECT_DIR$/View.java" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/documentation/Mode d'emploi" afterPath="$PROJECT_DIR$/documentation/Mode d'emploi" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -105,10 +39,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="netView.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="netView.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/netView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1461">
+            <state relative-caret-position="-136">
               <caret line="74" column="68" lean-forward="false" selection-start-line="74" selection-start-column="68" selection-end-line="74" selection-end-column="68" />
               <folding />
             </state>
@@ -118,38 +52,18 @@
       <file leaf-file-name="Server.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Server.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
+            <state relative-caret-position="68">
               <caret line="6" column="38" lean-forward="false" selection-start-line="6" selection-start-column="38" selection-end-line="6" selection-end-column="38" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Bonus.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Bonus.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Bonus.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="14" column="19" lean-forward="false" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="View.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/View.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="13736">
-              <caret line="810" column="29" lean-forward="false" selection-start-line="810" selection-start-column="29" selection-end-line="810" selection-end-column="29" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Player.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Player.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="28" column="23" lean-forward="false" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
+            <state relative-caret-position="255">
+              <caret line="28" column="80" lean-forward="true" selection-start-line="28" selection-start-column="80" selection-end-line="28" selection-end-column="80" />
               <folding />
             </state>
           </provider>
@@ -158,7 +72,7 @@
       <file leaf-file-name="Scores.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Scores.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
+            <state relative-caret-position="1632">
               <caret line="106" column="0" lean-forward="false" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
               <folding />
             </state>
@@ -188,7 +102,7 @@
       <file leaf-file-name="ScorePane.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ScorePane.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="137">
+            <state relative-caret-position="782">
               <caret line="57" column="53" lean-forward="false" selection-start-line="57" selection-start-column="53" selection-end-line="57" selection-end-column="53" />
               <folding />
             </state>
@@ -233,6 +147,7 @@
       <find>displays</find>
       <find>buil</find>
       <find>timeP</find>
+      <find>pick</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -271,16 +186,16 @@
         <option value="$PROJECT_DIR$/documentation/Fiche de suivi semaine 11" />
         <option value="$PROJECT_DIR$/Maze.java" />
         <option value="$PROJECT_DIR$/Teleporteur.java" />
-        <option value="$PROJECT_DIR$/View.java" />
         <option value="$PROJECT_DIR$/netFunc.java" />
         <option value="$PROJECT_DIR$/netView.java" />
-        <option value="$PROJECT_DIR$/Player.java" />
         <option value="$PROJECT_DIR$/documentation/Fiche de suivi semaine 12" />
         <option value="$PROJECT_DIR$/documentation/README.md" />
         <option value="$PROJECT_DIR$/documentation/Mode d'emploi" />
         <option value="$PROJECT_DIR$/ScorePane.java" />
         <option value="$PROJECT_DIR$/Divers.java" />
         <option value="$PROJECT_DIR$/Obstacles.java" />
+        <option value="$PROJECT_DIR$/Player.java" />
+        <option value="$PROJECT_DIR$/View.java" />
       </list>
     </option>
   </component>
@@ -305,10 +220,20 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
-      <pane id="ProjectPane" />
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="AndroidView" />
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Projet-de-Programmation" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Projet-de-Programmation" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="Scratches" />
     </panes>
   </component>
@@ -767,7 +692,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12664714" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12664714" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -856,7 +781,7 @@
           </properties>
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="1" />
+      <option name="time" value="3" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1017,14 +942,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/View.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13736">
-          <caret line="810" column="29" lean-forward="false" selection-start-line="810" selection-start-column="29" selection-end-line="810" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/documentation/Fiche de suivi semaine 11">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -1084,33 +1001,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Player.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="28" column="23" lean-forward="false" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Bonus.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="14" column="19" lean-forward="false" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Projet-de-Programmation.iml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
           <caret line="2" column="30" lean-forward="false" selection-start-line="2" selection-start-column="30" selection-end-line="2" selection-end-column="30" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Server.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
+        <state relative-caret-position="68">
           <caret line="6" column="38" lean-forward="false" selection-start-line="6" selection-start-column="38" selection-end-line="6" selection-end-column="38" />
           <folding />
         </state>
@@ -1118,7 +1018,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ScorePane.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137">
+        <state relative-caret-position="782">
           <caret line="57" column="53" lean-forward="false" selection-start-line="57" selection-start-column="53" selection-end-line="57" selection-end-column="53" />
           <folding />
         </state>
@@ -1126,7 +1026,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Scores.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
+        <state relative-caret-position="1632">
           <caret line="106" column="0" lean-forward="false" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
           <folding />
         </state>
@@ -1134,8 +1034,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/netView.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1461">
+        <state relative-caret-position="-136">
           <caret line="74" column="68" lean-forward="false" selection-start-line="74" selection-start-column="68" selection-end-line="74" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="217">
+          <caret line="195" column="5" lean-forward="true" selection-start-line="195" selection-start-column="5" selection-end-line="195" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/View.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="346">
+          <caret line="391" column="68" lean-forward="true" selection-start-line="391" selection-start-column="68" selection-end-line="391" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Bonus.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="28" column="80" lean-forward="true" selection-start-line="28" selection-start-column="80" selection-end-line="28" selection-end-column="80" />
           <folding />
         </state>
       </provider>

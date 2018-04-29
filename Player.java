@@ -24,7 +24,11 @@ public class Player implements Serializable {
 
 	private float maxSpeed,accConstant,angularVelocity,gravity,friction,orientationSpeed,orientation,jumpVelocity,orientationX;
 	private float radius;
+<<<<<<< HEAD
 	private boolean up,down,left,right,space,pickedUp,underTeleport;
+=======
+	private boolean up,down,left,right,lookUp,lookDown,space,pickedUp;
+>>>>>>> c6af39555428b59a3f26fddcdf0a80a6937bceaa
 	private LinkedList<Bonus> bonus;
 	private LinkedList<Key> keys;
 
@@ -43,14 +47,28 @@ public class Player implements Serializable {
 	    public Falling(){
             setGround(0);
             state=null;
+<<<<<<< HEAD
+=======
+            MazeInterface.sounds(3).play();
+
+            //add scream sound
+>>>>>>> c6af39555428b59a3f26fddcdf0a80a6937bceaa
 
         }
 
 	    public void animate(double elapsedSeconds){
 	        applyGravity(elapsedSeconds);
+<<<<<<< HEAD
             if (posY < ground) {
                 posY=ground;
                 velocity.setTo(0, 0, 0);
+=======
+            if (posY <= ground) {
+                posY=ground;
+                velocity.setTo(0, 0, 0);
+                MazeInterface.sounds(3).stop();
+                MazeInterface.sounds(4).play();
+>>>>>>> c6af39555428b59a3f26fddcdf0a80a6937bceaa
                 changeState(PlayerState.DEAD);
             }
         }
@@ -187,6 +205,18 @@ public class Player implements Serializable {
         return animation;
     }
 
+<<<<<<< HEAD
+=======
+    public void lookUp(boolean b){
+	    lookUp=b;
+    }
+
+    public void lookDown(boolean b){
+	    lookDown=b;
+    }
+
+    public void pick(boolean b){pickedUp=b;}
+>>>>>>> c6af39555428b59a3f26fddcdf0a80a6937bceaa
     public void setAnimation(PlayerAnimation anim){
 	    animation=anim;
     }
@@ -243,6 +273,7 @@ public class Player implements Serializable {
 
     public void updatePosition(double elapsedSeconds){
 	    if(animation==null) {
+<<<<<<< HEAD
             if (left) {
                 turnLeft(elapsedSeconds);
                 if (up) moveForward(elapsedSeconds);
@@ -253,6 +284,53 @@ public class Player implements Serializable {
                 else if (down) moveBackward(elapsedSeconds);
             } else if (up) {
                if (space && state!=PlayerState.JUMPING){
+=======
+            if (state != PlayerState.JUMPING) {
+                if (left) {
+                    turnLeft(elapsedSeconds);
+                    if (up) moveForward(elapsedSeconds);
+                    else if (down) moveBackward(elapsedSeconds);
+                } else if (right) {
+                    turnRight(elapsedSeconds);
+                    if (up) moveForward(elapsedSeconds);
+                    else if (down) moveBackward(elapsedSeconds);
+                } else if (up) {
+                    if (space) {
+                        jump();
+                        changeState(PlayerState.JUMPING);
+                    } else if (left) turnLeft(elapsedSeconds);
+                    else if (right) turnRight(elapsedSeconds);
+                    moveForward(elapsedSeconds);
+
+                } else if (down) {
+                    if (space) {
+                        jump();
+                        changeState(PlayerState.JUMPING);
+                    }
+                    else if (left) turnLeft(elapsedSeconds);
+                    else if (right) turnRight(elapsedSeconds);
+                    moveBackward(elapsedSeconds);
+                }
+                else if(lookUp){
+                    lookUp(elapsedSeconds);
+                    if (space) {
+                        jump();
+                        changeState(PlayerState.JUMPING);
+                    }
+                    else if (up) moveForward(elapsedSeconds);
+                    else if (down) moveBackward(elapsedSeconds);
+                }
+                else if(lookDown){
+                    lookDown(elapsedSeconds);
+                    if (space) {
+                        jump();
+                        changeState(PlayerState.JUMPING);
+                    }
+                    else if (up) moveForward(elapsedSeconds);
+                    else if (down) moveBackward(elapsedSeconds);
+                }
+                else if (space) {
+>>>>>>> c6af39555428b59a3f26fddcdf0a80a6937bceaa
                     jump();
                     changeState(PlayerState.JUMPING);
                 }
@@ -297,6 +375,7 @@ public class Player implements Serializable {
         posX+=velocity.x()*elapsedSeconds;
         posY+=velocity.y()*elapsedSeconds;
         if (posY < ground && state!=PlayerState.STAIRSDOWN && state!=PlayerState.STAIRSUP ) {
+            //MazeInterface.sounds(4).play();
             posY=ground;
             velocity.setTo(0, 0, 0);
             if(state==PlayerState.JUMPING) changeState(previousState);

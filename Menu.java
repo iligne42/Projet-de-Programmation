@@ -69,13 +69,14 @@ public class Menu extends Application {
     public void setButton(Button button, int a, VBox pan, String path,StackPane stack,VBox menu){
       	button.setOnMouseClicked(e->{
       		pan.getChildren().clear();
-      		pan.setStyle("-fx-spacing:2;");
                 try{
                     Scores sco = new Scores(path,a);
                     String [] sc = (sco.getScores()).split("\n");
                     if(debug)System.out.println(sc.length);
+                    pan.setStyle("-fx-spacing:0");
                     for(String sct : sc){
                         Label res = new Label(sct);
+                        res.setStyle("-fx-font-size:14px");
                         if(debug)System.out.println(sct);
                         pan.getChildren().add(res);
                     }
@@ -88,7 +89,7 @@ public class Menu extends Application {
                     pan.getChildren().add(prev);
                 }
                 catch(Exception exc){
-              if(debug)      exc.printStackTrace();}
+              if(debug) exc.printStackTrace();}
     	});
     }
     public void config(VBox ranking,String path,StackPane stack,VBox menu){
