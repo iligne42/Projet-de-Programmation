@@ -92,9 +92,10 @@ public class hostMenu extends VBox{
 			clear();
 			if(initMe(name,text.getText()))
 				makeChat(text.getText());
-			else
+			else {
 				MazeInterface.warning("Cannot connect to server.");
 				initClient(name);
+			}
 		});
 		this.getChildren().add(waitIP);
 	}
@@ -127,8 +128,11 @@ public class hostMenu extends VBox{
 		this.getChildren().remove(Players);
 		Players =new TilePane();
 		//Players.setSpacing(30);
-		for(String str:names)
-			Players.getChildren().add(new Label(str));
+		for(String str:names) {
+			Label lab=new Label(str);
+			lab.getStyleClass().add("noms");
+			Players.getChildren().add(lab);
+		}
 		Players.getStyleClass().add("hbox");
 		this.getChildren().add(getChildren().size()-1,Players);
 	}

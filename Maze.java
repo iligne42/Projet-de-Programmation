@@ -69,7 +69,7 @@ public class Maze implements Serializable,Cloneable{
         }
     }
 
-    public Maze(File fic) throws FileNotFoundException, FormatNotSupported{ //constructeur qui créer un labyrinthe à partir d'un fichier
+    public Maze(File fic, String mode) throws FileNotFoundException, FormatNotSupported{ //constructeur qui créer un labyrinthe à partir d'un fichier
         int nbEnter=0;
         Scanner sc = new Scanner(fic);
         ArrayList<String> tmp = new ArrayList<String>();
@@ -89,6 +89,27 @@ public class Maze implements Serializable,Cloneable{
                             maze[i][j]=END;
                         else maze[i][j]=WAY;
                         break;
+                    case 'O':
+                        if(obstacles==null)obstacles=new LinkedList<>();
+                        obstacles.add(new Obstacles(this,new Point2D.Double(j,i),"Cercle"));
+                        maze[i][j]=OBSTACLE;
+                        break;
+                    case 'o':
+                        if(obstacles==null)obstacles=new LinkedList<>();
+                        obstacles.add(new Obstacles(this,new Point2D.Double(j,i),"Rectangle"));
+                        maze[i][j]=OBSTACLE;
+                        break;
+                    case 'M':
+                        maze[i][j] = MONSTRE;
+                        if(monstres==null)monstres=new LinkedList<>();
+                        monstres.add(new Monstres(this,new Point2D.Double(j,i)));
+                        break;
+                    case 'B':
+                        maze[i][j] = BONUS;
+                        if(bonus==null)bonus = new LinkedList<>();
+                        if(mode.equals("Against the clock"))bonus.add(new TimeBonus(this,new Point2D.Double(j,i)));
+                        else bonus.add(new Piece(this,new Point2D.Double(j,i)));
+                        break;
                     default:
                         maze[i][j]=WALL;break;
                 }
@@ -99,7 +120,7 @@ public class Maze implements Serializable,Cloneable{
     }
     
     
-    public Maze(File fic,String mode) throws FileNotFoundException, FormatNotSupported{ 
+   /* public Maze(File fic,String mode) throws FileNotFoundException, FormatNotSupported{
         int nbEnter=0,nbEnd=0;
         Scanner sc = new Scanner(fic);
         ArrayList<String> tmp = new ArrayList<String>();
@@ -164,9 +185,7 @@ public class Maze implements Serializable,Cloneable{
             teleport.add(new Pair<>(first,second));
           }
         }
-        /*else if(possibleMaze())
-              throw new FormatNotSupported("The maze is not resolvable.");*/
-    }
+    }*/
 
     public static boolean sameLength(ArrayList<String> t){ //vérifie que toutes les chaînes de caractères d'une ArrayList font la même taille
         int tmp = t.get(0).length();
