@@ -263,7 +263,6 @@ public class View extends Scene {
             Group first = floor;
             Point before = null;
             Box square = null;
-            Box firstS;
             COLOR_WALL.setBumpMap(new Image("images/brick.jpg"));
             COLOR_WALL.setSpecularColor(Color.BLACK);
             COLOR_DOOR.setDiffuseMap(new Image("images/safe.jpg"));
@@ -272,7 +271,6 @@ public class View extends Scene {
             int i = 0;
             for (Maze a : floors) {
                 createMaze(floor, a, i);
-                firstS = square;
                 if (before != null) {
                     int aposx = (int) a.beginning().getX();
                     int aposz = (int) a.beginning().getY();
@@ -342,12 +340,6 @@ public class View extends Scene {
                         case Maze.END:
                             cell = makeFloor(COLOR_END);
                             setBox(cell, i, j, root, floor, maze);
-                            Label message=new Label("Congratulations");
-                            message.setStyle("-fx-font-size:30pt");
-                            message.setTranslateX(cell.getTranslateX());
-                            message.setTranslateZ(cell.getTranslateX());
-                            message.setTranslateY(cell.getTranslateY()-SIZE_BOX/2);
-                            root.getChildren().add(message);
                             break;
 
                         case Maze.WAY:
@@ -844,8 +836,8 @@ public class View extends Scene {
                                     game.player.jump(true);
                                 break;
                             case SHIFT:
-                                if (e.isControlDown()) mazePane.rotateX.setAngle(mazePane.rotateX.getAngle() - 0.5);
-                                else mazePane.rotateX.setAngle(mazePane.rotateX.getAngle() + 0.5);
+                                if (e.isControlDown()) game.player.lookDown(true);
+                                else game.player.lookUp(true);
                                 break;
                             case Q:
                                 if (e.isControlDown()) st.close();
@@ -880,6 +872,12 @@ public class View extends Scene {
                     case SPACE:
                         game.player.jump(false);
                         break;
+                    case SHIFT:
+                        game.player.lookDown(false);
+                        game.player.lookUp(false);
+                        break;
+                    case CONTROL:game.player.lookDown(false);
+                    break;
                 }
             });
             View.this.addEventHandler(MouseEvent.ANY, evt -> {

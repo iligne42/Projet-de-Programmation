@@ -1,7 +1,8 @@
 Mode d'emploi du projet
 
-Une fois le fichier Menu ouvert pour pouvoir se servir du programme il faut cliquer sur Play ou sur Join a group(pour jouer en multijoueur).
+Une fois le Menu ouvert pour pouvoir se servir du programme il faut cliquer sur Play ou sur Join a group(pour jouer en multijoueur).
 Ensuite, il suffit de suivre les étapes en cliquant sur ce qu'on souhaite faire.
+
 Dans Random Maze, il est demandé de choisir à l'utilisateur entre différents modes et différentes difficultés (correspondant à la taille) de labyrinthe.
 En fonction de la difficulté (un type pour easy, 2 pour normal, 3 pour hard,...), l'utilisateur pourra choisir différent objets à ajouter au labyrinthe.
 Il suffit ensuite de cliquer sur Go! et c'est parti.

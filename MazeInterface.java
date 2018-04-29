@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -29,9 +30,10 @@ public interface MazeInterface {
         File folder = new File("sounds/");
         for (File f : folder.listFiles()) {
             AudioClip a = new AudioClip(f.toURI().toString());
-            a.setCycleCount(1);
-            sounds.add(a);
+                a.setCycleCount(1);
+                sounds.add(a);
         }
+        for(AudioClip a:sounds) a.play(0);
     }
 
     static AudioClip sounds(int index){
@@ -184,6 +186,7 @@ public interface MazeInterface {
     }
 
     static MazeFloors getMaze(int L,int l,int f,int typeB,boolean[] sup) throws Exception{
+        initSounds();
         int[] extra=new int[sup.length];
         int nb=getSelected(sup);
         boolean no=false;
@@ -277,6 +280,7 @@ public interface MazeInterface {
         if(ty.equals("Against the clock")) return 1;
         return 0;
     }
+
 
 
     static int rand(int a, int b) {

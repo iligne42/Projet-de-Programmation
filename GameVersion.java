@@ -30,7 +30,6 @@ public abstract class GameVersion implements Serializable {
         floor=0;
         current=floors.get(floor);
         scores = score;
-        MazeInterface.initSounds();
 
 
     }
@@ -42,7 +41,6 @@ public abstract class GameVersion implements Serializable {
         floor=0;
         current=floors.get(floor);
         scores = score;
-        MazeInterface.initSounds();
     }
 
 
@@ -53,7 +51,6 @@ public abstract class GameVersion implements Serializable {
         floor=0;
         current=floors.get(floor);
         scores = score;
-        MazeInterface.initSounds();
     }
 
 
@@ -574,9 +571,11 @@ public abstract class GameVersion implements Serializable {
     }
 
     public void convertBonus(){
-       player.useBonus();
-            elapsed-=2;
-            if(elapsed<=0) elapsed+=2;
+        if(player.getBonus().size()!=0) {
+            player.useBonus();
+            elapsed -= 2;
+            if (elapsed <= 0) elapsed += 2;
+        }
     }
 
     public void useBonus(){

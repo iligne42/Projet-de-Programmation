@@ -28,10 +28,10 @@ public class SingleView extends View{
             public EndPane(){
                 super(0);
                 timeLine.setCycleCount(Timeline.INDEFINITE);
-                timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(0.2),(event)->{
+                timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(0.1),(event)->{
                     game.convertBonus();
                     timePane.timeSeconds.set(game.getElapsed());
-                    if(game.player.getBonus().size()==0) {
+                    if(game.player.getBonus().size()==0 && !MazeInterface.sounds(5).isPlaying()) {
                         game.addToScoresFile();
                         displayScores(game.scores());
                         timeLine.stop();
@@ -41,6 +41,7 @@ public class SingleView extends View{
         }
         @Override
         public void whenIsFinished(){
+            MazeInterface.sounds(5).play();
             timePane.stop();
             gameTimer.stop();
             SingleView.this.setOnKeyPressed(null);
