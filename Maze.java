@@ -120,15 +120,10 @@ public class Maze implements Serializable,Cloneable{
         if(nbEnter!=1)
             throw new FormatNotSupported("The maze has "+nbEnter+" starts and must only have 1.");
     }
-<<<<<<< HEAD
     
     
    /* public Maze(File fic,String mode) throws FileNotFoundException, FormatNotSupported{
-=======
 
-
-    public Maze(File fic,String mode) throws FileNotFoundException, FormatNotSupported{
->>>>>>> 009473af14edecac836db7bae82da4e868757f91
         int nbEnter=0,nbEnd=0;
         Scanner sc = new Scanner(fic);
         ArrayList<String> tmp = new ArrayList<String>();

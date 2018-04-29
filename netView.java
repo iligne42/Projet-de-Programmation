@@ -78,6 +78,17 @@ public class netView extends View{
             }
         }
 
+        public void isDead(){
+            if(!finish){
+                finish=true;
+                timePane.stop();
+                netView.this.setOnKeyPressed(null);
+                Scores sc = new Scores();
+                sc.addToScoresList(game.player().getName(),(24*3600)-1);
+                netFunc.sendObject(me,sc);
+            }
+        }
+
         private class sendPos extends Thread{
             private volatile boolean end;
             public sendPos(){
