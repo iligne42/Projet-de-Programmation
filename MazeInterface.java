@@ -32,9 +32,7 @@ public interface MazeInterface {
             a.setCycleCount(1);
             sounds.add(a);
         }
-        for(AudioClip a : sounds){
-            a.play(0);
-        }
+        for(AudioClip a:sounds) a.play(0);
     }
 
     static AudioClip sounds(int index){

@@ -172,7 +172,7 @@ public class Menu extends Application {
                 st.show();
             }
             catch(Exception ex){
-         if(debug)       ex.printStackTrace();
+         if(debug) ex.printStackTrace();
             }
         });
 

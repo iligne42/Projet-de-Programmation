@@ -728,8 +728,10 @@ public class View extends Scene {
             Region rg = new Region();
             HBox.setHgrow(rg, Priority.SOMETIMES);
             rg.setFocusTraversable(false);
-            if(multi) tool=new ToolBar(rg,help,piece,plan,quit);
-            else tool = new ToolBar(rg, help,piece,save,plan,pause,quit);
+            if(multi) tool=new ToolBar(rg,help,plan,quit);
+            else tool = new ToolBar(rg, help,save,plan,pause,quit);
+            if(game.current().getBonus()!=null) tool.getItems().add(piece);
+           // if(game.current().getDoors()!=null) tool.getItems().add(key);
             for (Node a : tool.getItems()) {
                 if (a instanceof Button) {
                     a.setStyle(style);
@@ -757,7 +759,7 @@ public class View extends Scene {
                 public void handle(long now) {
                     if (game.gameOver()) {
                         whenIsFinished();
-                    } else if (game.player.state() == Player.PlayerState.DEAD) {
+                    } else if (game.player.state() == Player.PlayerState.DEAD ) {
                         timePane.stop();
                         final ImageView imv = new ImageView();
                         final Image img = new Image(View.class.getResourceAsStream("images/death.png"));
@@ -765,7 +767,9 @@ public class View extends Scene {
                         main.getChildren().add(imv);
                         View.this.setOnKeyPressed(null);
                         gameTimer.stop();
-                    } else if (timePane.timeOver()) {
+                        isDead();
+                    }
+                    else if (timePane.timeOver()) {
                     } else {
                         if (lastUpdate.get() > 0) {
                             double elapsedTime = (now - lastUpdate.get()) / 1000000000.0;
@@ -906,6 +910,9 @@ public class View extends Scene {
         public void moveMap(int size, Circle player) {
             player.centerXProperty().set(game.player().getPosition().getX() * size+10);
             player.centerYProperty().set(game.player().getPosition().getY() * size+300);
+        }
+
+        public void isDead() {
         }
 
 
