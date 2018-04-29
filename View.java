@@ -657,7 +657,6 @@ public class View extends Scene {
             plan = new Button();
             configButton("images/map.png", plan);
             plan.setOnMouseClicked(e -> {
-              System.out.println("ouai");
                 if (!main.getChildren().contains(map)) {
                     main.getChildren().add(map);
                     StackPane.setAlignment(map, Pos.BOTTOM_LEFT);

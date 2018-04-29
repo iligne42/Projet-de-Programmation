@@ -114,7 +114,7 @@ public interface MazeInterface {
             if (notValid(s)) return readInput(input);
             return s;
         }
-        throw new FormatNotSupported("No value ");
+        throw new FormatNotSupported("");
     }
 
 
@@ -172,7 +172,7 @@ public interface MazeInterface {
             }
             return res;
         }
-        throw new FormatNotSupported("No value ");
+        throw new FormatNotSupported("");
     }
 
 

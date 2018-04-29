@@ -300,8 +300,8 @@ public abstract class GameVersion implements Serializable {
                                             }
                                         }
                                     } else {
-                                      float width = 0.1f;
-                                      float height = 1;
+                                      float width = 1f;
+                                      float height = 0.1f;
                                         Point2D oBegin = new Point2D.Double(pos.getX() - width / 2, pos.getY() - width / 2);
                                         if (circleRectangleCollision(goal, oBegin, radius, width, height)) {
                                             player.setPosition(start,yPos1,angle);
