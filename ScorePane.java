@@ -34,10 +34,27 @@ public class ScorePane extends Pane {
         messages.getStyleClass().add("mes");
         this.getChildren().add(messages);
         //messages.setAlignment(Pos.CENTER);
-        getStylesheets().add("css/chat.css");
+        getStylesheets().add("chat.css");
     }
 
     public void printScores(){
+        //messages.getChildren().add(affichage);
+        //affichage.setText(score.toString());
+        //System.out.println("Je rentre dans printlScores");
+        /*for(int i=0;i<score.length();i++){
+            messages.getChildren().add(new Label("Nom "+i));
+            System.out.println("J'essaie d'ajouter les messages");
+            Pair<String,Integer> p=score.get(i);
+            Label deb=new Label();
+            deb.setText(p.getKey());
+            deb.getStyleClass().add("deb");
+            Label end=new Label();
+            end.setText(p.getValue()+"");
+            end.getStyleClass().add("end");
+            HBox align=new HBox();
+            align.getChildren().addAll(deb,end);
+            messages.getChildren().add(align);
+            }*/
             Scanner sc=new Scanner(score.toString());
             while(sc.hasNextLine())
                 styleMessage(sc.nextLine());
