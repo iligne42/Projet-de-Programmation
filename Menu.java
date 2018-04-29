@@ -192,7 +192,8 @@ public class Menu extends Application {
 
 
         ObservableList<String> options = FXCollections.observableArrayList();
-        File folder=new File("savings/");
+        File folder=new File("savings"+File.separatorChar);
+        if(!folder.exists()) folder.mkdir();
         for(File f:folder.listFiles()){
             if(f.getName().endsWith(".ser")) options.add(f.getName());
         }
