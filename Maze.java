@@ -138,6 +138,10 @@ public class Maze implements Serializable,Cloneable{
     public LinkedList<Obstacles> getObstacles(){ return obstacles;}
     public String getTypeObstacle(){return obstacles.getFirst().getShape();}
     public LinkedList<Bonus> getBonus(){return bonus;}
+    public LinkedList<Door> getDoors() {
+        return doors;
+    }
+
     public String detTypeBonus(){return bonus.getFirst().getAvantage();}
     public LinkedList<Teleporteur> getTeleport(){
         LinkedList<Teleporteur> t=new LinkedList<>();
@@ -467,33 +471,6 @@ public class Maze implements Serializable,Cloneable{
         return null;
     }
 
-    public Bonus getBonus(Point2D point){
-        for (Bonus a : bonus){
-            Point2D p=a.getPosition();
-            if(p.getX()==point.getX() && p.getY()==point.getY())return a;
-        }
-        return null;
-    }
-
-    public Key getKey(Point2D point){
-        for (Door a : doors)
-            if(a.isTheKey(point))return a.getKey();
-        return null;
-    }
-
-    public Monstres getMonster(Point2D point){
-        for(Monstres m:monstres){
-            if(m.getPosition().equals(point)) return m;
-        }
-        return null;
-    }
-
-    public Obstacles getObstacle(Point2D point){
-        for(Obstacles o:obstacles){
-            if((int)o.getPosition().getX()==(int)point.getX() && (int)o.getPosition().getY()==(int)point.getY()) return o;
-        }
-        return null;
-    }
 
     public void updateGame(double elapsedSeconds){
         if(monstres!=null && monstres.size()!=0) for(Monstres m:monstres) m.move(elapsedSeconds);

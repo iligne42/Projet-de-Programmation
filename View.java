@@ -727,10 +727,11 @@ public class View extends Scene {
             Region rg = new Region();
             HBox.setHgrow(rg, Priority.SOMETIMES);
             rg.setFocusTraversable(false);
-            if(multi) tool=new ToolBar(rg,help,plan,quit);
-            else tool = new ToolBar(rg, help,save,plan,pause,quit);
+            if(multi) tool=new ToolBar(rg,help,plan);
+            else tool = new ToolBar(rg, help,save,plan,pause);
             if(game.current().getBonus()!=null) tool.getItems().add(piece);
-           // if(game.current().getDoors()!=null) tool.getItems().add(key);
+            if(game.current().getDoors()!=null) tool.getItems().add(key);
+            tool.getItems().add(quit);
             for (Node a : tool.getItems()) {
                 if (a instanceof Button) {
                     a.setStyle(style);
