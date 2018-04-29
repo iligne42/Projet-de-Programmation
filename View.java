@@ -1,6 +1,6 @@
 import javafx.animation.*;
 import java.time.LocalDate;
-import javafx.beans.binding.Bindings;
+import javafx.beans.binding.Bindings; 
 import javafx.beans.binding.MapExpression;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;

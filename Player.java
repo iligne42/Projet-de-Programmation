@@ -38,7 +38,7 @@ public class Player implements Serializable {
             boolean isOver();
     }
 
-    protected class Falling implements PlayerAnimation{
+    protected class Falling implements PlayerAnimation, Serializable{
 
 	    public Falling(){
             setGround(0);
@@ -68,7 +68,7 @@ public class Player implements Serializable {
 
     }
 
-    protected class TurningTo implements PlayerAnimation{
+    protected class TurningTo implements PlayerAnimation, Serializable{
 	    protected int destination;
 
 	    public TurningTo(int destination){
@@ -95,7 +95,7 @@ public class Player implements Serializable {
 
     }
 
-    protected class LookingTo implements PlayerAnimation{
+    protected class LookingTo implements PlayerAnimation, Serializable{
 	    protected int destination;
 
 	    public LookingTo(int destination){

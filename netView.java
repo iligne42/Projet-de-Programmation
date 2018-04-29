@@ -81,9 +81,13 @@ public class netView extends View{
             if(!finish){
                 finish=true;
                 timePane.stop();
+                sp.arret();
                 netView.this.setOnKeyPressed(null);
                 Scores sc = new Scores();
                 sc.addToScoresList(game.player().getName(),(24*3600)-1);
+                if(debug)
+                    System.out.println("Envoie du score apres mort.");
+                
                 netFunc.sendObject(me,sc);
             }
         }
@@ -142,10 +146,20 @@ public class netView extends View{
                                 else  Platform.runLater(() -> updatePlayer());
                             }
                         }else if(tmp instanceof Scores) {
+                            if(debug)
+                                System.out.println("Je recois le score");
+                            
                             Scores sc = (Scores) tmp;
                             Scanner scan = new Scanner(game.scores().toString());
-                            sc.setCurrent(scan.nextLine());
+                            if(!scan.hasNextLine()) {
+                                Scores sc2 = new Scores();
+                                sc2.addToScoresList(game.player().getName(),(24*3600)-1);
+                                scan=new Scanner(sc2.toString());
+                                }
+                                sc.setCurrent(scan.nextLine());
                             Platform.runLater(() -> displayScores(sc));
+                            if(debug)
+                                System.out.println("J'ai affiché le score");
                         }
                     }catch(Exception e){if(debug) e.printStackTrace();}
                 }
