@@ -164,8 +164,6 @@ public class Maze implements Serializable,Cloneable{
             teleport.add(new Pair<>(first,second));
           }
         }
-        /*else if(possibleMaze())
-              throw new FormatNotSupported("The maze is not resolvable.");*/
     }
 
     public static boolean sameLength(ArrayList<String> t){ //vérifie que toutes les chaînes de caractères d'une ArrayList font la même taille
@@ -454,17 +452,6 @@ public class Maze implements Serializable,Cloneable{
         maze[j][i]=STAIRSDOWN;
     }
 
-    /*private Point fill(int value){
-        int i=0;
-        int j=0;
-        while(maze[i][j]!=WAY){
-            i=rand.nextInt(maze.length);
-            j=rand.nextInt(maze[i].length);
-        }
-        maze[i][j]=value;
-        return new Point(i,j);
-    }*/
-
     //Renvoie la porte à la case de position x,y selon les axes
     public Door getDoor(int x,int y){
         for(Door a:doors) {
@@ -550,9 +537,6 @@ public class Maze implements Serializable,Cloneable{
         maze[(int)p.getY()][(int)p.getX()]=value;
     }
 
-    /*private Point addObstacle(){
-        return fill(OBSTACLE);
-    }*/
 
     private void removeObstacle(Point2D p){
         int i=(int)p.getX();
@@ -569,16 +553,6 @@ public class Maze implements Serializable,Cloneable{
         }
     }
 
-
-    /*public boolean moveMonstre(Monstres m, int i, int j){
-        Point2D p=m.getPosition();
-        if(maze[i][j]==WAY) {
-            removeObstacle(p);
-            maze[i][j] = MONSTRE;
-            return true;
-        }
-        return false;
-    }*/
 
     private void addTeleport(int nb){
         while(nb!=0) {
@@ -620,15 +594,6 @@ public class Maze implements Serializable,Cloneable{
         fill(DOOR, d.getPosition());
         doors.add(d);
         fill(KEY, d.getKeyPlace());
-        /*while(nb!=0){
-            //System.out.println("on est dans la fonction ajouter porte");
-            Door d=new Door(this);
-            while(existDoor(d)){ d=new Door(this);}
-            doors.add(d);
-            fill(DOOR, d.getPosition());
-            fill(KEY, d.getKeyPlace());
-            nb--;
-        }*/
     }
 
     private boolean existDoor(Door d){
@@ -648,7 +613,6 @@ public class Maze implements Serializable,Cloneable{
 
     private void addBonus(int nb, int type){
         while(nb!=0){
-            //if(type==-1)type=new Random().nextInt(2);
             if(type==1){
                 TimeBonus tb=new TimeBonus(this);
                 bonus.add(tb);

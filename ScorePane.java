@@ -13,27 +13,22 @@ import java.util.Scanner;
 
 public class ScorePane extends Pane {
     private Scores score;
-    //private Label affichage;
     private VBox messages;
 
     public ScorePane(Scores s){
         super();
         getStyleClass().add("root");
-        //setMinSize(500,500);
         score=s;
-        //affichage=new Label();
         messages=new VBox();
         String sc="Scores";
         Label l=new Label(sc);
         l.getStyleClass().add("l");
         messages.getChildren().add(l);
 
-        //messages.getStyleClass().add("messages");
         Rectangle2D r= Screen.getPrimary().getBounds();
         messages.setPrefSize(r.getWidth(),r.getHeight());
         messages.getStyleClass().add("mes");
         this.getChildren().add(messages);
-        //messages.setAlignment(Pos.CENTER);
         getStylesheets().add("css/chat.css");
     }
 
