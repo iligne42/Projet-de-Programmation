@@ -1,6 +1,6 @@
 import javafx.animation.*;
 import java.time.LocalDate;
-import javafx.beans.binding.Bindings; 
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.MapExpression;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -770,6 +770,13 @@ public class View extends Scene {
                         isDead();
                     }
                     else if (timePane.timeOver()) {
+                        MazeInterface.sounds(6).play();
+                        final ImageView imv = new ImageView();
+                        final Image img = new Image(View.class.getResourceAsStream("images/over.png"));
+                        imv.setImage(img);
+                        main.getChildren().add(imv);
+                        View.this.setOnKeyPressed(null);
+                        gameTimer.stop();
                     } else {
                         if (lastUpdate.get() > 0) {
                             double elapsedTime = (now - lastUpdate.get()) / 1000000000.0;

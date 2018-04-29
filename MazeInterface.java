@@ -194,7 +194,7 @@ public interface MazeInterface {
             L=readInt("Choose the length");
             l=readInt("Choose the width");
         }
-        int extras=L*l/30;
+        int extras=L*l*f/30;
 
         for(int i=0;i<extra.length;i++){
             extra[i]=0;
@@ -224,7 +224,7 @@ public interface MazeInterface {
     }
 
     static View getView(MazeFloors m, String ty, String name) throws FormatNotSupported, IOException {
-        int time=m.getFloor().getFirst().getHeight()*m.getFloor().getFirst().getWidth();
+        int time=m.getFloor().getFirst().getHeight()*m.getFloor().getFirst().getWidth()*m.getFloor().size();
         if (ty.equals("Solo"))
             return new SingleView(new SoloVersion(m, name));
 
@@ -234,7 +234,7 @@ public interface MazeInterface {
     }
 
     static View getView(MazeFloors m, String ty) throws FormatNotSupported, IOException {
-        int time=m.getFloor().getFirst().getHeight()*m.getFloor().getFirst().getWidth();
+        int time=m.getFloor().getFirst().getHeight()*m.getFloor().getFirst().getWidth()*m.getFloor().size();
         if (ty.equals("Solo"))
             return new SingleView(new SoloVersion(m, readInput("What's your name ?")));
 

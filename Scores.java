@@ -106,7 +106,7 @@ public class Scores implements Serializable{
                 if(line.equals("**")) i++;
                 else {
                     String[] tab = line.split("-");
-                    lists[i].add(tab[0], MazeInterface.getSeconds(tab[1]));
+                    lists[i].add(tab[0], MazeInterface.getSeconds(tab[tab.length-1]));
                 }
             }
             fr.close();
