@@ -35,7 +35,7 @@ public class MultiView extends View {
         protected Label label;
 
         public MultiControl() throws IOException, FormatNotSupported {
-            super(false);
+            super(true);
             label = new Label();
             nameLabel = new Label(game.player().getName());
             timeToBeat = new TimeProperty(0);
