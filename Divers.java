@@ -13,20 +13,18 @@ public abstract class Divers implements Serializable{
 
     public Divers(Maze m, Point2D p){
         maze=m;
-        this.p=p;
+        this.p=new Point2D.Double(centrer((int)p.getX()),centrer((int)p.getY()));
     }
 
     protected double centrer(int i){
         return (double) i+0.5;
     }
 
-
     public Point2D getPosition(){
         return p;
     }
 
-
-    protected void put(){ //en faire un boolean au cas où il n'y a plus de possibilité?
+    protected void put(){
         Random rand=new Random();
         int i=0; int j=0;
         while(maze.getCase(i,j)!=Maze.WAY) {
@@ -38,10 +36,4 @@ public abstract class Divers implements Serializable{
         p.setLocation(l,k);
     }
 
-   /* public boolean obstacle(){return false;}
-    public boolean door(){return false;}
-    public boolean key(){return false;}
-    public boolean telepot(){return false;}
-    public boolean montre(){return false;}*/
-   //String avec le type de divers??
 }

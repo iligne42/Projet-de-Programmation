@@ -1,0 +1,90 @@
+.root{
+-fx-background-image:url("../images/Dark-Background.jpg");
+}
+
+
+
+.vbox{
+-fx-alignment:center;
+-fx-spacing:18;
+}
+
+.hbox{
+-fx-alignment:center;
+-fx-padding:37,20,37,20;
+-fx-spacing:50;
+}
+
+.v1{
+-fx-alignment:top-left;
+-fx-spacing:30;
+}
+
+.v3{
+-fx-alignment:top-center;
+-fx-spacing:12;
+}
+
+.v2{
+-fx-padding:0,0,0,0;
+-fx-alignment:top-left;
+-fx-spacing:20;
+}
+
+
+
+
+.button, .check-box, .radio-button, .label,.combo-box .list-cell, .combo-box-base, .combo-box-popup .list-view{
+-fx-text-fill: white;
+-fx-font-family:"Palatino Linotype", "Book Antiqua", Palatino,serif;
+-fx-font-size:20;
+-fx-font-weight:bold;
+-fx-background-color:transparent;
+-fx-alignment:center;
+}
+
+.combo-box-popup .list-view{
+-fx-border-color:#bdbbb6;
+}
+
+.combo-box-popup .list-view:hover{
+-fx-background-color:#bdbbb6;
+}
+
+.radio-button, .check-box, #fl{
+-fx-font-size:15;
+}
+
+#cl{
+-fx-font-size:17;
+}
+
+.label{
+-fx-alignment:top-center;
+}
+
+
+
+.button:hover{
+-fx-effect:dropshadow(gaussian,black,10,0.3,4,5);
+}
+
+
+.counter{
+-fx-font-size:15;
+-fx-padding:0,0,0,0
+
+}
+
+#ffl{
+-fx-alignment:center;
+-fx-spacing:17;
+-fx-padding:0,0,0,0
+
+}
+
+.countbox{
+ -fx-spacing:0;
+ -fx-padding:0,0,0,0;
+}
+
