@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Scanner;
 
 public class netView extends View{
     ArrayList<Player> players=new ArrayList<Player>();
@@ -36,7 +35,7 @@ public class netView extends View{
         private sendPos sp;
         private getPos gp;
         public NetControl(Socket me) throws IOException{
-            super(true);
+            super();
             this.me=me;
             sp = new sendPos();
             sp.start();
@@ -82,10 +81,10 @@ public class netView extends View{
                     }
                 }
             }
-
+    
             public void arret(){
-                end =true;
-            }
+               end =true;
+           }
         }
 
         public class getPos extends Thread{
@@ -105,17 +104,15 @@ public class netView extends View{
                                 if(debug)
                                     //System.out.println("Je recois une list de pos.");
                                     players = (ArrayList<Player>)tmp;
-                                if(premierTour){
-                                    t=new DoubleProperty[players.size()][3];
-                                    Platform.runLater(() -> drawPlayer(mazePane)); //à changer
-                                    premierTour=false;
-                                }
-                                else  Platform.runLater(() -> updatePlayer());
+                                    if(premierTour){
+                                        t=new DoubleProperty[players.size()][3];
+                                        Platform.runLater(() -> drawPlayer(mazePane)); //à changer
+                                        premierTour=false;
+                                    }
+                                    else  Platform.runLater(() -> updatePlayer());
                             }
                         }else if(tmp instanceof Scores) {
                             Scores sc = (Scores) tmp;
-                            Scanner scan = new Scanner(game.scores().toString());
-                            sc.setCurrent(scan.nextLine());
                             Platform.runLater(() -> displayScores(sc));
                         }
                     }catch(Exception e){if(debug) e.printStackTrace();}
@@ -157,9 +154,9 @@ public class netView extends View{
             /*player.setTranslateX(p.getPosition().getX()+mazePane.coordSwitch[g].x()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateZ(p.getPosition().getY()+mazePane.coordSwitch[g].z()*mazePane.SIZE_BOX-mazePane.SIZE_BOX/2);
             player.setTranslateY(-p.getY()*mazePane.SIZE_BOX);*/
-                player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX/20);
-                player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX/20);
-                player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX/10);
+            player.setScaleX(player.getScaleX()* mazePane.SIZE_BOX/20);
+            player.setScaleZ(player.getScaleZ()* mazePane.SIZE_BOX/20);
+            player.setScaleY(player.getScaleY()* mazePane.SIZE_BOX/10);
                 //System.out.println("J'ai fait les modifs");
                 root.getChildren().add(player);
             }catch(IOException e){
