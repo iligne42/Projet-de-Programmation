@@ -13,12 +13,9 @@ import javafx.fxml.FXMLLoader;
 import java.io.IOException;
 
 public class Monstres extends Divers{
-    //public Maze maze;
-    //public Point2D position;
     private DoubleProperty x,y,rX,rY;
     private IntegerProperty orientation,rOrientation;
     private boolean debug=false;
-   // private MonsterAnimation animation;
 
 
     public Monstres(Maze m){
@@ -42,18 +39,6 @@ public class Monstres extends Divers{
         orientation= new SimpleIntegerProperty(0);
         rOrientation=new SimpleIntegerProperty(90-orientation.get());
     }
-
-    /*private int getX(){
-        return (int)p.getX();
-    }
-
-    private int getY(){
-        return (int)p.getY();
-    }*/
-
-    /*public Point2D getPosition(){
-        return p;
-    }*/
 
     public DoubleProperty getX(){
       return x;

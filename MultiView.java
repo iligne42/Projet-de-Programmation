@@ -72,6 +72,7 @@ public class MultiView extends View {
                             }
                         } else {
                             displayScores(game.scores());
+
                         }
                         timeLine.stop();
                     }

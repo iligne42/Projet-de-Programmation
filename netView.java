@@ -1,4 +1,6 @@
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -10,6 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.MeshView;
+import javafx.util.Duration;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -44,18 +47,34 @@ public class netView extends View{
             gp.start();
         }
 
+        protected class EndPane extends TimePane {
+            public EndPane() {
+                super(0);
+                timeLine.setCycleCount(Timeline.INDEFINITE);
+                timeLine.getKeyFrames().add(new KeyFrame(Duration.seconds(0.2), (event) -> {
+                    game.convertBonus();
+                    timePane.timeSeconds.set(game.getElapsed());
+                    if (game.player.getBonus().size() == 0 && !MazeInterface.sounds(5).isPlaying()) {
+                        Scores sc = game.scores();
+                        game.addToScoresList();
+                        netFunc.sendObject(me, sc);
+                        if (debug)
+                            System.out.println("J'envoie le score");
+                        timeLine.stop();
+                    }
+                }));
+            }
+        }
+
         public void whenIsFinished(){
             if(!finish) {
+                MazeInterface.sounds(5).play();
                 finish = true;
-                Scores sc = game.scores();
                 timePane.stop();
                 sp.arret();
                 netView.this.setOnKeyPressed(null);
-                game.addToScoresList();
+                new EndPane().play();
 
-                netFunc.sendObject(me, sc);
-                if (debug)
-                    System.out.println("J'envoie le score");
             }
         }
 
