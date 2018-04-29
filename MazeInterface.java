@@ -194,7 +194,7 @@ public interface MazeInterface {
             L=readInt("Choose the length");
             l=readInt("Choose the width");
         }
-        int extras=L*l*f/30;
+        int extras=L*l/30;
 
         for(int i=0;i<extra.length;i++){
             extra[i]=0;
